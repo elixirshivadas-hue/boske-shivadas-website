@@ -1,7 +1,7 @@
 // NIJØK settings. Edit ONLY this file (not index.html).
 window.NIJOK = {
   // Your own owner login email, in small letters. Same email goes in the Firestore rules.
-  ADMIN_EMAIL: "admin@nijok.com",
+  ADMIN_EMAIL: "elixir.shivadas@gmail.com",
   // Firebase project: nijok-719fa
   FB: {
     apiKey: "AIzaSyC2c1A6SkBa-jjCFGsf1OO3evAoccFMxDI",
