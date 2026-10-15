@@ -1,1 +1,31 @@
-{"name":"NIJOK","short_name":"NIJOK","description":"Talk. Scan. Know. Save. Share.","start_url":"./","scope":"./","display":"standalone","background_color":"#f6f2e9","theme_color":"#0f4a36","icons":[{"src":"icon-192.png","sizes":"192x192","type":"image/png","purpose":"any maskable"},{"src":"icon-512.png","sizes":"512x512","type":"image/png","purpose":"any maskable"}]}
+{
+ "name": "NIJOK Lite",
+ "short_name": "NIJOK",
+ "description": "Talk. Scan. Know. Save. Share.",
+ "start_url": "./",
+ "scope": "./",
+ "display": "standalone",
+ "orientation": "portrait",
+ "background_color": "#072b20",
+ "theme_color": "#072b20",
+ "icons": [
+  {
+   "src": "icon-192.png",
+   "sizes": "192x192",
+   "type": "image/png",
+   "purpose": "any"
+  },
+  {
+   "src": "icon-512.png",
+   "sizes": "512x512",
+   "type": "image/png",
+   "purpose": "any"
+  },
+  {
+   "src": "icon-512.png",
+   "sizes": "512x512",
+   "type": "image/png",
+   "purpose": "maskable"
+  }
+ ]
+}
