@@ -77,7 +77,14 @@ table{width:100%;border-collapse:collapse}td{padding:8px 4px;border-bottom:1px s
 <script type="module">
 /* ============ SETTINGS ============ */
 const FIREBASE_CONFIG={apiKey:"AIzaSyC2c1A6SkBa-jjCFGsf1003evAoccFMxDI",authDomain:"nijok-719fa.firebaseapp.com",projectId:"nijok-719fa",storageBucket:"nijok-719fa.firebasestorage.app",messagingSenderId:"58925794154",appId:"1:58925794154:web:5bcf500f50a567047c9b13"};
-const MODE=FIREBASE_CONFIG.apiKey.startsWith('PASTE')?'demo':'firebase';
+const MODE=FIREBASE_CONFIG.apiKey.startsWith('const firebaseConfig = {
+  apiKey: "AIzaSyC2c1A6SkBa-jjCFGsf1OO3evAoccFMxDI",
+  authDomain: "nijok-719fa.firebaseapp.com",
+  projectId: "nijok-719fa",
+  storageBucket: "nijok-719fa.firebasestorage.app",
+  messagingSenderId: "58925794154",
+  appId: "1:58925794154:web:5bcf500f50a567047c9b13"
+'demo':'firebase';
 /* ============ HELPERS ============ */
 const $=(q,e=document)=>e.querySelector(q),$$=(q,e=document)=>[...e.querySelectorAll(q)];
 const E=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
