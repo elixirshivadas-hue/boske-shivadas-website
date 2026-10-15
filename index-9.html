@@ -1,0 +1,308 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0f4a36"><title>NIJOK Lite</title>
+<link rel="manifest" href="manifest.json"><link rel="icon" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Pacifico&display=swap" rel="stylesheet">
+<style>
+:root{--g:#0f4a36;--g2:#1c6b4b;--lg:#dcf0d6;--cr:#f6f2e9;--ink:#1c2a23;--mut:#6d7a72;--red:#d94c3a;--ln:#e4ddcb}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overscroll-behavior:none}
+body{font-family:Poppins,system-ui,sans-serif;background:#0b2b20;color:var(--ink);font-size:14px}
+#app{max-width:480px;height:100%;margin:0 auto;background:var(--cr);display:flex;flex-direction:column;overflow:hidden;position:relative}
+button,input,textarea,select{font:inherit;color:inherit}
+.hd{background:var(--g);color:#fff;display:flex;align-items:center;gap:8px;padding:8px 10px;min-height:58px;flex:none;padding-top:max(8px,env(safe-area-inset-top))}
+.hd h2{font-size:17px;font-weight:500;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lg{width:34px;height:34px;border-radius:8px}
+.wm{font-weight:700;font-size:20px;letter-spacing:1px}.wm i{font-family:Pacifico,cursive;font-style:normal;font-weight:400;color:#9bd3a8;font-size:19px;margin-left:3px}
+.sp{flex:1}
+.ib{background:none;border:0;color:inherit;width:40px;height:40px;font-size:20px;border-radius:50%;cursor:pointer;flex:none}.ib:active{background:#ffffff22}.ib.dk{color:var(--g)}
+.body{flex:1;overflow-y:auto;min-height:0}
+.nav{flex:none;display:flex;background:#fff;border-top:1px solid var(--ln);height:62px;box-sizing:content-box;padding-bottom:env(safe-area-inset-bottom)}
+.nav button{flex:1;background:none;border:0;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:10.5px;color:var(--mut);position:relative;cursor:pointer}.nav b{font-size:20px;font-weight:400}
+.nav .on{color:var(--g);font-weight:600}.nav .sc b{width:54px;height:54px;border-radius:50%;background:var(--g);display:grid;place-items:center;margin-top:-26px;border:4px solid var(--cr);font-size:22px}
+.bdg{background:#25a95b;color:#fff;border-radius:10px;min-width:20px;height:20px;padding:0 6px;font-size:11px;display:inline-grid;place-items:center}.nav .bdg{position:absolute;top:6px;left:56%}
+.fab{position:absolute;right:16px;bottom:82px;width:56px;height:56px;border-radius:50%;background:var(--g2);color:#fff;border:0;box-shadow:0 4px 14px #0004;font-size:28px;cursor:pointer}
+.av{border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:500;flex:none;object-fit:cover}
+.row{display:flex;gap:12px;align-items:center;padding:11px 14px;border-bottom:1px solid #0000000d;cursor:pointer}.row:active{background:#0000000a}
+.m{flex:1;min-width:0}.row b{font-weight:500;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row small{color:var(--mut);font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
+.t{text-align:right;font-size:11px;color:var(--mut);display:flex;flex-direction:column;align-items:flex-end;gap:4px}
+.emp{text-align:center;color:var(--mut);padding:50px 20px}
+.cl{display:flex;align-items:center;gap:10px;flex:1;min-width:0;cursor:pointer}.cl b{font-weight:500;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.cl small{font-size:11.5px;opacity:.8;display:block}
+.msgs{flex:1;overflow-y:auto;padding:10px;background:#efe8d8;min-height:0}
+.ds{text-align:center;margin:10px 0}.ds span{background:#fffc;border-radius:8px;padding:3px 10px;font-size:11.5px;color:var(--mut)}
+.b{max-width:80%;padding:6px 9px 4px;border-radius:10px;margin:2px 0;box-shadow:0 1px 1px #0001;overflow-wrap:anywhere;white-space:pre-wrap;width:fit-content}
+.b.me{background:var(--lg);margin-left:auto;border-top-right-radius:2px}.b.ot{background:#fff;border-top-left-radius:2px}
+.b .n{font-size:12px;font-weight:500}.b .tm{font-size:10px;color:var(--mut);text-align:right;margin-top:2px}
+.b img.mi{max-width:100%;max-height:260px;border-radius:8px;display:block;cursor:pointer}.b audio{height:38px;max-width:230px}
+.cc{background:#0000000a;border-radius:8px;padding:8px;min-width:190px}.cc div{display:flex;gap:6px;margin-top:6px}
+.sys{text-align:center;margin:8px 0}.sys span{background:#fff9;border-radius:8px;padding:3px 10px;font-size:11.5px;color:var(--mut)}
+.inp{display:flex;gap:6px;padding:8px;background:var(--cr);align-items:flex-end;flex:none;padding-bottom:max(8px,env(safe-area-inset-bottom))}
+.inp textarea{flex:1;border:0;border-radius:22px;padding:11px 15px;resize:none;background:#fff;outline:0;max-height:110px;line-height:1.35}
+.snd{width:44px;height:44px;border-radius:50%;background:var(--g2);border:0;color:#fff;font-size:18px;flex:none;cursor:pointer}.snd.rec{background:var(--red)}
+.pg{flex:1;overflow-y:auto;padding:22px 20px}.pg h2{font-size:22px;font-weight:600;color:var(--g)}.lead{color:var(--mut);margin:6px 0 16px}
+.fld{display:block;margin:10px 0}.fld>span{font-size:12px;color:var(--mut);display:block;margin-bottom:4px}
+.fld input,.fld textarea,.fld select,.ph select,.ph input{width:100%;padding:12px 13px;border:1px solid var(--ln);border-radius:12px;background:#fff;outline:0}
+.ph{display:flex;gap:8px;margin:10px 0}.ph select{width:120px;flex:none}
+.btn{background:var(--g);color:#fff;border:0;border-radius:26px;padding:13px 22px;font-weight:500;width:100%;cursor:pointer;display:block;text-align:center;text-decoration:none;margin-top:10px}.btn:active{opacity:.85}.btn.o{background:none;color:var(--g);border:1px solid var(--g)}.btn.sm{width:auto;padding:7px 14px;font-size:12.5px;display:inline-block;margin:0}.btn.rd{background:none;color:var(--red);border:1px solid var(--red)}
+.err{color:var(--red);font-size:12.5px;min-height:18px;margin:4px 0}
+.sh{position:fixed;inset:0;background:#0007;display:flex;align-items:flex-end;justify-content:center;z-index:50}.sh>div{background:#fff;width:100%;max-width:480px;border-radius:18px 18px 0 0;padding:14px 16px max(18px,env(safe-area-inset-bottom));max-height:85vh;overflow:auto}
+.si{display:flex;gap:14px;align-items:center;padding:13px 4px;border-bottom:1px solid var(--ln);cursor:pointer}.si:last-child{border:0}.si>span{font-size:22px}
+#toast{position:fixed;top:-100px;left:50%;transform:translateX(-50%);width:min(440px,94vw);background:#fff;border-left:5px solid var(--g2);border-radius:12px;padding:10px 14px;box-shadow:0 6px 20px #0004;transition:.35s;z-index:99}#toast.on{top:10px}#toast b{display:block;font-weight:500}#toast small{color:var(--mut)}
+.wl{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px;text-align:center;background:linear-gradient(180deg,#e3eed9,var(--cr) 70%)}
+.wl img{width:110px;height:110px;border-radius:24px;margin-bottom:10px}.wl h1{font-size:44px;font-weight:700;color:var(--g);letter-spacing:1px}.wl h1 i{font-family:Pacifico,cursive;font-style:normal;font-weight:400;font-size:36px;color:var(--g2)}
+.wl p{color:var(--mut);margin:8px 0 26px;max-width:280px}.by{margin-top:18px;font-size:12px;color:var(--mut)}.by b{font-family:Pacifico,cursive;font-weight:400;color:var(--g2);font-size:15px}
+.card{background:#fff;border-radius:14px;padding:13px;margin:10px 12px;border:1px solid var(--ln)}.card h4{font-size:14px;margin-bottom:5px;font-weight:500}.card p{color:#3d4a43;font-size:13.3px;line-height:1.6}
+.chips{display:flex;gap:6px;flex-wrap:wrap;padding:10px 14px;background:#fff}.chip{border-radius:14px;padding:4px 10px;font-size:11.5px;font-weight:500}.chip.r{background:#fde5e1;color:#b53a2a}.chip.a{background:#fdf0d5;color:#8a5a00}.chip.g{background:var(--lg);color:var(--g2)}
+table{width:100%;border-collapse:collapse}td{padding:7px 4px;border-bottom:1px solid var(--ln);font-size:13px}td:last-child{text-align:right;font-weight:500}
+.ptop{display:flex;gap:14px;padding:14px;background:#fff}.ptop img{width:92px;height:92px;object-fit:contain;border-radius:12px;background:var(--cr)}.ptop h3{font-size:17px}.ptop small{color:var(--mut)}
+.scanv{flex:1;position:relative;background:#0b1a14;overflow:hidden;min-height:0}.scanv video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.frm{position:absolute;left:50%;top:42%;width:240px;height:240px;transform:translate(-50%,-50%);border:3px solid #fff8;border-radius:18px}.frm i{position:absolute;left:10px;right:10px;height:2px;background:#5be28f;box-shadow:0 0 10px #5be28f;top:10%;animation:ln 2s infinite alternate}@keyframes ln{to{top:90%}}
+.sct{position:absolute;left:0;right:0;top:calc(42% + 140px);text-align:center;color:#fff;font-size:13px;padding:0 24px}
+.sca{position:absolute;left:0;right:0;bottom:16px;display:flex;justify-content:center;gap:22px}.sca button{width:52px;height:52px;border-radius:50%;background:#0008;border:1px solid #fff5;color:#fff;font-size:20px}
+.ng{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:10px 12px 90px}.nc{background:#fffdf6;border:1px solid var(--ln);border-radius:14px;padding:12px;min-height:90px;cursor:pointer;overflow:hidden}.nc b{display:block;font-weight:500}.nc small{color:var(--mut)}
+.prof{background:linear-gradient(135deg,var(--g),#1c6b4b);color:#fff;padding:20px 16px;display:flex;gap:14px;align-items:center;cursor:pointer}.prof small{opacity:.8;display:block}
+.ic{width:36px;height:36px;border-radius:10px;background:var(--lg);display:grid;place-items:center;flex:none;font-size:18px}
+.mchip{display:inline-flex;gap:6px;align-items:center;background:#fff;border:1px solid var(--ln);border-radius:18px;padding:4px 8px 4px 4px;margin:3px}.mchip button{border:0;background:none;color:var(--mut)}
+.fr{flex:1;border:0;width:100%;background:#fff}
+</style></head><body><div id="app"></div><div id="toast"></div><div id="sheet"></div>
+<script type="module">
+/* ====== FIREBASE CONFIG: paste the exact config from Firebase console ====== */
+const CFG={apiKey:localStorage.getItem("nk_key")||"AIzaSyC2c1A6SkBa-jjCFGsf1003evAoccFMxDI",authDomain:"nijok-719fa.firebaseapp.com",projectId:"nijok-719fa",storageBucket:"nijok-719fa.firebasestorage.app",messagingSenderId:"58925794154",appId:"1:58925794154:web:5bcf500f50a567047c9b13"};
+
+const $=(q,e=document)=>e.querySelector(q),$$=(q,e=document)=>[...e.querySelectorAll(q)];
+const E=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const lsg=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))??d}catch(e){return d}},lss=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
+const uid_=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+const COLORS=['#1c6b4b','#2f8f9d','#c26a3d','#8a5fb3','#c79a2a','#c2456b','#3b6fb6','#5f7d3a'];
+const CC=[['+91','🇮🇳 India'],['+1','🇺🇸 USA'],['+44','🇬🇧 UK'],['+971','🇦🇪 UAE'],['+65','🇸🇬 Singapore'],['+61','🇦🇺 Australia'],['+977','🇳🇵 Nepal'],['+880','🇧🇩 Bangladesh']];
+const HM=t=>t?new Date(t).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}):'';
+const dayName=t=>{const d=new Date(t),n=new Date(),y=new Date(n-864e5);return d.toDateString()===n.toDateString()?'Today':d.toDateString()===y.toDateString()?'Yesterday':d.toLocaleDateString([], {day:'numeric',month:'short',year:'numeric'})};
+const TS=t=>{if(!t)return '';return new Date(t).toDateString()===new Date().toDateString()?HM(t):dayName(t)==='Yesterday'?'Yesterday':new Date(t).toLocaleDateString([], {day:'2-digit',month:'2-digit'})};
+const fph=p=>String(p||'').replace(/^(\+\d{1,3})(\d{5})(\d+)$/,'$1 $2 $3');
+const normPhone=(cc,n)=>{const d=String(n).replace(/\D/g,'').replace(/^0+/,'');return d.length>=6&&d.length<=14?cc+d:null};
+const emailOf=p=>p.replace(/\D/g,'')+'@nijok.app';
+
+/* ====== Firebase ====== */
+if(window.caches)caches.keys().then(k=>k.forEach(x=>caches.delete(x))).catch(()=>{});
+const B='https://www.gstatic.com/firebasejs/10.12.2/';let A,Au,F,auth,db;
+try{[A,Au,F]=await Promise.all([import(B+'firebase-app.js'),import(B+'firebase-auth.js'),import(B+'firebase-firestore.js')]);const fa=A.initializeApp(CFG);auth=Au.getAuth(fa);db=F.getFirestore(fa)}catch(e){document.body.innerHTML='<p style="padding:30px;color:#fff">Could not load Firebase. Check internet.</p>';throw e}
+const norm=v=>{if(v&&typeof v==='object'){if(typeof v.toMillis==='function')return v.toMillis();if(Array.isArray(v))return v.map(norm);const o={};for(const k in v)o[k]=norm(v[k]);return o}return v};
+const snap=d=>d.exists()?{id:d.id,...norm(d.data({serverTimestamps:'estimate'}))}:null;
+const getProfile=async u=>{const d=snap(await F.getDoc(F.doc(db,'users',u)));return d&&{...d,uid:u}};
+const saveProfile=(u,d)=>F.setDoc(F.doc(db,'users',u),d,{merge:true});
+const updChat=(id,p)=>F.updateDoc(F.doc(db,'chats',id),p);
+
+/* ====== Crypto (end-to-end) ====== */
+const sub=crypto.subtle,te=new TextEncoder(),td=new TextDecoder(),EC={name:'ECDH',namedCurve:'P-256'},GCM={name:'AES-GCM'};
+const b64=b=>{b=new Uint8Array(b);let s='';for(let i=0;i<b.length;i+=8192)s+=String.fromCharCode(...b.subarray(i,i+8192));return btoa(s)};
+const unb=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));
+const enc=async(k,s)=>{const iv=crypto.getRandomValues(new Uint8Array(12));return{iv:b64(iv),ct:b64(await sub.encrypt({...GCM,iv},k,te.encode(s)))}};
+const dec=async(k,o)=>td.decode(await sub.decrypt({...GCM,iv:unb(o.iv)},k,unb(o.ct)));
+const pwk=async(pw,salt)=>sub.deriveKey({name:'PBKDF2',salt,iterations:150000,hash:'SHA-256'},await sub.importKey('raw',te.encode(pw),'PBKDF2',false,['deriveKey']),{...GCM,length:256},false,['encrypt','decrypt']);
+const shared=async pub=>sub.deriveKey({name:'ECDH',public:await sub.importKey('jwk',JSON.parse(pub),EC,false,[])},S.priv,{...GCM,length:256},false,['encrypt','decrypt']);
+async function ensure(p){const id='nk_'+S.me.uid;let jwk=lsg(id,null),fresh=0;
+ if(!jwk&&p.kb&&S.pw)try{jwk=JSON.parse(await dec(await pwk(S.pw,unb(p.kb.s)),p.kb))}catch(e){}
+ if(!jwk){if(!S.pw)return false;const kp=await sub.generateKey(EC,true,['deriveKey']);jwk=await sub.exportKey('jwk',kp.privateKey);fresh=1}
+ lss(id,jwk);S.priv=await sub.importKey('jwk',{kty:'EC',crv:'P-256',x:jwk.x,y:jwk.y,d:jwk.d},EC,false,['deriveKey']);
+ const pub=JSON.stringify({kty:'EC',crv:'P-256',x:jwk.x,y:jwk.y});
+ if(fresh||p.pub!==pub){const u={pub};if(S.pw){const s=crypto.getRandomValues(new Uint8Array(16));u.kb={s:b64(s),...await enc(await pwk(S.pw,s),JSON.stringify(jwk))}}await saveProfile(S.me.uid,u);p.pub=pub}
+ return true}
+async function ckey(c){if(S.kc[c.id])return S.kc[c.id];let k;
+ if(c.type==='group'){const w=c.keys?.[S.me.uid];if(!w)throw new Error('no key');k=await sub.importKey('raw',unb(await dec(await shared(S.U[c.kby].pub),w)),GCM,false,['encrypt','decrypt'])}
+ else{const o=S.U[c.members.find(m=>m!==S.me.uid)];if(!o?.pub)throw new Error('Other person has not opened the new NIJOK yet');k=await shared(o.pub)}
+ return S.kc[c.id]=k}
+
+/* ====== State ====== */
+const app=$('#app'),S={me:null,pw:null,priv:null,kc:{},chats:[],cm:{},U:{},notes:[],view:null,vp:{},stack:[],unsubs:[],admin:false,pc:{},q:'',ng:null,msgs:[]};const V={};
+const av=(u,sz=46)=>{u=u||{};return u.photo?`<img class="av" style="width:${sz}px;height:${sz}px" src="${E(u.photo)}">`:`<div class="av" style="width:${sz}px;height:${sz}px;background:${u.color||COLORS[0]};font-size:${sz*.42}px">${u.emoji||E((u.name||'?').trim()[0]||'?').toUpperCase()}</div>`};
+async function loadU(ids){await Promise.all(ids.filter(i=>i&&!S.U[i]).map(async i=>{try{S.U[i]=(await getProfile(i))||{uid:i,name:'Unknown'}}catch(e){S.U[i]={uid:i,name:'Unknown'}}}))}
+function info(c){if(c.type==='group')return{name:c.name||'Group',av:av({photo:c.photo,color:c.color,emoji:'👥'}),sub:(c.members||[]).length+' members'};const o=S.U[(c.members||[]).find(m=>m!==S.me.uid)]||{name:'Unknown'};return{name:o.name,av:av(o),sub:fph(o.phone),u:o}}
+const unreadOf=c=>c.unread?.[S.me.uid]||0;
+function toast(t,s){const el=$('#toast');el.innerHTML=`<b>${E(t)}</b>${s?`<small>${E(s)}</small>`:''}`;el.classList.add('on');clearTimeout(toast.t);toast.t=setTimeout(()=>el.classList.remove('on'),3200)}
+function beep(){try{const c=new (window.AudioContext||window.webkitAudioContext)(),o=c.createOscillator(),g=c.createGain();o.frequency.value=880;g.gain.value=.08;o.connect(g);g.connect(c.destination);o.start();o.stop(c.currentTime+.12)}catch(e){}}
+const sheet=h=>{$('#sheet').innerHTML=h?`<div class="sh" data-a="close"><div data-a="noop">${h}</div></div>`:''};
+const sh2=a=>sheet(a.map(([ic,t,x,d])=>`<div class="si" data-a="${x}" ${d||''}><span>${ic}</span><b style="font-weight:400">${t}</b></div>`).join(''));
+const shrink=(f,m,q)=>new Promise(r=>{const i=new Image();i.onload=()=>{const k=Math.min(1,m/Math.max(i.width,i.height)),c=document.createElement('canvas');c.width=Math.round(i.width*k);c.height=Math.round(i.height*k);c.getContext('2d').drawImage(i,0,0,c.width,c.height);r(c.toDataURL('image/jpeg',q))};i.src=URL.createObjectURL(f)});
+const pickImg=cb=>{const i=document.createElement('input');i.type='file';i.accept='image/*';i.onchange=()=>i.files[0]&&cb(i.files[0]);i.click()};
+const picker=(k,arr,cur)=>`<div style="display:flex;gap:8px;flex-wrap:wrap;margin:6px 0">${arr.map(v=>`<div data-a="pick" data-k="${k}" data-val="${v}" style="width:32px;height:32px;border-radius:50%;background:${v};border:3px solid ${v===cur?'#000':'transparent'}"></div>`).join('')}</div>`;
+
+/* ====== Router ====== */
+function stopCam(){clearInterval(S.scanT);S.stream?.getTracks().forEach(t=>t.stop());S.stream=null}
+function draw(){S.unM?.();S.unM=null;stopCam();S.refresh=null;sheet();(V[S.view]||V.chats)(S.vp||{})}
+const nav=(v,p={})=>{S.stack.push({v:S.view,p:S.vp});S.view=v;S.vp=p;history.pushState({},'');draw()};
+const rep=(v,p={})=>{S.view=v;S.vp=p;draw()};
+const root=(v,p={})=>{S.stack=[];S.view=v;S.vp=p;draw()};
+const back=()=>{const s=S.stack.pop();if(s){S.view=s.v;S.vp=s.p;draw()}else root('chats')};
+addEventListener('popstate',()=>{if(S.me)back()});
+
+/* ====== Auth / boot ====== */
+async function afterLogin(u){S.me={uid:u.uid,phone:u.phoneNumber||'+'+(u.email||'').split('@')[0]};let p=null;try{p=await getProfile(u.uid)}catch(e){}
+ if(!p){root('setup');return}S.me={...p,uid:u.uid};S.U[u.uid]=S.me;
+ if(!await ensure(S.me)){root('unlock');return}start()}
+async function start(){S.unsubs.forEach(f=>f());S.unsubs=[];S.chats=[];S.cm={};S.kc={};
+ saveProfile(S.me.uid,{lastLogin:F.serverTimestamp()}).catch(()=>{});try{S.admin=(await F.getDoc(F.doc(db,'admins',S.me.uid))).exists()}catch(e){}
+ let first=true;
+ S.unsubs.push(F.onSnapshot(F.query(F.collection(db,'chats'),F.where('members','array-contains',S.me.uid)),async s=>{const list=s.docs.map(snap);await loadU([...new Set(list.flatMap(c=>[...c.members,c.kby]))]);
+  if(!first)list.forEach(c=>{const o=S.cm[c.id],lm=c.lastMessage;if(lm&&lm.from!==S.me.uid&&(!o||!o.lastMessage||lm.at>o.lastMessage.at)&&!(S.view==='chat'&&S.vp.id===c.id)){beep();toast(info(c).name,PV[lm.ty]||'New message')}});
+  first=false;S.chats=list;S.cm=Object.fromEntries(list.map(c=>[c.id,c]));const t=S.chats.reduce((n,c)=>n+unreadOf(c),0);document.title=t?`(${t}) NIJOK Lite`:'NIJOK Lite';S.refresh&&S.refresh()}));
+ S.unsubs.push(F.onSnapshot(F.collection(db,'users',S.me.uid,'notes'),s=>{S.notes=s.docs.map(snap).sort((a,b)=>b.ts-a.ts);S.view==='notes'&&S.refresh&&S.refresh()}));
+ navigator.serviceWorker?.register('sw.js').catch(()=>{});root('chats')}
+Au.onAuthStateChanged(auth,u=>{if(!u){S.unsubs.forEach(f=>f());S.unsubs=[];S.me=null;S.priv=null;S.pw=null;root('welcome')}else afterLogin(u)});
+
+/* ====== Auth views ====== */
+const logo=`<img src="icon-192.png" alt="">`;
+V.welcome=()=>{app.innerHTML=`<div class="wl">${logo}<h1>NIJOK <i>Lite</i></h1><p>Talk. Scan. Know. Save. Share.<br>Your everyday assistant for food, friends, family and more.</p><button class="btn" data-a="go" data-v="auth">Get Started</button><div class="by">by <b>Boske Shivadas</b></div></div>`};
+V.auth=()=>{app.innerHTML=`<div class="hd"><button class="ib" data-a="back">←</button><h2>Login / Create account</h2></div><form class="pg" data-f="auth"><h2>Your mobile number</h2><p class="lead">Your number is your NIJOK account. Use the same number and password on any phone.</p><div class="ph"><select name="cc">${CC.map(c=>`<option value="${c[0]}">${E(c[1])} ${c[0]}</option>`).join('')}</select><input name="num" type="tel" inputmode="numeric" placeholder="Mobile number" required></div><label class="fld"><input name="pw" type="password" placeholder="Password (min 6)" minlength="6" required autocomplete="current-password"></label><div class="err" id="er"></div><button class="btn" value="login">Login</button><button class="btn o" value="reg">Create new account</button></form>`};
+V.unlock=()=>{app.innerHTML=`<div class="hd"><h2>Unlock chats</h2></div><form class="pg" data-f="unlock"><h2>Enter your password</h2><p class="lead">This phone needs your password once to unlock your encrypted chats.</p><label class="fld"><input name="pw" type="password" required></label><div class="err" id="er"></div><button class="btn">Unlock</button><button type="button" class="btn rd" data-a="logout">Log out</button></form>`};
+V.setup=()=>{app.innerHTML=`<div class="pg"><h2>Set up your profile</h2><p class="lead">${E(fph(S.me.phone))}</p><form data-f="setup"><div style="display:flex;justify-content:center" data-a="dp">${av(S.ng?.me||{name:'?'},84)}</div><label class="fld"><span>Your name *</span><input name="name" maxlength="40" required></label><label class="fld"><span>About</span><input name="about" maxlength="80" value="Hey there! I am using NIJOK."></label><div class="err" id="er"></div><button class="btn">Continue</button></form></div>`};
+
+/* ====== Lists ====== */
+const NAVS=[['chats','💬','Chats'],['groups','👥','Groups'],['scan','📷','Scan'],['notes','📝','Notes'],['more','⋯','More']];
+const navBar=a=>{const t=S.chats.reduce((s,c)=>s+unreadOf(c),0);return `<div class="nav">${NAVS.map(([k,i,l])=>`<button class="${k==='scan'?'sc ':''}${a===k?'on':''}" data-a="tab" data-v="${k}"><b>${i}</b><span>${l}</span>${k==='chats'&&t?`<span class="bdg">${t}</span>`:''}</button>`).join('')}</div>`};
+const PV={text:'🔒 Message',img:'📷 Photo',voice:'🎤 Voice message',contact:'👤 Contact'};
+const rowHTML=c=>{const i=info(c),lm=c.lastMessage,n=unreadOf(c);const pv=lm?(lm.ty==='sys'?lm.x:(lm.from===S.me.uid?'You: ':'')+(PV[lm.ty]||'Message')):'Tap to chat';
+ return `<div class="row" data-a="chat" data-id="${c.id}">${i.av}<div class="m"><b>${E(i.name)}</b><small>${E(pv)}</small></div><div class="t"><span style="${n?'color:#25a95b':''}">${TS(lm?.at||c.updatedAt)}</span>${n?`<span class="bdg">${n}</span>`:''}</div></div>`};
+function listView(kind){const grp=kind==='groups';
+ app.innerHTML=`<div class="hd">${logo.replace('<img','<img class="lg"')}<span class="wm">NIJOK <i>Lite</i></span><span class="sp"></span><button class="ib" data-a="shop">🛍</button><button class="ib" data-a="search">🔍</button></div><div id="sbar"></div><div class="body"><div id="list"></div></div><button class="fab" data-a="${grp?'newgroup':'newchat'}">+</button>${navBar(kind)}`;
+ const dr=()=>{const q=S.q.toLowerCase(),arr=S.chats.filter(c=>(!grp||c.type==='group')&&info(c).name.toLowerCase().includes(q)).sort((a,b)=>(b.lastMessage?.at||b.updatedAt||0)-(a.lastMessage?.at||a.updatedAt||0));$('#list').innerHTML=arr.map(rowHTML).join('')||`<div class="emp">${grp?'No groups yet':'No chats yet'}<br><small>Tap + to start</small></div>`};
+ dr();S.refresh=()=>{dr();$('.nav').outerHTML=navBar(kind)}}
+V.chats=()=>listView('chats');V.groups=()=>listView('groups');
+
+/* ====== Chat ====== */
+async function dm(c,m){if(m.ty==='sys')return m;try{return{...m,p:JSON.parse(await dec(await ckey(c),m.e))}}catch(e){return{...m,p:{t:'text',x:'🔒 Cannot decrypt this message'}}}}
+function bub(m,c){const me=m.from===S.me.uid,u=S.U[m.from]||{name:'?'},p=m.p||{};let h='';
+ if(p.t==='img')h=`<img class="mi" src="${E(p.d)}" data-a="zoom" data-id="${m.id}">`;else if(p.t==='voice')h=`<audio controls src="${E(p.d)}"></audio>`;
+ else if(p.t==='contact')h=`<div class="cc">👤 <b>${E(p.n)}</b><br><small>${E(p.p)}</small><div><button class="btn sm" data-a="vcf" data-id="${m.id}">Save</button><button class="btn sm o" data-a="cchat" data-id="${m.id}">Chat</button></div></div>`;else h=E(p.x||'');
+ return `<div class="b ${me?'me':'ot'}" data-a="msg" data-id="${m.id}">${c.type==='group'&&!me?`<div class="n" style="color:${u.color||'#1c6b4b'}">${E(u.name)}</div>`:''}${h}<div class="tm">${HM(m.at)}${me?' ✓':''}</div></div>`}
+function drawMsgs(){const el=$('#msgs'),c=S.cm[S.vp.id];if(!el||!c)return;const near=el.scrollHeight-el.scrollTop-el.clientHeight<160||!el.dataset.i;let h='',last='';
+ S.msgs.forEach(m=>{const d=new Date(m.at).toDateString();if(d!==last){h+=`<div class="ds"><span>${dayName(m.at)}</span></div>`;last=d}h+=m.ty==='sys'?`<div class="sys"><span>${E(m.x)}</span></div>`:bub(m,c)});
+ el.innerHTML=h||'<div class="emp">🔒 Messages are end-to-end encrypted.<br>Say hi 👋</div>';el.dataset.i=1;if(near)el.scrollTop=el.scrollHeight}
+V.chat=({id})=>{const c=S.cm[id];if(!c){root('chats');return}const i=info(c);
+ app.innerHTML=`<div class="hd"><button class="ib" data-a="back">←</button><div class="cl" data-a="cinfo">${i.av}<div class="m"><b>${E(i.name)}</b><small>🔒 ${E(i.sub)}</small></div></div></div><div class="msgs" id="msgs"></div><form class="inp" data-f="send"><button type="button" class="ib dk" data-a="attach">📎</button><textarea name="t" rows="1" placeholder="Message" autocomplete="off"></textarea><button class="snd" id="mic" type="button" data-a="rec">🎤</button><button class="snd" id="sb" style="display:none">➤</button></form>`;
+ S.msgs=[];const ta=$('textarea');ta.oninput=()=>{ta.style.height='auto';ta.style.height=Math.min(ta.scrollHeight,110)+'px';const has=ta.value.trim();$('#mic').style.display=has?'none':'';$('#sb').style.display=has?'':'none'};
+ S.unM=F.onSnapshot(F.query(F.collection(db,'chats',id,'messages'),F.orderBy('at')),async s=>{const raw=s.docs.map(snap);await loadU([...new Set(raw.map(m=>m.from))]);S.msgs=await Promise.all(raw.map(m=>dm(S.cm[id]||c,m)));drawMsgs();const cc=S.cm[id];if(cc&&unreadOf(cc)&&!document.hidden)updChat(id,{['unread.'+S.me.uid]:0,['seen.'+S.me.uid]:F.serverTimestamp()}).catch(()=>{})});
+ S.refresh=()=>{if(!S.cm[id])root('chats')}};
+async function sendMsg(c,p){const k=await ckey(c),at=F.serverTimestamp();await F.addDoc(F.collection(db,'chats',c.id,'messages'),{from:S.me.uid,e:await enc(k,JSON.stringify(p)),at});
+ const u={lastMessage:{from:S.me.uid,ty:p.t,at},updatedAt:at};c.members.forEach(x=>{if(x!==S.me.uid)u['unread.'+x]=F.increment(1)});await updChat(c.id,u)}
+const sysMsg=async(c,x)=>{await F.addDoc(F.collection(db,'chats',c.id,'messages'),{from:S.me.uid,ty:'sys',x,at:F.serverTimestamp()});await updChat(c.id,{lastMessage:{from:S.me.uid,ty:'sys',x,at:F.serverTimestamp()},updatedAt:F.serverTimestamp()})};
+const send=p=>sendMsg(S.cm[S.vp.id],p).catch(e=>toast('Could not send',e.message));
+
+/* ====== New chat / group ====== */
+const phoneField=`<div class="ph"><select name="cc">${CC.map(c=>`<option value="${c[0]}">${c[0]}</option>`).join('')}</select><input name="num" type="tel" inputmode="numeric" placeholder="Mobile number" required></div>`;
+V.newchat=()=>{app.innerHTML=`<div class="hd"><button class="ib" data-a="back">←</button><h2>New chat</h2></div><form class="pg" data-f="newchat"><p class="lead">Enter the mobile number of the person. They must have a NIJOK account.</p>${phoneField}<div class="err" id="er"></div><button class="btn">Start chat</button><div id="inv"></div></form>`};
+async function startDM(u){const a=S.me.uid,id=[a,u.uid].sort().join('_');S.U[u.uid]=u;const r=F.doc(db,'chats',id);let ex=false;try{ex=(await F.getDoc(r)).exists()}catch(e){}
+ if(!ex)await F.setDoc(r,{type:'dm',members:[a,u.uid],unread:{},seen:{},createdAt:F.serverTimestamp(),updatedAt:F.serverTimestamp()});S.cm[id]??={id,type:'dm',members:[a,u.uid],unread:{}};rep('chat',{id})}
+const findPhone=async p=>{const d=await F.getDoc(F.doc(db,'phones',p));return d.exists()?getProfile(d.data().uid):null};
+V.newgroup=()=>{S.ng??={members:[],photo:'',color:COLORS[0]};
+ app.innerHTML=`<div class="hd"><button class="ib" data-a="back">←</button><h2>New group</h2></div><div class="pg"><div style="display:flex;justify-content:center" data-a="gdp" id="gic">${av({photo:S.ng.photo,emoji:'👥',color:S.ng.color},84)}</div><p class="lead" style="text-align:center;margin:4px 0">Tap to add group icon</p><form data-f="addng"><span class="lead" style="font-size:12px">Add members by mobile number</span>${phoneField}<div class="err" id="er"></div><button class="btn o">Add member</button></form><div id="mem" style="margin:10px 0"></div><form data-f="newgroup"><label class="fld"><span>Group name *</span><input name="name" maxlength="40" required></label><div class="err" id="er2"></div><button class="btn">Create group</button></form></div>`;
+ S.drm=()=>{$('#mem').innerHTML=S.ng.members.map(u=>`<span class="mchip">${av(u,28)}${E(u.name)}<button data-a="rmng" data-id="${u.uid}">✕</button></span>`).join('')||'<small style="color:var(--mut)">No members yet. You will be the admin.</small>'};S.drm()};
+V.ginfo=({id})=>{const c=S.cm[id];if(!c){root('groups');return}const adm=c.admins?.includes(S.me.uid);
+ app.innerHTML=`<div class="hd"><button class="ib" data-a="back">←</button><h2>Group info</h2></div><div class="pg"><div style="display:flex;flex-direction:column;align-items:center;gap:6px;margin-bottom:14px" ${adm?'data-a="gdp2"':''}>${av({photo:c.photo,emoji:'👥',color:c.color},90)}<b style="font-size:18px">${E(c.name)}</b><small style="color:var(--mut)">${adm?'Tap to change icon · ':''}${c.members.length} members</small></div>
+ ${adm?`<form data-f="gsave"><label class="fld"><span>Group name</span><input name="name" value="${E(c.name)}" maxlength="40" required></label><button class="btn">Save name</button></form><h3 style="margin:20px 0 4px;font-size:15px">Add member</h3><form data-f="addmem">${phoneField}<div class="err" id="er"></div><button class="btn o">Add</button></form>`:''}
+ <h3 style="margin:20px 0 4px;font-size:15px">Members</h3>${c.members.map(m=>{const u=S.U[m]||{name:'Unknown'};return `<div class="row" style="padding:9px 0">${av(u,40)}<div class="m"><b>${E(u.name)}${m===S.me.uid?' (You)':''}</b><small>${E(fph(u.phone))}</small></div>${c.admins?.includes(m)?'<span class="chip g">Admin</span>':''}</div>`}).join('')}<button class="btn rd" style="margin-top:20px" data-a="leave">Leave group</button></div>`};
+
+/* ====== Scan & product ====== */
+const num=v=>v==null||v===''||isNaN(Number(v))?undefined:Number(v);
+const mapOff=(o,code)=>{const n=o.nutriments||{};return{code,name:o.product_name||'Unnamed product',brand:o.brands||'',qty:o.quantity||'',img:o.image_front_url||'',ing:o.ingredients_text||'',nut:{kcal:num(n['energy-kcal_100g']),fat:num(n.fat_100g),sat:num(n['saturated-fat_100g']),carb:num(n.carbohydrates_100g),sugar:num(n.sugars_100g),fibre:num(n.fiber_100g),protein:num(n.proteins_100g),salt:num(n.salt_100g)},nova:num(o.nova_group),score:(o.nutriscore_grade||'').toUpperCase(),allergens:(o.allergens_tags||[]).map(t=>t.replace(/^\w\w:/,'')),additives:(o.additives_tags||[]).map(t=>t.replace(/^\w\w:/,'').toUpperCase()),src:'Open Food Facts'}};
+async function getProd(code){if(S.pc[code])return S.pc[code];let p=null;try{p=snap(await F.getDoc(F.doc(db,'products',code)))}catch(e){}
+ if(p)p.src='NIJOK Database';else{try{const r=await fetch(`https://world.openfoodfacts.org/api/v2/product/${code}.json?fields=product_name,brands,quantity,ingredients_text,nutriments,nova_group,nutriscore_grade,allergens_tags,additives_tags,image_front_url`);const j=await r.json();if(j.status===1)p=mapOff(j.product,code)}catch(e){return{error:'net'}}}
+ if(!p)return{error:'none'};S.pc[code]=p;return p}
+function chipsOf(p){const n=p.nut||{},c=[],f=v=>typeof v==='number';
+ if(f(n.sugar)){if(n.sugar>22.5)c.push(['r','High Sugar']);else if(n.sugar<=5)c.push(['g','Low Sugar'])}
+ if(f(n.fat)){if(n.fat>17.5)c.push(['r','High Fat']);else if(n.fat<=3)c.push(['g','Low Fat'])}
+ if(f(n.sat)&&n.sat>5)c.push(['r','High Sat. Fat']);if(f(n.salt)){if(n.salt>1.5)c.push(['r','High Salt']);else if(n.salt<=.3)c.push(['g','Low Salt'])}
+ if(f(n.protein)&&n.protein>=10)c.push(['g','High Protein']);if(f(n.fibre)&&n.fibre>=6)c.push(['g','High Fibre']);
+ if(p.nova==4)c.push(['a','Ultra-processed']);if((p.additives||[]).length)c.push(['a',p.additives.length+' additives']);(p.allergens||[]).slice(0,3).forEach(a=>c.push(['a','Contains '+a]));return c}
+function simpleWords(p){const n=p.nut||{},t=[];if(p.nova==4)t.push('This is an ultra-processed food with ingredients and additives not usually used in a home kitchen.');else if(p.nova==3)t.push('This is a processed food made by adding salt, sugar or oil.');else if(p.nova==1||p.nova==2)t.push('This is a minimally processed food.');
+ if(typeof n.sugar==='number')t.push(n.sugar>22.5?`It has a lot of sugar (${n.sugar} g per 100 g).`:n.sugar<=5?'It is low in sugar.':`Sugar is moderate (${n.sugar} g per 100 g).`);if(typeof n.salt==='number'&&n.salt>1.5)t.push(`It is high in salt (${n.salt} g per 100 g).`);
+ return t.join(' ')||'Not enough nutrition data for this product yet.'}
+V.scan=()=>{app.innerHTML=`<div class="hd">${logo.replace('<img','<img class="lg"')}<span class="wm">Scan</span><span class="sp"></span><button class="ib" data-a="manual">🔍</button></div><div class="scanv"><video id="vid" playsinline muted autoplay></video><div class="frm"><i></i></div><div class="sct" id="sct">Point your camera at a product barcode</div><div class="sca"><button data-a="gallery">🖼</button><button data-a="manual">⌨</button><button data-a="torch">🔦</button></div></div>${navBar('scan')}`;startCam()};
+async function startCam(){const msg=t=>{const e=$('#sct');if(e)e.textContent=t};if(!navigator.mediaDevices?.getUserMedia)return msg('Camera not available. Tap ⌨ to type the barcode.');
+ try{S.stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'}},audio:false});const v=$('#vid');if(!v){stopCam();return}v.srcObject=S.stream;await v.play().catch(()=>{});
+  if('BarcodeDetector'in window){const det=new BarcodeDetector({formats:['ean_13','ean_8','upc_a','upc_e','code_128','code_39','qr_code']});S.scanT=setInterval(async()=>{try{const r=await det.detect(v);if(r[0]){clearInterval(S.scanT);navigator.vibrate?.(60);nav('product',{code:r[0].rawValue})}}catch(e){}},350)}else msg('Auto-scan needs Chrome on Android. Tap ⌨ to type the barcode.')}
+ catch(e){msg('Camera permission needed. You can still tap ⌨ to type a barcode.')}}
+V.product=({code})=>{app.innerHTML=`<div class="hd"><button class="ib" data-a="back">←</button><h2>Food Information</h2></div><div class="body" id="pb"><div class="emp">Looking up product…</div></div>`;
+ getProd(code).then(p=>{if(S.view!=='product'||S.vp.code!==code)return;if(p.error)return $('#pb').innerHTML=`<div class="emp"><div style="font-size:40px">🔎</div><b>${p.error==='net'?'Could not reach the database':'Product not found yet'}</b><p style="margin:6px 0 16px">${p.error==='net'?'Check your internet.':'Barcode '+E(code)+' is not in our database.'}</p><button class="btn" data-a="addprod" data-code="${E(code)}">Add this product</button><a class="btn o" target="_blank" rel="noopener" href="https://www.google.com/search?q=${encodeURIComponent(code+' product')}">Search on Google</a></div>`;S.cur=p;drawProd(p)})};
+function drawProd(p){const n=p.nut||{},ch=chipsOf(p),row=(l,v,u,hi,lo)=>typeof v==='number'?`<tr><td>${hi!=null&&v>hi?'🔴':lo!=null&&v<=lo?'🟢':'🟡'} ${l}</td><td>${v} ${u}</td></tr>`:'';
+ $('#pb').innerHTML=`<div class="ptop">${p.img?`<img src="${E(p.img)}" onerror="this.style.display='none'">`:'<div class="av" style="width:92px;height:92px;background:var(--lg);font-size:36px;border-radius:12px">🥫</div>'}<div><h3>${E(p.name)}</h3><small>${E([p.brand,p.qty].filter(Boolean).join(' · '))}</small><br><span class="chip g">✔ ${E(p.src)}</span></div></div><div class="chips">${ch.map(c=>`<span class="chip ${c[0]}">${E(c[1])}</span>`).join('')||'<span class="chip a">No nutrition data</span>'}</div>
+ <div class="card"><h4>What is inside</h4><p>${E((p.ing||'Ingredients not available yet.').slice(0,300))}</p></div><div class="card"><h4>In simple words</h4><p>${E(simpleWords(p))}</p></div><div class="card"><h4>Per 100 g</h4><table>${row('Energy',n.kcal,'kcal')}${row('Fat',n.fat,'g',17.5,3)}${row('Saturated fat',n.sat,'g',5,1.5)}${row('Carbs',n.carb,'g')}${row('Sugars',n.sugar,'g',22.5,5)}${row('Fibre',n.fibre,'g')}${row('Protein',n.protein,'g')}${row('Salt',n.salt,'g',1.5,.3)}</table></div><p style="font-size:11px;color:var(--mut);margin:4px 18px">General information only, not medical advice.</p>
+ <div style="display:flex;gap:8px;padding:6px 12px 20px"><button class="btn" data-a="psave">Save to Notes</button><button class="btn o" data-a="pshare">Share</button></div>`}
+
+/* ====== Notes / More ====== */
+V.notes=()=>{app.innerHTML=`<div class="hd">${logo.replace('<img','<img class="lg"')}<span class="wm">Notes</span></div><div class="body"><div class="ng" id="ng"></div></div><button class="fab" data-a="newnote">+</button>${navBar('notes')}`;
+ const dr=()=>{$('#ng').innerHTML=S.notes.map(n=>`<div class="nc" data-a="note" data-id="${n.id}"><b>${E(n.title||'Untitled')}</b><small>${E((n.body||'').slice(0,90))}</small></div>`).join('')||'<div class="emp" style="grid-column:1/-1">No notes yet.<br><small>Save product info or chat messages here.</small></div>'};dr();S.refresh=dr};
+V.note=({id})=>{const n=S.notes.find(x=>x.id===id)||{id:'',title:'',body:''};
+ app.innerHTML=`<div class="hd"><button class="ib" data-a="back">←</button><h2>${n.id?'Edit note':'New note'}</h2>${n.id?`<button class="ib" data-a="delnote" data-id="${n.id}">🗑</button>`:''}</div><form class="pg" data-f="note"><input type="hidden" name="id" value="${E(n.id)}"><label class="fld"><span>Title</span><input name="title" value="${E(n.title)}" maxlength="80"></label><label class="fld"><span>Note</span><textarea name="body" rows="9">${E(n.body)}</textarea></label><button class="btn">Save note</button></form>`};
+const saveNote=(title,body)=>F.setDoc(F.doc(db,'users',S.me.uid,'notes',uid_()),{title,body,tag:'Saved',ts:Date.now()}).then(()=>toast('Saved to Notes ✓'));
+V.more=()=>{const m=S.me,row=(ic,t,a,sub)=>`<div class="row" data-a="${a}"><div class="ic">${ic}</div><div class="m"><b>${t}</b>${sub?`<small>${sub}</small>`:''}</div></div>`;
+ app.innerHTML=`<div class="hd">${logo.replace('<img','<img class="lg"')}<span class="wm">More</span></div><div class="body"><div class="prof" data-a="profile">${av(m,60)}<div><b style="font-size:17px;font-weight:500">${E(m.name)}</b><small>${E(fph(m.phone))}</small><small>${E(m.about||'')}</small></div></div>${row('👤','Profile','profile','Photo, name, about')}${row('🛍','Shop','shop','NIJOK Premium store')}${S.admin?row('🛡','Owner dashboard','owner','See who logged in'):''}${row('ℹ','About NIJOK','about','Fact first. You decide.')}${row('🚪','Log out','logout')}<div class="by" style="text-align:center;padding:24px">NIJOK <b>Lite</b> · by <b>Boske Shivadas</b></div></div>${navBar('more')}`};
+V.profile=()=>{const m=S.me;app.innerHTML=`<div class="hd"><button class="ib" data-a="back">←</button><h2>Profile</h2></div><form class="pg" data-f="profile"><div style="display:flex;flex-direction:column;align-items:center;margin-bottom:10px" data-a="dp">${av(m,92)}<small style="color:var(--g2);margin-top:6px">Tap to change photo</small></div><label class="fld"><span>Name</span><input name="name" value="${E(m.name)}" maxlength="40" required></label><label class="fld"><span>About</span><input name="about" value="${E(m.about||'')}" maxlength="80"></label><label class="fld"><span>Mobile number</span><input value="${E(fph(m.phone))}" disabled></label><button class="btn">Save</button></form>`};
+V.owner=async()=>{app.innerHTML=`<div class="hd"><button class="ib" data-a="back">←</button><h2>Owner dashboard</h2></div><div class="body" id="ob"><div class="emp">Loading…</div></div>`;
+ try{const us=(await F.getDocs(F.collection(db,'users'))).docs.map(d=>({...norm(d.data()),uid:d.id})).sort((a,b)=>(b.lastLogin||0)-(a.lastLogin||0));$('#ob').innerHTML=`<div class="card"><h4>Total users</h4><p style="font-size:26px;font-weight:600">${us.length}</p></div>`+us.map(u=>`<div class="row">${av(u,42)}<div class="m"><b>${E(u.name||'—')}</b><small>${E(fph(u.phone))}</small><small>Last login: ${u.lastLogin?new Date(u.lastLogin).toLocaleString():'—'}</small></div></div>`).join('')}catch(e){$('#ob').innerHTML='<div class="emp">Not allowed. Add your user id to the admins collection.</div>'}};
+V.shop=()=>{app.innerHTML=`<div class="hd"><button class="ib" data-a="back">←</button><h2>NIJOK Premium Shop</h2></div><iframe class="fr" src="shop.html"></iframe>`};
+
+/* ====== Actions ====== */
+const ACT={noop(){},close(){sheet()},go(d){nav(d.v)},tab(d){root(d.v)},back(){history.back()},chat(d){nav('chat',{id:d.id})},
+ newchat(){sheet();nav('newchat')},newgroup(){sheet();S.ng=null;nav('newgroup')},shop(){sheet();nav('shop')},profile(){nav('profile')},owner(){nav('owner')},
+ search(){const b=$('#sbar');if(b.innerHTML){b.innerHTML='';S.q='';S.refresh()}else{b.innerHTML='<div style="padding:8px 12px"><input id="q" placeholder="Search chats" style="width:100%;padding:10px 14px;border:1px solid var(--ln);border-radius:20px;outline:0;background:#fff"></div>';$('#q').focus();$('#q').oninput=e=>{S.q=e.target.value;S.refresh()}}},
+ rmng(d){S.ng.members=S.ng.members.filter(u=>u.uid!==d.id);S.drm()},
+ dp(){pickImg(async f=>{const ph=await shrink(f,200,.7);if(S.view==='setup'){S.ng={me:{name:'?',photo:ph}};S.dpTmp=ph;return $('[data-a=dp]').innerHTML=av({photo:ph},84)}await saveProfile(S.me.uid,{photo:ph});S.me.photo=ph;toast('Photo updated ✓');draw()})},
+ gdp(){pickImg(async f=>{S.ng.photo=await shrink(f,200,.7);$('#gic').innerHTML=av({photo:S.ng.photo},84)})},
+ gdp2(){pickImg(async f=>{const ph=await shrink(f,200,.7);await updChat(S.vp.id,{photo:ph});toast('Group icon updated ✓')})},
+ cinfo(){const c=S.cm[S.vp.id];if(c.type==='group')return nav('ginfo',{id:c.id});const u=info(c).u||{};sheet(`<div style="text-align:center;padding:10px">${av(u,80)}<h3 style="margin-top:8px">${E(u.name)}</h3><p style="color:var(--mut)">${E(fph(u.phone))}</p><p>${E(u.about||'')}</p><p style="font-size:12px;color:var(--g2);margin-top:8px">🔒 End-to-end encrypted</p></div>`)},
+ attach(){sh2([['🖼','Photo / Camera','sendimg'],['👤','Contact','contact']])},
+ sendimg(){sheet();pickImg(async f=>send({t:'img',d:await shrink(f,900,.6)}))},
+ contact(){const can=navigator.contacts&&navigator.contacts.select;sheet(`<h3>Send contact</h3>${can?'<button class="btn o" data-a="pickc">Pick from phone contacts</button>':''}<button class="btn o" data-a="myc">Send my contact</button><form data-f="contact"><label class="fld"><span>Name</span><input name="n" required></label><label class="fld"><span>Number</span><input name="p" type="tel" required></label><button class="btn">Send</button></form>`)},
+ async pickc(){try{const r=await navigator.contacts.select(['name','tel']);if(r[0]){sheet();send({t:'contact',n:r[0].name?.[0]||'Contact',p:r[0].tel?.[0]||''})}}catch(e){}},
+ myc(){sheet();send({t:'contact',n:S.me.name,p:S.me.phone})},
+ vcf(d){const p=S.msgs.find(x=>x.id===d.id)?.p;if(!p)return;const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([`BEGIN:VCARD\nVERSION:3.0\nFN:${p.n}\nTEL:${p.p}\nEND:VCARD`],{type:'text/vcard'}));a.download=p.n+'.vcf';a.click()},
+ async cchat(d){const p=S.msgs.find(x=>x.id===d.id)?.p;const n=String(p.p).replace(/[^\d+]/g,'');const u=await findPhone(n.startsWith('+')?n:'+91'+n.replace(/^0+/,''));u?startDM(u):toast('Not on NIJOK yet','Ask them to join')},
+ zoom(d){const p=S.msgs.find(x=>x.id===d.id)?.p;sheet(`<img src="${E(p.d)}" style="width:100%;border-radius:10px">`)},
+ async rec(){const b=$('#mic');if(S.rc){S.rc.stop();return}try{const st=await navigator.mediaDevices.getUserMedia({audio:true}),ch=[],mr=new MediaRecorder(st,{audioBitsPerSecond:24000});S.rc=mr;S.t0=Date.now();b.classList.add('rec');b.textContent='⏹';
+  mr.ondataavailable=e=>ch.push(e.data);mr.onstop=async()=>{st.getTracks().forEach(t=>t.stop());S.rc=null;b.classList.remove('rec');b.textContent='🎤';const sec=Math.round((Date.now()-S.t0)/1000);if(sec<1)return;const bl=new Blob(ch,{type:mr.mimeType});if(bl.size>600000)return toast('Voice message too long');const d=await new Promise(r=>{const f=new FileReader();f.onload=()=>r(f.result);f.readAsDataURL(bl)});send({t:'voice',d,s:sec})};mr.start();setTimeout(()=>S.rc&&S.rc.stop(),60000)}catch(e){toast('Microphone permission needed')}},
+ msg(d){const m=S.msgs.find(x=>x.id===d.id);if(!m||m.ty==='sys')return;const it=[];if(m.p?.t==='text')it.push(['📋','Copy','mcopy',`data-id="${m.id}"`],['📝','Save to Notes','mnote',`data-id="${m.id}"`]);if(m.from===S.me.uid)it.push(['🗑','Delete for everyone','mdel',`data-id="${m.id}"`]);if(it.length)sh2(it)},
+ mcopy(d){navigator.clipboard?.writeText(S.msgs.find(x=>x.id===d.id).p.x);sheet();toast('Copied')},
+ mnote(d){const m=S.msgs.find(x=>x.id===d.id);sheet();saveNote('Message from '+(S.U[m.from]?.name||'chat'),m.p.x)},
+ async mdel(d){sheet();await F.deleteDoc(F.doc(db,'chats',S.vp.id,'messages',d.id))},
+ manual(){sheet(`<h3>Find a product</h3><form data-f="manual"><label class="fld"><input name="q" placeholder="Barcode number or product name" required></label><button class="btn">Search</button></form><div id="res"></div>`)},
+ gallery(){pickImg(async f=>{if(!('BarcodeDetector'in window))return toast('Not supported in this browser','Type the barcode instead');try{const r=await new BarcodeDetector().detect(await createImageBitmap(f));r[0]?nav('product',{code:r[0].rawValue}):toast('No barcode found in this photo')}catch(x){toast('Could not read the photo')}})},
+ async torch(){try{const t=S.stream.getVideoTracks()[0];S.torch=!S.torch;await t.applyConstraints({advanced:[{torch:S.torch}]})}catch(e){toast('Flash not available')}},
+ openprod(d){sheet();nav('product',{code:d.code})},
+ psave(){const p=S.cur,n=p.nut||{};saveNote(p.name,[p.brand,p.qty].filter(Boolean).join(' · ')+'\n'+chipsOf(p).map(c=>c[1]).join(', ')+'\n'+simpleWords(p)+(n.kcal?'\nEnergy: '+n.kcal+' kcal/100g':'')+'\nBarcode: '+p.code)},
+ pshare(){sheet(`<h3>Share to chat</h3>${S.chats.map(c=>`<div class="si" data-a="pto" data-id="${c.id}">${info(c).av}<b style="font-weight:400">${E(info(c).name)}</b></div>`).join('')||'<p style="color:var(--mut)">No chats yet.</p>'}`)},
+ async pto(d){const p=S.cur;sheet();try{await sendMsg(S.cm[d.id],{t:'text',x:`📦 ${p.name}${p.brand?' ('+p.brand+')':''}\n${chipsOf(p).map(c=>c[1]).join(', ')}\n${simpleWords(p)}`});toast('Shared ✓')}catch(e){toast('Could not share',e.message)}},
+ addprod(d){sheet(`<h3>Add product</h3><form data-f="addprod"><input type="hidden" name="code" value="${E(d.code)}"><label class="fld"><span>Product name *</span><input name="name" required></label><label class="fld"><span>Brand</span><input name="brand"></label><label class="fld"><span>Ingredients</span><textarea name="ing" rows="3"></textarea></label><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><input name="kcal" placeholder="kcal /100g" inputmode="decimal"><input name="fat" placeholder="Fat g" inputmode="decimal"><input name="sugar" placeholder="Sugar g" inputmode="decimal"><input name="salt" placeholder="Salt g" inputmode="decimal"></div><button class="btn">Save to NIJOK database</button></form>`)},
+ newnote(){nav('note',{id:''})},note(d){nav('note',{id:d.id})},
+ async delnote(d){await F.deleteDoc(F.doc(db,'users',S.me.uid,'notes',d.id));history.back()},
+ about(){sheet(`<h3>NIJOK <i style="font-family:Pacifico;font-weight:400;color:var(--g2)">Lite</i></h3><p>Talk. Scan. Know. Save. Share.<br>Chats are end-to-end encrypted. Product data: NIJOK Database and Open Food Facts.</p><p class="by">by <b>Boske Shivadas</b></p>`)},
+ async logout(){sheet();await Au.signOut(auth)},
+ async leave(){const c=S.cm[S.vp.id];sheet();if(!confirm('Leave this group?'))return;if(c.admins?.includes(S.me.uid)&&c.admins.length===1){const r=c.members.find(m=>m!==S.me.uid);if(r)await updChat(c.id,{admins:F.arrayUnion(r)})}try{await sysMsg(c,`${S.me.name} left`)}catch(e){}await updChat(c.id,{members:F.arrayRemove(S.me.uid),admins:F.arrayRemove(S.me.uid)});root('groups')}};
+document.addEventListener('click',e=>{const el=e.target.closest('[data-a]');if(!el)return;const f=ACT[el.dataset.a];f&&f(el.dataset,el)});
+
+/* ====== Forms ====== */
+const err=(m,id='er')=>{const e=document.getElementById(id);if(e)e.textContent=m};
+const FORM={
+ async auth(d,f,mode){const p=normPhone(d.cc,d.num);if(!p)return err('Enter a valid mobile number');if(d.pw.length<6)return err('Password needs 6+ characters');S.pw=d.pw;const bs=$$('.btn',f);bs.forEach(b=>b.disabled=true);
+  try{if(mode==='reg')await Au.createUserWithEmailAndPassword(auth,emailOf(p),d.pw);else await Au.signInWithEmailAndPassword(auth,emailOf(p),d.pw)}
+  catch(e){bs.forEach(b=>b.disabled=false);const c=e.code||'';if(c.includes('api-key')){const k=prompt('API key galat hai. Firebase se apiKey copy karke yaha paste karo:');if(k&&k.trim()){localStorage.setItem('nk_key',k.trim().replace(/["\',\s]/g,''));location.reload();return}}err(c.includes('api-key')?'Firebase API key is wrong. Paste the exact key from Firebase console.':c==='auth/email-already-in-use'?'This number already has an account. Tap Login.':c==='auth/operation-not-allowed'?'Enable Email/Password in Firebase, Authentication, Sign-in method.':c.includes('invalid-credential')||c.includes('user-not-found')||c.includes('wrong-password')?'Wrong number or password. New here? Tap Create new account.':c||e.message)}},
+ async unlock(d,f){try{await Au.signInWithEmailAndPassword(auth,emailOf(S.me.phone),d.pw);S.pw=d.pw;afterLogin(auth.currentUser)}catch(e){err('Wrong password')}},
+ async setup(d){const p={name:d.name.trim(),about:d.about.trim(),color:COLORS[Math.floor(Math.random()*8)],phone:S.me.phone,createdAt:F.serverTimestamp(),lastLogin:F.serverTimestamp()};if(S.dpTmp)p.photo=S.dpTmp;S.dpTmp=null;await saveProfile(S.me.uid,p);await F.setDoc(F.doc(db,'phones',S.me.phone),{uid:S.me.uid}).catch(()=>{});afterLogin(auth.currentUser)},
+ async send(d,f){const t=d.t.trim();if(!t)return;f.elements.t.value='';f.elements.t.style.height='auto';$('#mic').style.display='';$('#sb').style.display='none';send({t:'text',x:t})},
+ async newchat(d){const p=normPhone(d.cc,d.num);if(!p)return err('Enter a valid mobile number');if(p===S.me.phone)return err('That is your own number');const u=await findPhone(p);
+  if(!u){err('');$('#inv').innerHTML=`<div class="card" style="margin:16px 0"><h4>${E(fph(p))} is not on NIJOK yet</h4><p>Ask them to create an account.</p></div>`;return}if(!u.pub)return err('This person must open the new NIJOK once first');await startDM(u)},
+ async addng(d,f){const p=normPhone(d.cc,d.num);if(!p)return err('Enter a valid mobile number');if(p===S.me.phone)return err('You are added automatically');const u=await findPhone(p);if(!u)return err('This number is not on NIJOK yet');if(!u.pub)return err('This person must open the new NIJOK once first');if(S.ng.members.some(m=>m.uid===u.uid))return err('Already added');S.U[u.uid]=u;S.ng.members.push(u);err('');f.reset();S.drm()},
+ async newgroup(d){if(!S.ng.members.length)return err('Add at least one member','er2');const all=[S.me,...S.ng.members],raw=b64(crypto.getRandomValues(new Uint8Array(32))),keys={};
+  for(const u of all)keys[u.uid]=await enc(await shared(u.pub),raw);
+  const r=await F.addDoc(F.collection(db,'chats'),{type:'group',name:d.name.trim(),photo:S.ng.photo||'',color:S.ng.color,members:all.map(u=>u.uid),admins:[S.me.uid],createdBy:S.me.uid,kby:S.me.uid,keys,unread:{},seen:{},createdAt:F.serverTimestamp(),updatedAt:F.serverTimestamp()});
+  S.ng=null;await new Promise(r=>setTimeout(r,500));await sysMsg({id:r.id},`${S.me.name} created group "${d.name.trim()}"`).catch(()=>{});rep('chat',{id:r.id})},
+ async gsave(d){await updChat(S.vp.id,{name:d.name.trim()});toast('Group updated ✓')},
+ async addmem(d,f){const c=S.cm[S.vp.id],p=normPhone(d.cc,d.num);if(!p)return err('Enter a valid mobile number');const u=await findPhone(p);if(!u)return err('This number is not on NIJOK yet');if(!u.pub)return err('This person must open the new NIJOK once first');if(c.members.includes(u.uid))return err('Already in this group');
+  S.U[u.uid]=u;const raw=await dec(await shared(S.U[c.kby].pub),c.keys[S.me.uid]);await updChat(c.id,{members:F.arrayUnion(u.uid),['keys.'+u.uid]:await enc(await shared(u.pub),raw)});await sysMsg(c,`${S.me.name} added ${u.name}`);err('');f.reset()},
+ async profile(d){const p={name:d.name.trim(),about:d.about.trim()};await saveProfile(S.me.uid,p);Object.assign(S.me,p);toast('Profile saved ✓');history.back()},
+ async note(d){await F.setDoc(F.doc(db,'users',S.me.uid,'notes',d.id||uid_()),{title:d.title.trim(),body:d.body,tag:'Saved',ts:Date.now()});history.back()},
+ async contact(d){sheet();send({t:'contact',n:d.n.trim(),p:d.p.trim()})},
+ async manual(d){const q=d.q.trim();if(/^\d{6,14}$/.test(q)){sheet();return nav('product',{code:q})}$('#res').innerHTML='<p style="color:var(--mut);margin:10px 0">Searching…</p>';
+  try{const r=await fetch(`https://world.openfoodfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(q)}&search_simple=1&action=process&json=1&page_size=10&fields=code,product_name,brands`),j=await r.json(),a=(j.products||[]).filter(x=>x.product_name);
+   $('#res').innerHTML=a.map(x=>`<div class="si" data-a="openprod" data-code="${E(x.code)}"><span>📦</span><div><b style="font-weight:500">${E(x.product_name)}</b><br><small style="color:var(--mut)">${E(x.brands||'')}</small></div></div>`).join('')||`<p style="margin:10px 0">No result. <a target="_blank" rel="noopener" style="color:var(--g)" href="https://www.google.com/search?q=${encodeURIComponent(q)}">Search on Google</a></p>`}catch(e){$('#res').innerHTML='<p style="margin:10px 0;color:var(--red)">Could not reach the database.</p>'}},
+ async addprod(d){const p={name:d.name.trim(),brand:d.brand.trim(),qty:'',img:'',ing:d.ing.trim(),nut:{kcal:num(d.kcal),fat:num(d.fat),sugar:num(d.sugar),salt:num(d.salt)},allergens:[],additives:[],by:S.me.uid};Object.keys(p.nut).forEach(k=>p.nut[k]===undefined&&delete p.nut[k]);await F.setDoc(F.doc(db,'products',d.code),p);S.pc[d.code]={...p,code:d.code,src:'NIJOK Database'};sheet();toast('Thank you! Product added ✓');rep('product',{code:d.code})}};
+document.addEventListener('submit',e=>{const f=e.target.closest('[data-f]');if(!f)return;e.preventDefault();const fn=FORM[f.dataset.f];fn&&Promise.resolve(fn(Object.fromEntries(new FormData(f)),f,e.submitter?.value)).catch(x=>err(x.message||'Something went wrong'))});
+</script></body></html>
