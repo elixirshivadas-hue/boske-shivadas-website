@@ -150,15 +150,23 @@ body{background:#e9e2d2;color:var(--ink)}#app{box-shadow:0 0 30px #0002}
 .pt{display:flex;gap:10px;align-items:center}.pt .m{flex:1;min-width:0}.pt .m small{display:block;color:var(--mut);font-size:11.5px}
 .pst img.pi{width:100%;border-radius:12px;margin:8px 0;display:block;max-height:340px;object-fit:cover;cursor:pointer}
 .pst .ac{display:flex;gap:24px;color:var(--mut);margin-top:6px}.pst .ac span{cursor:pointer}
-html.night{--cr:#0d1f17;--ink:#e8f1ec;--mut:#9bb2a5;--ln:#233a2e;--lg:#1f4a37}
+@keyframes wv{0%,100%{height:10px}50%{height:34px}}
+@media(prefers-reduced-motion:reduce){.wvb i{animation:none!important;height:18px!important}}
+html.night{--cr:#0a1a13;--ink:#e8f1ec;--mut:#8fa89a;--ln:#27443a;--lg:#1f4a37;--g:#3a8f62;--g2:#2f7a52;color-scheme:dark}
 html.night body{background:#050f0a}
-html.night .hd{background:#0a1a13;color:#7fd3a0;border-color:#233a2e}html.night .hd h2{color:#e8f1ec}html.night .ib{color:#cfe8d9}
-html.night .row,html.night #list .row,html.night .card,html.night .nc,html.night .stats,html.night .hc,html.night .exc,html.night .mchip,html.night .sbx,html.night .pst,html.night .ptop,html.night .chips,html.night .tabs,html.night .pinb,html.night .ro{background:#14281f;border-color:#233a2e;color:var(--ink)}
-html.night .fld input,html.night .fld textarea,html.night .fld select,html.night .ph select,html.night .ph input,html.night .inp textarea,html.night .sinp,html.night .pl span,html.night .fo button,html.night .sh>div,html.night #toast{background:#14281f;color:var(--ink);border-color:#233a2e}
-html.night .fo button.on,html.night .pl input:checked+span{background:var(--g2);color:#fff}
-html.night .msgs{background:#0a1812}html.night .b.ot{background:#173126;border-color:#233a2e;color:var(--ink)}html.night .b.me{background:#1f5a40;color:#fff}
-html.night .nav{background:#0a1a13;border-color:#233a2e}html.night .seg{background:#14281f}html.night .card p{color:#b8cbc0}
-html.night .nav .sc b{border-color:#0d1f17}html.night .hd.dk{background:#0b1a14}
+html.night #app{background:linear-gradient(180deg,#0b1d15,#08150f 60%,#0a2118)}
+html.night .hd{background:transparent;color:#e8f1ec;border-color:transparent}html.night .hd h2{color:#fff}html.night .ib{color:#d6ece0}html.night .hd.dk{background:#0b1a14}
+html.night .row,html.night #list .row,html.night .card,html.night .nc,html.night .stats,html.night .hc,html.night .exc,html.night .pst,html.night .ptop,html.night .chips,html.night .tabs,html.night .mchip,html.night .sbx,html.night .pinb,html.night .ro{background:#f6f1e5;border-color:#e4d9bd;color:#1c2a23;--ink:#1c2a23;--mut:#5f6d65}
+html.night .row{border-radius:14px;margin:6px 12px;border:0}html.night #list .row{margin:8px 10px}
+html.night .fld input,html.night .fld textarea,html.night .fld select,html.night .ph select,html.night .ph input,html.night .inp textarea,html.night .sinp{background:#f6f1e5;color:#1c2a23;border-color:#e4d9bd}
+html.night .sh>div,html.night #toast{background:#f6f1e5;color:#1c2a23;--ink:#1c2a23;--mut:#5f6d65}
+html.night .fo button{background:#12261d;color:#cfe8d9;border-color:#27443a}html.night .fo .on{background:var(--g2);color:#fff;border-color:var(--g2)}
+html.night .pl span{background:#f6f1e5;color:#5f6d65}html.night .pl input:checked+span{background:var(--g2);color:#fff}
+html.night .msgs{background:transparent}html.night .b.ot{background:#f6f1e5;color:#1c2a23;border-color:transparent}html.night .b.me{background:#2f7a52;color:#fff}html.night .b.me .tm{color:#cfe8d9}
+html.night .nav{background:#0a1a13;border-color:#1c3328}html.night .nav button{color:#7d9186}html.night .nav .on{color:#6fdc9a}html.night .nav .sc b{border-color:#0a1a13}
+html.night .fab{background:linear-gradient(135deg,#3f9462,#1d5a3b);color:#fff}
+html.night .seg{background:#12261d}html.night .seg button{color:#cfe8d9}html.night .seg .on{background:var(--g2);color:#fff}
+html.night .inp{background:transparent}html.night .sec b{color:#fff}
 </style></head><body><div id="app"></div><div id="toast"></div><div id="sheet"></div>
 <script type="module">
 /* ====== FIREBASE CONFIG: paste the exact config from Firebase console ====== */
@@ -409,13 +417,16 @@ V.shop=()=>{app.innerHTML=`<div class="hd"><button class="ib" data-a="back">←<
 const ICE={iceServers:[{urls:'stun:stun.l.google.com:19302'},{urls:'stun:stun1.l.google.com:19302'}]},CALL={pcs:{},buf:{},un:[],ringed:{},cid:null};
 const sigRef=cid=>F.collection(db,'chats',cid,'sig'),presRef=cid=>F.collection(db,'chats',cid,'callp');
 const sig=(to,t,d)=>F.addDoc(sigRef(CALL.cid),{from:S.me.uid,to,t,d:JSON.stringify(d),at:Date.now()}).catch(()=>{});
-const CSTYLE='position:fixed;inset:0;max-width:480px;margin:0 auto;z-index:60;background:radial-gradient(circle at 50% 30%,#1f6b4b 0,#12382a 45%,#0a2118 100%);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:calc(env(safe-area-inset-top) + 48px) 24px calc(env(safe-area-inset-bottom) + 40px);text-align:center';
+const CSTYLE='position:fixed;inset:0;max-width:480px;margin:0 auto;z-index:60;background:#0a2118;overflow:hidden;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:calc(env(safe-area-inset-top) + 56px) 24px calc(env(safe-area-inset-bottom) + 44px);text-align:center';
 const mmss=ms=>{const s=Math.floor(ms/1e3);return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0')};
+const callBg=()=>`<div style="position:absolute;inset:0;z-index:-1;background:linear-gradient(#0a2118cc,#0a2118f2),${PH.amazon?`url(${PH.amazon}) center/cover`:'#0a2118'};filter:blur(5px);transform:scale(1.08)"></div>`;
+const callPic=(c,i,sz)=>`<div style="display:inline-block;line-height:0;border-radius:50%;box-shadow:0 0 0 4px #ffffffcc,0 12px 40px #0009">${c.type==='group'?av({photo:c.photo,emoji:'👥',color:c.color},sz):av(i.u||{name:i.name},sz)}</div>`;
 function callUI(txt){let el=$('#call');if(!el){el=document.createElement('div');el.id='call';el.style.cssText=CSTYLE;document.body.appendChild(el)}
- const c=S.cm[CALL.cid]||{type:'dm',members:[]},i=info(c),grp=c.type==='group',ids=[S.me.uid,...Object.keys(CALL.pcs)],bt='width:62px;height:62px;border-radius:50%;border:0;font-size:24px;';
- el.innerHTML=`<div><small style="opacity:.7">${grp?'Group voice call':'Voice call'}</small><h2 style="font-weight:500;margin-top:6px">${E(i.name)}</h2><p id="ctm" style="opacity:.85;margin-top:4px">${CALL.t1?mmss(Date.now()-CALL.t1):E(txt)}</p></div>
- <div>${grp?`<div style="display:flex;flex-wrap:wrap;gap:16px;justify-content:center;max-width:320px">${ids.map(u=>`<div style="width:78px">${av(S.U[u]||{name:'?'},64)}<small style="display:block;margin-top:4px;opacity:.85;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${u===S.me.uid?'You':E((S.U[u]?.name||'').split(' ')[0])}</small></div>`).join('')}</div>`:`<div style="transform:scale(2.6);display:inline-block;filter:drop-shadow(0 0 18px #25a95b66)">${i.av}</div>`}</div>
- <div style="display:flex;flex-direction:column;align-items:center;gap:26px"><div style="display:flex;flex-direction:column;align-items:center;gap:6px"><button data-a="callmute" style="${bt}background:${CALL.mute?'#fff':'#ffffff26'};color:${CALL.mute?'#0f4a36':'#fff'}">${CALL.mute?'🔇':'🎤'}</button><small style="opacity:.8">${CALL.mute?'Unmute':'Mute'}</small></div><button data-a="callend" style="width:74px;height:74px;border-radius:50%;border:0;font-size:30px;background:#d94c3a;color:#fff">📵</button></div>`;
+ const c=S.cm[CALL.cid]||{type:'dm',members:[]},i=info(c),grp=c.type==='group',ids=[S.me.uid,...Object.keys(CALL.pcs)].slice(0,8),n=Object.keys(CALL.pcs).length+1;
+ const mid=grp?`<div style="position:relative;width:300px;height:300px">${ids.map((u,k)=>{const a=(-90+k*360/ids.length)*Math.PI/180;return `<div style="position:absolute;left:calc(50% + ${Math.round(112*Math.cos(a))}px);top:calc(50% + ${Math.round(112*Math.sin(a))}px);transform:translate(-50%,-50%);width:72px"><div style="display:inline-block;line-height:0;border-radius:50%;box-shadow:0 0 0 2px #ffffffaa">${av(S.U[u]||{name:'?'},56)}</div><small style="display:block;margin-top:3px;font-size:11px;opacity:.9;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${u===S.me.uid?'You':E((S.U[u]?.name||'').split(' ')[0])}</small></div>`}).join('')}<div class="wvb" style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);display:flex;gap:4px;align-items:center;height:40px">${[0,1,2,3,4,5,6].map(k=>`<i style="width:4px;border-radius:2px;background:#9bd3a8;height:10px;${CALL.t1?`animation:wv ${.8+k%3*.2}s ease-in-out ${k*.1}s infinite`:''}"></i>`).join('')}</div></div><p style="opacity:.85">${n} participant${n>1?'s':''}</p>`:callPic(c,i,172);
+ const bt='width:62px;height:62px;border-radius:50%;border:1px solid #ffffff44;font-size:24px;';
+ el.innerHTML=`${callBg()}<div><h2 style="font-weight:500;font-size:26px">${E(i.name)}</h2><p style="opacity:.85;margin-top:4px">${grp?'Group Voice Call':'Voice Call'} · <span id="ctm">${CALL.t1?mmss(Date.now()-CALL.t1):E(txt)}</span></p></div><div>${mid}</div>
+ <div style="display:flex;flex-direction:column;align-items:center;gap:24px"><div style="display:flex;flex-direction:column;align-items:center;gap:6px"><button data-a="callmute" style="${bt}background:${CALL.mute?'#fff':'#ffffff22'};color:${CALL.mute?'#0f4a36':'#fff'}">${CALL.mute?'🔇':'🎤'}</button><small style="opacity:.85">${CALL.mute?'Unmute':'Mute'}</small></div><button data-a="callend" style="width:72px;height:72px;border-radius:50%;border:0;font-size:30px;background:#e0412e;color:#fff;box-shadow:0 6px 20px #e0412e66">📵</button></div>`;
  if(CALL.t1&&!CALL.ti)CALL.ti=setInterval(()=>{const e=$('#ctm');if(e&&CALL.t1)e.textContent=mmss(Date.now()-CALL.t1)},1000)}
 function mkPeer(uid,init){const pc=new RTCPeerConnection(ICE);CALL.pcs[uid]=pc;CALL.stream.getTracks().forEach(t=>pc.addTrack(t,CALL.stream));
  pc.onicecandidate=e=>e.candidate&&sig(uid,'ice',e.candidate.toJSON());
@@ -438,8 +449,8 @@ async function joinCall(cid){if(CALL.cid)return;CALL.cid=cid;CALL.mute=false;CAL
 async function endCall(msg){const cid=CALL.cid;if(!cid)return;clearTimeout(CALL.to);CALL.un.forEach(f=>f());Object.values(CALL.pcs).forEach(p=>p.close());CALL.stream?.getTracks().forEach(t=>t.stop());$$('audio[id^=au_]').forEach(a=>a.remove());clearInterval(CALL.ti);Object.assign(CALL,{pcs:{},buf:{},cid:null,stream:null,un:[],t1:0,ti:0});$('#call')?.remove();
  try{await F.deleteDoc(F.doc(db,'chats',cid,'callp',S.me.uid));if(!(await F.getDocs(presRef(cid))).size)await updChat(cid,{call:F.deleteField()})}catch(e){}if(msg)toast(msg)}
 const closeRing=()=>{clearTimeout(CALL.rt);if(CALL.ringing){CALL.ringing=null;if(!CALL.cid)$('#call')?.remove()}};
-function ring(c){if(CALL.ringing||$('#call'))return;const i=info(c),b='width:70px;height:70px;border-radius:50%;border:0;font-size:28px;color:#fff;';CALL.ringing=c.id;const el=document.createElement('div');el.id='call';el.style.cssText=CSTYLE;
- el.innerHTML=`<div><small style="opacity:.7">Incoming ${c.type==='group'?'group ':''}voice call</small><h2 style="font-weight:500;margin-top:6px">${E(i.name)}</h2><p style="opacity:.85;margin-top:4px">NIJOK is calling…</p></div><div><div style="transform:scale(2.6);display:inline-block;filter:drop-shadow(0 0 18px #25a95b66)">${i.av}</div></div><div style="display:flex;gap:80px"><div><button data-a="callno" style="${b}background:#d94c3a">📵</button><small style="display:block;margin-top:6px;opacity:.8">Decline</small></div><div><button data-a="callyes" data-id="${c.id}" style="${b}background:#25a95b">📞</button><small style="display:block;margin-top:6px;opacity:.8">Accept</small></div></div>`;
+function ring(c){if(CALL.ringing||$('#call'))return;const i=info(c),grp=c.type==='group',b='width:70px;height:70px;border-radius:50%;border:0;font-size:28px;color:#fff;';CALL.ringing=c.id;const el=document.createElement('div');el.id='call';el.style.cssText=CSTYLE;
+ el.innerHTML=`${callBg()}<div><small style="opacity:.8">Incoming ${grp?'group ':''}call…</small><h2 style="font-weight:500;font-size:28px;margin-top:6px">${E(i.name)}</h2><p style="opacity:.8;margin-top:2px">${grp?(c.members||[]).length+' members':E(pv(i.u))}</p></div><div>${callPic(c,i,172)}</div><div><div style="display:flex;gap:90px"><div><button data-a="callno" style="${b}background:#e0412e">📵</button><small style="display:block;margin-top:6px;opacity:.85">Decline</small></div><div><button data-a="callyes" data-id="${c.id}" style="${b}background:#25a95b">📞</button><small style="display:block;margin-top:6px;opacity:.85">Accept</small></div></div></div>`;
  document.body.appendChild(el);beep();navigator.vibrate?.([200,100,200]);CALL.rt=setTimeout(closeRing,40000)}
 
 /* ====== Community ====== */
