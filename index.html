@@ -306,6 +306,35 @@ html.night .inp{background:transparent}html.night .sec b{color:#fff}
 .ktb{display:flex;align-items:center;gap:4px;padding:6px 10px;border-top:1px solid #0000001a;flex:none;padding-bottom:max(6px,env(safe-area-inset-bottom))}.ktb button{background:none;border:0;font-size:21px;width:44px;height:44px;cursor:pointer;color:inherit}.ktb small{margin-left:auto;opacity:.6;font-size:11.5px}
 .kpal{display:flex;gap:10px;flex-wrap:wrap;padding:6px 0 12px}.kdot{width:40px;height:40px;border-radius:50%;border:2px solid #0b3d2e33;display:grid;place-items:center;cursor:pointer;font-size:16px;color:#1c2a23}
 .ksn{display:none;position:fixed;left:12px;right:12px;bottom:84px;background:#262626;color:#fff;padding:13px 16px;border-radius:10px;justify-content:space-between;z-index:90;font-size:14px}.ksn.on{display:flex}.ksn b{color:#e6c878;cursor:pointer}
+/* ===== v8: Notebook board, Chats cards, Explore India ===== */
+.nbp{padding-left:20px!important;background:radial-gradient(circle at 8px 14px,#6f6f64 0 3.5px,#0000 4.5px) left top/16px 28px repeat-y,repeating-linear-gradient(0deg,#0000 0 27px,#e8e0c8 27px 28px),#f8f4e8!important}
+.nbt,.hnd{font-family:'Segoe Print','Bradley Hand','Comic Sans MS',cursive!important;font-weight:400!important}
+.tbd{display:grid;grid-template-columns:1fr 1fr;gap:16px 12px;padding:8px 4px 12px}
+.tcv{position:relative;background:#fffdf6;border-radius:6px 14px 14px 6px;border-left:7px solid var(--c);box-shadow:0 6px 14px #0002;padding:8px 8px 10px;transform:rotate(var(--r));cursor:pointer}
+.tcv.sel{outline:2px solid var(--c)}
+.tcv .tg{position:absolute;top:12px;right:10px;z-index:2;background:var(--c);color:#fff;border-radius:12px;padding:1px 8px;font-size:12px}
+.tcv .te{position:absolute;top:12px;left:12px;z-index:2;background:#fffd;border-radius:50%;width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-style:normal;font-size:12px}
+.tcv .tim{height:84px;border-radius:5px;margin-bottom:6px;display:flex;align-items:center;justify-content:center;font-size:36px}
+.tcv b{display:block;font:700 15px 'Segoe Print','Bradley Hand',cursive;color:#1c2a23}.tcv small{color:#6d7a72;font-size:11px}
+.tcv .ta{position:absolute;right:8px;bottom:8px;width:26px;height:26px;border-radius:50%;background:var(--c);color:#fff;display:flex;align-items:center;justify-content:center}
+.qa{display:flex;align-items:center;gap:8px;background:#fffdf6;border-radius:18px;box-shadow:0 4px 12px #0002;padding:10px;margin:14px 0 6px}
+.qa div{flex:1;min-width:0}.qa div b{font:400 16px 'Segoe Print','Bradley Hand',cursive;display:block}.qa div small{font-size:10px;color:#6d7a72}
+.qa button{border:0;background:#f0eddf;border-radius:14px;padding:7px 6px;font-size:17px;display:flex;flex-direction:column;align-items:center;cursor:pointer}.qa button span{font-size:9.5px;color:#1c2a23}.qa button:first-of-type{background:#14684a;color:#fff}.qa button:first-of-type span{color:#fff}
+.trow{display:flex;gap:10px;margin:6px 0 10px}.trow i{width:26px;height:26px;border-radius:50%;cursor:pointer;border:2px solid #fff;box-shadow:0 0 0 1px #0003}
+#list{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:8px 10px}
+#list .row{position:relative;flex-direction:column;align-items:flex-start;padding:70px 10px 10px;border-radius:18px;background:#fffdf6;box-shadow:0 5px 14px #0000001f;border:0;overflow:hidden;min-height:128px;margin:0}
+#list .row::before{content:"";position:absolute;left:0;right:0;top:0;height:56px;background:linear-gradient(135deg,#8fc3a0,#e8d9a8 60%,#9cc6dd)}
+#list .row:nth-child(3n+2)::before{background:linear-gradient(135deg,#f0b27a,#e8c9a0 55%,#c27a6a)}
+#list .row:nth-child(3n)::before{background:linear-gradient(135deg,#7fb3d5,#b9d8e8 55%,#5b8f6a)}
+#list .row>:first-child{position:absolute;top:28px;left:10px;border:3px solid #fff;border-radius:50%;box-shadow:0 2px 6px #0003}
+#list .row .m{width:100%;min-width:0}#list .row .t{position:absolute;top:8px;right:8px;z-index:1;background:#fffe;border-radius:10px;padding:1px 7px;font-size:10.5px;flex-direction:row;gap:4px}
+#list .emp{grid-column:1/-1}
+.xhd{display:flex;justify-content:space-between;align-items:center;padding:12px 14px 2px}.xhd b{font:700 19px Georgia,serif;color:#0f4a36}.xhd span{color:#2f7a52;font-size:12.5px;cursor:pointer}
+.xban{margin:8px 12px;border-radius:26px 60px 26px 26px;color:#fff;padding:18px 16px;min-height:130px}
+.xban h3{font:400 17px Georgia,serif}.xban h3 b{display:block;color:#e6c878;font-size:24px}.xban p{font-size:12px;margin:4px 0}.xban span{display:inline-block;border:1.5px solid #e6c878;color:#e6c878;border-radius:20px;padding:6px 14px;margin-top:8px;font-size:13px;cursor:pointer}
+.xsc{display:flex;gap:10px;overflow-x:auto;padding:10px 12px 14px}
+.xsk{flex:none;width:128px;border-radius:18px;background:#fffdf6;box-shadow:0 6px 14px #0002;overflow:hidden;transform:rotate(var(--r));cursor:pointer}
+.xsk .im{height:104px;background-size:cover!important}.xsk div:last-child{padding:7px 9px 9px}.xsk b{display:block;font:700 13px Georgia,serif}.xsk small{color:#6d7a72;font-size:11px}
 </style></head><body><div id="app"></div><div id="toast"></div><div id="sheet"></div>
 <script type="module">
 /* ====== FIREBASE CONFIG: paste the exact config from Firebase console ====== */
@@ -1165,4 +1194,40 @@ klbl(){const lb=[...new Set(['Personal','Important','Black Notebook',...NCATS.sl
 kls(d){S.ed.cat=d.k;sheet();nbSave();nbEd()},klnew(){const v=(prompt('New label name')||'').trim().slice(0,24);if(v){S.ed.cat=v;sheet();nbSave();nbEd()}}});
 /*NOTEBOOK_END*/
 
+/* ===== v8 patch ===== */
+(()=>{
+const TD=[['Travel','✈️','#2f7a52'],['Books','📚','#3b6ea5'],['Food','🍴','#c98a3c'],['Ideas','💡','#7a5aa6'],['Nature','🍃','#5a8a3c'],['Personal','👤','#b5586b']];
+const tl=()=>{try{const a=JSON.parse(localStorage.getItem('nk_tabs'));if(a&&a.length)return a}catch(e){}return TD.map(t=>({n:t[0],e:t[1],c:t[2],im:''}))},
+ts=a=>{try{localStorage.setItem('nk_tabs',JSON.stringify(a))}catch(e){err('Photo too big, try a smaller one')}},
+sync=()=>tl().forEach(t=>{NCATS.includes(t.n)||NCATS.push(t.n);NIC[t.n]=t.e}),
+pick=cb=>{const i=document.createElement('input');i.type='file';i.accept='image/*';i.onchange=()=>{const f=i.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{const m=new Image();m.onload=()=>{const k=Math.min(1,480/m.width),c=document.createElement('canvas');c.width=m.width*k;c.height=m.height*k;c.getContext('2d').drawImage(m,0,0,c.width,c.height);cb(c.toDataURL('image/jpeg',.8))};m.src=r.result};r.readAsDataURL(f)};i.click()},
+board=()=>{const all=S.notes.filter(n=>!n.del&&!n.arc);return tl().map((t,i)=>{const m=all.filter(n=>n.cat===t.n),d=m[0]?new Date(m[0].ts).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}):'';
+return`<div class="tcv${S.kf===t.n?' sel':''}" style="--c:${t.c};--r:${i%2?1.4:-1.4}deg" data-a="ktab" data-k="${E(t.n)}"><span class="tg">${t.e}</span><i class="te" data-a="ktedit" data-k="${E(t.n)}">✎</i><div class="tim" style="${t.im?`background:url(${t.im}) center/cover`:`background:linear-gradient(135deg,${t.c}33,${t.c}88)`}">${t.im?'':t.e}</div><b>${E(t.n)}</b><small>${m.length} note${m.length==1?'':'s'}${d?' · '+d:''}</small><span class="ta">→</span></div>`}).join('')},
+QA='<div class="qa"><div><b>Quick Actions</b><small>Create a note or organise your thoughts</small></div><button data-a="knew">✎<span>New Note</span></button><button data-a="knewl">☑<span>New List</span></button><button data-a="ktnew">🗂<span>New Tab</span></button><button data-a="ktimg">🖼<span>Add Image</span></button></div>';
+const V0=V.notes;
+V.notes=()=>{sync();V0();const h=document.querySelector('.pgh');h.innerHTML='<span class="pgi">📓</span><div><h2 class="nbt">Notebook</h2><small class="hnd">Your thoughts · Ideas · Memories</small></div>';
+document.querySelector('.body').classList.add('nbp');
+$('#kfo').insertAdjacentHTML('beforebegin',`<div class="tbd" id="tbd"${S.nq?' style="display:none"':''}>${board()}</div>`);
+$('#kg').insertAdjacentHTML('afterend',QA);
+$('#nq').oninput=e=>{S.nq=e.target.value;nbDraw();$('#tbd').style.display=S.nq?'none':''};
+S.refresh=()=>{nbDraw();const t=$('#tbd');t&&(t.innerHTML=board())}};
+const up=(k,o)=>{const a=tl(),t=a.find(x=>x.n===k);Object.assign(t,o);ts(a)};
+Object.assign(ACT,{
+ktab(d){S.kf=S.kf===d.k?'Notes':d.k;V.notes()},
+ktedit(d){const t=tl().find(x=>x.n===d.k);if(!t)return;const x=`data-k="${E(t.n)}"`;
+sheet(`<h3>Edit tab</h3><div style="display:flex;gap:8px;margin:8px 0"><input class="sinp" id="te" value="${E(t.e)}" maxlength="2" style="width:56px;text-align:center"><input class="sinp" id="tn" value="${E(t.n)}" maxlength="24"></div><div class="trow">${['#2f7a52','#3b6ea5','#c98a3c','#7a5aa6','#5a8a3c','#b5586b','#d9573a','#242220'].map(c=>`<i data-a="ktcol" ${x} data-c="${c}" style="background:${c}"></i>`).join('')}</div>${nbRow('ktsv','✓','Save name & icon',x)}${nbRow('ktph','🖼','Add / change photo',x)}${t.im?nbRow('ktrm','🚫','Remove photo',x):''}${nbRow('ktdel','🗑','Delete tab',x)}`)},
+ktcol(d){up(d.k,{c:d.c});$('#tbd').innerHTML=board()},
+ktsv(d){const a=tl(),t=a.find(x=>x.n===d.k),n=($('#tn').value||'').trim(),e=($('#te').value||'').trim()||t.e;if(!n)return err('Name needed');if(n!==t.n&&a.some(x=>x.n===n))return err('Name already used');
+if(n!==t.n){S.notes.filter(x=>x.cat===t.n).forEach(x=>nbPatch(x.id,{cat:n}));const i=NCATS.indexOf(t.n);if(i>0)NCATS[i]=n;if(S.kf===t.n)S.kf=n}t.n=n;t.e=e;ts(a);sheet();V.notes()},
+ktph(d){pick(s=>{up(d.k,{im:s});sheet();V.notes()})},
+ktrm(d){up(d.k,{im:''});sheet();V.notes()},
+ktdel(d){if(!confirm('Delete tab "'+d.k+'"? Your notes stay saved.'))return;ts(tl().filter(x=>x.n!==d.k));if(S.kf===d.k)S.kf='Notes';sheet();V.notes()},
+ktnew(){const a=tl();let n='New Tab',k=1;while(a.some(x=>x.n===n))n='New Tab '+(++k);a.push({n,e:'📒',c:'#2f7a52',im:''});ts(a);V.notes();ACT.ktedit({k:n})},
+ktimg(){sheet('<h3>Add image to…</h3>'+tl().map(t=>nbRow('ktph',t.e,t.n,`data-k="${E(t.n)}"`)).join(''))}});
+const C0=V.chats;V.chats=()=>{C0();const h=document.querySelector('.pgh');if(h)h.innerHTML='<span class="pgi">💬</span><div><h2 style="font-family:Georgia,serif">Chats</h2><small>Real People · Meaningful Conversations</small></div>'};
+const X0=V.explore;V.explore=()=>{X0();const r=document.querySelector('.bk3r4.xe');if(!r)return;
+const R=['Rajasthan','Uttar Pradesh','Kerala','Himachal Pradesh','Maharashtra','Telangana'].map((n,i)=>{const s=XST.find(x=>x.startsWith(n));if(!s)return'';const[nm,c]=s.split('|'),col=xcol(nm),pa=xpa(col),im=XSI[nm];
+return`<div class="xsk" style="--r:${i%2?1.5:-1.5}deg" data-a="xd" data-n="${E(nm)}" data-c="${E(c)}"><div class="im" style="${im?`background:url(${im}) center`:`background:linear-gradient(135deg,${col},${pa})`}"></div><div><b>${E(nm)}</b><small>${E(c)}</small></div></div>`}).join('');
+r.insertAdjacentHTML('beforebegin',`<div class="xban" style="background:linear-gradient(105deg,#0b3d2e 55%,#0b3d2e00),url(${XI.hx}) center/cover"><h3>Explore the<b>Incredible India</b></h3><p>Diverse states. Rich cultures. Endless stories.</p><span data-a="xc" data-k="st">Explore States →</span></div><div class="xhd"><b>🌿 Indian States</b><span data-a="xc" data-k="st">View All ›</span></div><div class="xsc">${R}</div>`)}
+})();
 </script></body></html>
