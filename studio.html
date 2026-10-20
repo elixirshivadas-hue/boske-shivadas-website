@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="hi"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0f4a36">
+<title>NIJØK Studio Lite</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@500;700&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
+<style>
+:root{--g:#0f4a36;--g2:#1c6b4b;--cr:#f6f2e9;--sf:#fffdf8;--ink:#1c2a23;--mut:#6d7a72;--ln:#e4dccb;--gold:#c9a24a;--red:#d94c3a}
+*{box-sizing:border-box}html,body{margin:0}
+body{font:14px/1.4 system-ui,'Noto Sans Devanagari',sans-serif;background:var(--cr);color:var(--ink)}
+button,input,select,textarea{font:inherit;color:inherit}
+button,.btn{min-height:44px;min-width:44px;border:1px solid var(--ln);background:var(--sf);border-radius:12px;padding:0 12px;cursor:pointer}
+.btn{display:inline-flex;align-items:center;justify-content:center;text-decoration:none}
+button.pri,.btn.pri{background:var(--g);color:#fff;border-color:var(--g)}
+button:disabled{opacity:.4}
+:focus-visible{outline:2px solid var(--g2);outline-offset:2px}
+header{display:flex;align-items:center;gap:8px;padding:calc(8px + env(safe-area-inset-top)) 12px 8px;background:var(--sf);border-bottom:1px solid var(--ln);position:sticky;top:0;z-index:5}
+header a{color:var(--g);text-decoration:none;font:600 20px 'Playfair Display',serif}
+#nm{flex:1;min-width:0;border:0;background:transparent;font-weight:600;padding:8px}
+#st{font-size:12px;color:var(--mut);max-width:110px}
+#app{display:grid;gap:10px;padding:10px;max-width:1500px;margin:auto}
+#stage{background:#0b0f0d;border-radius:16px;display:flex;justify-content:center;position:relative;overflow:hidden}
+canvas{max-width:100%;max-height:46vh;display:block}
+#em{position:absolute;inset:0;display:grid;place-items:center;text-align:center;color:#cfd8d2;padding:20px;pointer-events:none}
+#em[hidden]{display:none}
+#ctl{display:flex;align-items:center;gap:8px;margin-top:8px}
+#tm{font-variant-numeric:tabular-nums;white-space:nowrap}#sk{flex:1;min-width:60px}
+#ar{min-height:44px;border-radius:12px;border:1px solid var(--ln);background:var(--sf);padding:0 6px}
+#bar{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px}#bar button{flex:none}
+#lib h2{font:600 15px 'Playfair Display',serif;margin:0 0 6px}
+#ml{display:flex;gap:6px;overflow-x:auto}
+.mi{flex:none;display:flex;gap:6px;align-items:center;background:var(--sf);border:1px solid var(--ln);border-radius:12px;padding:6px}
+.mi img{width:48px;height:32px;object-fit:cover;border-radius:6px;background:var(--ln)}
+.mi .nm{min-width:0}.mi b{display:block;max-width:90px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.mi small{color:var(--mut)}
+#sc{overflow-x:auto;background:var(--sf);border:1px solid var(--ln);border-radius:16px}
+#in{position:relative}
+#ru{height:26px;position:relative;border-bottom:1px solid var(--ln);cursor:pointer}
+#ru i{position:absolute;top:6px;font:11px system-ui;color:var(--mut);border-left:1px solid var(--ln);padding-left:3px;height:20px}
+.tr{position:relative;height:48px;border-bottom:1px solid var(--ln)}
+.lb{position:sticky;left:0;z-index:3;display:block;width:64px;height:100%;background:var(--sf);font:600 11px system-ui;padding:16px 6px;color:var(--mut);border-right:1px solid var(--ln)}
+.clip{position:absolute;top:5px;height:38px;border-radius:9px;color:#fff;font-size:12px;line-height:38px;padding:0 10px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;cursor:grab;z-index:1}
+.clip.v{background:var(--g2)}.clip.t{background:var(--gold);color:var(--ink)}.clip.n{background:#2f7a8a}.clip.m{background:#7a5aa6}
+.clip.sel{outline:3px solid var(--ink);touch-action:none;z-index:2}
+.hl,.hr{display:none;position:absolute;top:0;width:14px;height:100%;background:rgba(255,255,255,.4)}.hl{left:0}.hr{right:0}
+.sel .hl,.sel .hr{display:block}
+#ph{position:absolute;top:0;bottom:0;width:2px;background:var(--red);pointer-events:none;z-index:4}
+#pr{position:fixed;left:0;right:0;bottom:0;max-height:46vh;overflow:auto;background:var(--sf);border-top:1px solid var(--ln);border-radius:18px 18px 0 0;padding:12px 14px calc(12px + env(safe-area-inset-bottom));transform:translateY(105%);transition:transform .2s;z-index:6;box-shadow:0 -8px 24px rgba(0,0,0,.12)}
+#pr.open{transform:none}body.sh{padding-bottom:48vh}
+#pr label{display:block;font-size:12px;color:var(--mut);margin-top:8px}
+#pr input,#pr select,#pr textarea{width:100%;min-height:40px;border:1px solid var(--ln);border-radius:10px;background:#fff;padding:4px 8px}
+#pr input[type=color]{padding:2px}
+dialog{border:1px solid var(--ln);border-radius:18px;width:min(92vw,460px);background:var(--sf);color:var(--ink);padding:16px;max-height:86vh}
+dialog::backdrop{background:rgba(0,0,0,.45)}dialog h2{margin:0 0 6px;font:600 20px 'Playfair Display',serif}
+.pj{display:flex;gap:6px;align-items:center;margin:8px 0}.pj span{flex:1;min-width:0}.pj small{display:block;color:var(--mut)}
+dialog p{color:var(--mut)}progress{width:100%;height:14px}
+#ts{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 14px;border-radius:12px;z-index:20;display:none;max-width:90vw}
+@media(min-width:900px){
+#app{grid-template-columns:250px 1fr 300px;grid-template-areas:"lib pv pr" "bar bar bar" "tl tl tl"}
+#pv{grid-area:pv}#bar{grid-area:bar}#lib{grid-area:lib}#tl{grid-area:tl}
+#pr{grid-area:pr;position:static;transform:none;max-height:60vh;border:1px solid var(--ln);border-radius:16px;box-shadow:none}
+body.sh{padding-bottom:0}#ml{flex-direction:column;max-height:46vh;overflow-y:auto}canvas{max-height:56vh}}
+@media(prefers-reduced-motion:reduce){#pr{transition:none}}
+</style></head><body>
+<header><a href="index.html" aria-label="Back to NIJØK">NIJØK</a><input id="nm" aria-label="Project name" maxlength="60"><span id="st" role="status">Saved</span><button class="pri" data-a="ex">Export</button></header>
+<main id="app">
+<section id="pv"><div id="stage"><canvas id="cv" width="960" height="540" aria-label="Video preview"></canvas><div id="em">Import photos, videos or audio to begin,<br>or start from a template.</div></div>
+<div id="ctl"><button id="pp" data-a="pp" aria-label="Play">▶</button><span id="tm">0:00 / 0:00</span><input id="sk" type="range" min="0" max="1000" value="0" aria-label="Seek"><select id="ar" aria-label="Aspect ratio"><option>16:9<option>9:16<option>1:1</select></div></section>
+<nav id="bar" aria-label="Editing tools"><button data-a="imp">Import</button><button data-a="txt">Text</button><button id="rc" data-a="rec">● Record</button><button data-a="split">Split</button><button data-a="del">Delete</button><button data-a="un">Undo</button><button data-a="re">Redo</button><button data-a="zo" aria-label="Zoom out">−</button><button data-a="zi" aria-label="Zoom in">+</button><button data-a="tpl">Templates</button><button data-a="pj">Projects</button></nav>
+<aside id="lib"><h2>Media</h2><div id="ml"></div></aside>
+<section id="tl"><div id="sc"><div id="in"></div></div></section>
+<aside id="pr" aria-label="Clip properties"></aside>
+</main>
+<dialog id="dg"></dialog><input type="file" id="fi" multiple accept="video/*,image/*,audio/*" hidden><div id="ts" role="status"></div>
+<script>
+const $=s=>document.querySelector(s),CV=$('#cv'),IN=$('#in'),SC=$('#sc'),D=$('#dg');
+const KN={v:'Video',t:'Text',n:'Voice',m:'Music'},RT={'16:9':[16,9],'9:16':[9,16],'1:1':[1,1]};
+let P,M={},sel,t=0,play=0,exporting=0,last=0,raf,pps=60,hist=[],redo=[],hold=0,dirty=0,svT,short=540,ctx,out,dst,rcr,chunks,mt,mr,rs,rt0,DR;
+const uid=()=>Math.random().toString(36).slice(2,9),esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])),fmt=s=>Math.floor(s/60)+':'+String(Math.floor(s%60)).padStart(2,'0');
+const find=id=>P.clips.find(c=>c.id==id),end=c=>c.s+c.d,total=()=>Math.max(0,...P.clips.map(end));
+const base=o=>({id:uid(),s:0,d:4,i:0,fd:.5,vol:1,br:1,ct:1,fx:'',...o});
+const blank=()=>({id:uid(),name:'Untitled project',ratio:'16:9',media:[],clips:[],upd:Date.now()});
+const pack=()=>{let x=0;P.clips.filter(c=>c.k=='v').sort((a,b)=>a.s-b.s).forEach(c=>{c.s=x;x+=c.d})};
+function toast(m){const e=$('#ts');e.textContent=m;e.style.display='block';clearTimeout(toast.h);toast.h=setTimeout(()=>e.style.display='none',3800)}
+const setSt=s=>$('#st').textContent=s;
+/* storage: projects + media blobs in IndexedDB (stays on this device) */
+const db=new Promise((r,j)=>{const q=indexedDB.open('nijok-studio',1);q.onupgradeneeded=()=>{q.result.createObjectStore('p',{keyPath:'id'});q.result.createObjectStore('b')};q.onsuccess=()=>r(q.result);q.onerror=()=>j(q.error)});
+const tx=async(n,m,f)=>{const d=await db;return new Promise((r,j)=>{const x=d.transaction(n,m);let o;try{o=f(x.objectStore(n))}catch(e){return j(e)}x.oncomplete=()=>r(o&&o.result);x.onerror=x.onabort=()=>j(x.error)})};
+function dirtyIt(){dirty=1;setSt('Unsaved changes');clearTimeout(svT);svT=setTimeout(save,900)}
+async function save(){setSt('Saving…');try{P.upd=Date.now();await tx('p','readwrite',s=>s.put(P));dirty=0;setSt('Saved on this device')}catch{setSt('Not saved: storage unavailable or full')}}
+async function guard(){clearTimeout(svT);if(dirty){await save();if(dirty)return confirm('Your changes could not be saved. Discard them?')}return true}
+/* history */
+const snap=()=>JSON.stringify({c:P.clips,r:P.ratio,n:P.name});
+function edit(fn,d){clearTimeout(hold);if(d||!hold){hist.push(snap());if(hist.length>60)hist.shift();redo=[]}hold=d?0:setTimeout(()=>hold=0,700);fn();dirtyIt();ml();rt();frame();if(d)pr()}
+function undo(r){const a=r?redo:hist,b=r?hist:redo;if(!a.length)return;b.push(snap());const s=JSON.parse(a.pop());P.clips=s.c;P.ratio=s.r;P.name=s.n;if(!find(sel))sel=null;size(540);$('#nm').value=P.name;$('#ar').value=P.ratio;dirtyIt();rt();pr();frame()}
+/* media */
+function load(b,id,ty,name){return new Promise((ok,no)=>{const u=URL.createObjectURL(b),m={id,type:ty,name,url:u},e=ty=='image'?new Image():document.createElement(ty);m.el=e;e.onerror=()=>no(0);
+const fin=()=>{if(ty=='video'){const c=document.createElement('canvas');c.width=96;c.height=54;try{c.getContext('2d').drawImage(e,0,0,96,54);m.th=c.toDataURL()}catch{}e.onseeked=()=>{if(!play)frame()}}if(ty=='image')m.th=u;m.dur=ty=='image'?0:e.duration;ok(m)};
+if(ty=='image')e.onload=fin;else{e.preload='auto';e.playsInline=true;e.onloadeddata=fin}e.src=u})}
+async function addFile(b,name,ty,dur,k){const id=uid(),m=await load(b,id,ty,name);if(!isFinite(m.dur))m.dur=dur||5;M[id]=m;P.media.push({id,name,type:ty,dur:m.dur});try{await tx('b','readwrite',s=>s.put(b,P.id+':'+id))}catch{toast('Storage full: this file will not survive a reload')}addClip(id,k)}
+async function imp(files){for(const f of files){const ty=f.type.split('/')[0];try{if(!['video','image','audio'].includes(ty))throw 0;await addFile(f,f.name,ty)}catch{toast('Could not import '+f.name+' (unsupported or unreadable)')}}}
+function addClip(mid,k){const m=M[mid];if(!m)return;k=k||(m.type=='audio'?'m':'v');edit(()=>{const c=base({k,m:mid,d:m.type=='image'?4:m.dur,s:k=='v'?Math.max(0,...P.clips.filter(x=>x.k=='v').map(end)):t});P.clips.push(c);if(k=='v')pack();sel=c.id},1)}
+async function rmM(id){if(!confirm('Remove this file and its clips from the project? Undo cannot bring the file back.'))return;edit(()=>{P.clips=P.clips.filter(c=>c.m!=id);P.media=P.media.filter(x=>x.id!=id);pack();if(!find(sel))sel=null},1);const m=M[id];if(m){if(m.el.pause)m.el.pause();URL.revokeObjectURL(m.url);delete M[id]}try{await tx('b','readwrite',s=>s.delete(P.id+':'+id))}catch{}}
+function ml(){$('#ml').innerHTML=P.media.map(x=>{const m=M[x.id];return`<div class="mi"><img src="${m&&m.th||'data:,'}" alt=""><div class="nm"><b>${esc(x.name)}</b><small>${x.type}${x.type=='image'?'':' · '+fmt(x.dur)}${m?'':' · missing'}</small></div>`+(m?(x.type=='audio'?`<button data-a="add" data-id="${x.id}" data-k="m">Music</button><button data-a="add" data-id="${x.id}" data-k="n">Voice</button>`:`<button data-a="add" data-id="${x.id}">Add</button>`):'')+`<button data-a="rm" data-id="${x.id}" aria-label="Remove ${esc(x.name)}">✕</button></div>`}).join('')||'<p style="color:var(--mut);margin:0">No media yet. Tap Import.</p>'}
+/* project open */
+function size(s){if(s)short=s;const[a,b]=RT[P.ratio],k=short/Math.min(a,b);CV.width=Math.round(a*k);CV.height=Math.round(b*k)}
+async function use(p){stop();Object.values(M).forEach(m=>URL.revokeObjectURL(m.url));M={};P=p;sel=null;t=0;hist=[];redo=[];let bad=0;
+for(const x of p.media){try{const b=await tx('b','readonly',s=>s.get(p.id+':'+x.id)),m=await load(b,x.id,x.type,x.name);if(!isFinite(m.dur))m.dur=x.dur;M[x.id]=m}catch{bad++}}
+if(bad)toast(bad+' media file(s) missing. Import them again.');
+$('#nm').value=p.name;$('#ar').value=p.ratio;size(540);dirty=0;setSt('Saved on this device');ml();rt();pr();frame()}
+/* rendering */
+const fa=c=>{const f=Math.min(c.fd||0,c.d/2);if(!f)return 1;const x=t-c.s;return Math.max(0,Math.min(1,x/f,(c.d-x)/f))};
+function txt(g,c,W,H){const fs=c.sz/100*H;g.font=`700 ${fs}px 'Noto Sans Devanagari',system-ui,sans-serif`;g.textBaseline='middle';g.textAlign=c.a;const mw=W*.86,L=[];
+c.txt.split('\n').forEach(p=>{let l='';p.split(' ').forEach(w=>{const n=l?l+' '+w:w;if(l&&g.measureText(n).width>mw){L.push(l);l=w}else l=n});L.push(l)});
+const lh=fs*1.35,hh=L.length*lh,x=c.a=='left'?W*.07:c.a=='right'?W*.93:W/2,y0=c.y/100*H-hh/2;
+if(c.bo>0){const w=Math.max(...L.map(l=>g.measureText(l).width))+fs,bx=c.a=='left'?x-fs/2:c.a=='right'?x+fs/2-w:x-w/2,pa=g.globalAlpha;g.globalAlpha=pa*c.bo;g.fillStyle=c.bg;g.beginPath();if(g.roundRect)g.roundRect(bx,y0-fs*.2,w,hh+fs*.4,fs*.3);else g.rect(bx,y0-fs*.2,w,hh+fs*.4);g.fill();g.globalAlpha=pa}
+g.fillStyle=c.col;g.shadowColor='rgba(0,0,0,.6)';g.shadowBlur=c.bo>0?0:fs*.15;L.forEach((l,i)=>g.fillText(l,x,y0+lh*(i+.5)));g.shadowBlur=0}
+function draw(){const g=CV.getContext('2d'),W=CV.width,H=CV.height;g.filter='none';g.globalAlpha=1;g.fillStyle='#000';g.fillRect(0,0,W,H);
+for(const k of 'vt')for(const c of P.clips){if(c.k!=k||t<c.s||t>=end(c))continue;g.globalAlpha=fa(c);
+if(k=='t'){txt(g,c,W,H);continue}
+const m=M[c.m];if(!m)continue;const e=m.el,im=m.type=='image',w=im?e.naturalWidth:e.videoWidth,h=im?e.naturalHeight:e.videoHeight;if(!w||!h)continue;
+const p=(t-c.s)/c.d;let z=1,px=0;if(c.fx=='zi')z=1+.2*p;if(c.fx=='zo')z=1.2-.2*p;if(c.fx=='pl'||c.fx=='pr'){z=1.2;px=(c.fx=='pl'?.5-p:p-.5)*.2}
+const s=Math.max(W/w,H/h)*z;g.filter=`brightness(${c.br}) contrast(${c.ct})`;try{g.drawImage(e,(W-w*s)/2+px*W,(H-h*s)/2,w*s,h*s)}catch{}g.filter='none'}
+g.globalAlpha=1}
+function init(){if(ctx)return;ctx=new AudioContext();out=ctx.createGain();out.connect(ctx.destination);dst=ctx.createMediaStreamDestination()}
+function route(e){if(e._r)return;e._r=1;init();const s=ctx.createMediaElementSource(e);s.connect(out);s.connect(dst)}
+function sync(){const on=new Set;for(const c of P.clips){const m=M[c.m];if(c.k=='t'||!m||m.type=='image'||t<c.s||t>=end(c))continue;on.add(m.id);const e=m.el,tg=c.i+t-c.s;route(e);e.volume=Math.max(0,Math.min(1,c.vol*fa(c)));
+if(play){if(e.paused){e.currentTime=tg;e.play().catch(()=>{})}else if(Math.abs(e.currentTime-tg)>.35)e.currentTime=tg}else if(m.type=='video'&&Math.abs(e.currentTime-tg)>.05)e.currentTime=tg}
+for(const m of Object.values(M))if(m.type!='image'&&!on.has(m.id)&&!m.el.paused)m.el.pause()}
+function tc(){$('#tm').textContent=fmt(t)+' / '+fmt(total());$('#sk').value=total()?t/total()*1000:0;const p=$('#ph');if(p){const x=64+t*pps;p.style.left=x+'px';if(play&&x>SC.scrollLeft+SC.clientWidth-30)SC.scrollLeft=x-100}}
+function frame(){sync();draw();tc()}
+function seek(s){t=Math.max(0,Math.min(s,total()));frame()}
+function loop(n){if(!play)return;t+=(n-last)/1000;last=n;const T=total();if(t>=T){t=T;frame();exporting?fin():stop();return}frame();if(exporting){const g=$('#pg');if(g)g.value=t/T}raf=requestAnimationFrame(loop)}
+function stop(){play=0;cancelAnimationFrame(raf);Object.values(M).forEach(m=>m.type!='image'&&m.el.pause());$('#pp').textContent='▶';$('#pp').setAttribute('aria-label','Play')}
+function toggle(){if(exporting||!total())return;if(play)return stop();init();ctx.resume();if(t>=total()-.05)t=0;play=1;last=performance.now();raf=requestAnimationFrame(loop);$('#pp').textContent='❚❚';$('#pp').setAttribute('aria-label','Pause')}
+/* timeline */
+function rt(){const T=Math.max(total(),10),w=64+T*pps+80,st=pps>=100?1:pps>=40?2:5;let h=`<div id="ru" style="width:${w}px">`;for(let s=0;s<=T+2;s+=st)h+=`<i style="left:${64+s*pps}px">${fmt(s)}</i>`;h+='</div>';
+for(const k of 'vtnm')h+=`<div class="tr" style="width:${w}px"><b class="lb">${KN[k]}</b>`+P.clips.filter(c=>c.k==k).map(c=>`<div class="clip ${k}${c.id==sel?' sel':''}" tabindex="0" data-id="${c.id}" style="left:${64+c.s*pps}px;width:${Math.max(18,c.d*pps)}px">${k=='t'?esc(c.txt):M[c.m]?esc(M[c.m].name):'Missing media'}<u class="hl"></u><u class="hr"></u></div>`).join('')+'</div>';
+IN.innerHTML=h+'<div id="ph"></div>';$('#em').hidden=P.clips.length>0;tc()}
+IN.addEventListener('pointerdown',e=>{const el=e.target.closest('.clip');if(!el)return;const c=find(el.dataset.id),was=sel==c.id;sel=c.id;IN.querySelectorAll('.sel').forEach(x=>x.classList.remove('sel'));el.classList.add('sel');pr();
+if(!was&&e.pointerType=='touch')return;const q=e.target.className;DR={c,el,x:e.clientX,pre:snap(),s:c.s,d:c.d,i:c.i,md:q=='hl'?'l':q=='hr'?'r':'m',mv:0}});
+IN.addEventListener('click',e=>{if(e.target.closest('.clip,.lb'))return;seek((e.clientX-IN.getBoundingClientRect().left-64)/pps)});
+addEventListener('pointermove',e=>{if(!DR)return;const{c,el}=DR,dx=(e.clientX-DR.x)/pps;if(Math.abs(dx)*pps>3)DR.mv=1;if(!DR.mv)return;const m=M[c.m],me=m&&m.type!='image',lim=me?m.dur:1e9;
+if(DR.md=='m')c.s=Math.max(0,DR.s+dx);else if(DR.md=='r')c.d=Math.max(.2,Math.min(DR.d+dx,lim-c.i));
+else{let lo=me?-DR.i:-1e9;if(c.k!='v')lo=Math.max(lo,-DR.s);const q=Math.max(lo,Math.min(dx,DR.d-.2));c.s=DR.s+q;c.d=DR.d-q;if(me)c.i=DR.i+q}
+el.style.left=64+c.s*pps+'px';el.style.width=Math.max(18,c.d*pps)+'px'});
+const up=()=>{if(!DR)return;const{c,pre,mv}=DR;DR=null;if(!mv)return;hist.push(pre);redo=[];if(hist.length>60)hist.shift();if(c.k=='v')pack();dirtyIt();rt();pr();frame()};
+addEventListener('pointerup',up);addEventListener('pointercancel',up);
+/* properties */
+function pr(){const c=find(sel),B=$('#pr');document.body.classList.toggle('sh',!!c);B.classList.toggle('open',!!c);
+if(!c){B.innerHTML='<p style="color:var(--mut)">Select a clip on the timeline to edit it.</p>';return}
+const n=(k,l,a)=>`<label>${l}<input data-k="${k}" type="number" step=".1" value="${+c[k].toFixed(2)}" ${a||'min="0.2"'}></label>`,
+r=(k,l,a,b,s)=>`<label>${l}<input data-k="${k}" type="range" min="${a}" max="${b}" step="${s}" value="${c[k]}"></label>`,
+o=(k,l,L)=>`<label>${l}<select data-k="${k}">${L.map(([v,x])=>`<option value="${v}"${c[k]==v?' selected':''}>${x}</option>`).join('')}</select></label>`;
+let h=`<div style="display:flex;justify-content:space-between;align-items:center"><b>${KN[c.k]} clip</b><button data-a="cl">Done</button></div>`;
+if(c.k=='t')h+=`<label>Text<textarea data-k="txt" rows="3">${esc(c.txt)}</textarea></label>`+r('sz','Size',3,15,.5)+`<label>Text colour<input data-k="col" type="color" value="${c.col}"></label><label>Background colour<input data-k="bg" type="color" value="${c.bg}"></label>`+r('bo','Background opacity',0,1,.1)+o('a','Align',[['left','Left'],['center','Centre'],['right','Right']])+r('y','Vertical position',5,95,1);
+if(c.k=='v'){h+=o('fx','Motion',[['','None'],['zi','Slow zoom in'],['zo','Slow zoom out'],['pl','Pan left'],['pr','Pan right']])+r('br','Brightness',.5,1.5,.05)+r('ct','Contrast',.5,1.5,.05);if(M[c.m]&&M[c.m].type=='video')h+=r('vol','Volume',0,1,.05)}
+if(c.k=='n'||c.k=='m')h+=r('vol','Volume',0,1,.05);
+h+=(c.k=='v'?'':n('s','Start (s)','min="0"'))+n('d','Duration (s)')+n('fd','Fade in and out (s)','min="0"')+`<div style="display:flex;gap:6px;margin-top:10px"><button data-a="split">Split</button><button data-a="del" style="color:var(--red)">Delete</button></div>`;B.innerHTML=h}
+$('#pr').addEventListener('input',e=>{const k=e.target.dataset.k,c=find(sel);if(!k||!c)return;const ty=e.target.type,v=ty=='range'||ty=='number'?+e.target.value:e.target.value;if(ty=='number'&&isNaN(v))return;
+edit(()=>{c[k]=v;if(k=='d'){c.d=Math.max(.2,c.d);const m=M[c.m];if(m&&m.type!='image')c.d=Math.min(c.d,m.dur-c.i)}if(c.k=='v')pack()})});
+/* editing actions */
+function split(){const c=find(sel);if(!c||t<=c.s+.1||t>=end(c)-.1)return toast('Move the playhead inside the selected clip first');edit(()=>{const n={...c,id:uid(),s:t,d:end(c)-t,i:c.i+(t-c.s)};c.d=t-c.s;P.clips.push(n);sel=n.id},1)}
+function del(){if(!find(sel))return;edit(()=>{P.clips=P.clips.filter(x=>x.id!=sel);sel=null;pack()},1)}
+const addText=(o)=>base({k:'t',s:t,d:3,txt:'Your text',sz:7,col:'#ffffff',bg:'#000000',bo:0,a:'center',y:50,fd:.4,...o});
+const TP=[['Historical documentary','16:9',[['इतिहास की कहानी',0,4,45,9],['वर्ष · स्थान',4,3,80,5],['दृश्य 1: अपना फुटेज जोड़ें',7,5,50,6],['दृश्य 2: अपना फुटेज जोड़ें',12,5,50,6],['NIJØK',17,3,50,8]]],
+['Book review','16:9',[['Book title',0,4,45,9],['Author name',4,3,60,5],['My rating ★★★★☆',7,4,50,7],['More books on NIJØK',11,3,82,5]]],
+['NIJØK Food Facts','9:16',[['NIJØK Food Facts',0,3,40,8],['Fact 1',3,4,50,7],['Fact 2',7,4,50,7],['Fact 3',11,4,50,7]]],
+['Travel and world discovery','16:9',[['Discover',0,4,45,10],['Place name',4,4,82,6],['Day 1',8,4,50,7],['NIJØK Travel',12,3,50,7]]],
+['YouTube Shorts / reel','9:16',[['Hook line',0,3,35,9],['Point 1',3,4,50,7],['Point 2',7,4,50,7],['Follow NIJØK',11,3,70,7]]]];
+function applyTp(i){const[,r,L]=TP[i];edit(()=>{P.ratio=r;size(540);$('#ar').value=r;L.forEach(([x,s,d,y,z])=>P.clips.push(addText({txt:x,s,d,y,sz:z})))},1);D.close();toast('Template added. Place your own clips on the Video track.')}
+async function rec(){if(mr){mr.stop();return}try{const s=await navigator.mediaDevices.getUserMedia({audio:true}),ch=[];mr=new MediaRecorder(s);mr.ondataavailable=e=>ch.push(e.data);rt0=Date.now();rs=t;
+mr.onstop=async()=>{s.getTracks().forEach(x=>x.stop());const d=(Date.now()-rt0)/1000,b=new Blob(ch,{type:mr.mimeType});mr=null;$('#rc').textContent='● Record';t=rs;try{await addFile(b,'Narration '+new Date().toLocaleTimeString(),'audio',d,'n')}catch{toast('Recording could not be decoded')}};mr.start();$('#rc').textContent='■ Stop'}catch{toast('Microphone blocked or unavailable')}}
+/* projects */
+function dlg(h){D.innerHTML=h;if(!D.open)D.showModal()}
+const cls='<form method="dialog"><button>Close</button></form>';
+async function projects(){if(dirty)await save();let l=[];try{l=(await tx('p','readonly',s=>s.getAll())).sort((a,b)=>b.upd-a.upd)}catch{}
+dlg('<h2>Projects</h2><p>Drafts and media stay in this browser only. Clearing site data deletes them.</p><button class="pri" data-a="pn">New project</button>'+l.map(p=>`<div class="pj"><span>${esc(p.name)}<small>${p.ratio} · ${new Date(p.upd).toLocaleDateString()}</small></span><button data-a="po" data-id="${p.id}">Open</button><button data-a="pd" data-id="${p.id}">Copy</button><button data-a="px" data-id="${p.id}" aria-label="Delete project">✕</button></div>`).join('')+cls)}
+async function dup(id){const p=await tx('p','readonly',s=>s.get(id)),n=JSON.parse(JSON.stringify(p));n.id=uid();n.name=p.name+' copy';n.upd=Date.now();for(const x of p.media){const b=await tx('b','readonly',s=>s.get(id+':'+x.id));if(b)await tx('b','readwrite',s=>s.put(b,n.id+':'+x.id))}await tx('p','readwrite',s=>s.put(n));projects()}
+async function delP(id){if(!confirm('Delete this project and its media from this device?'))return;await tx('p','readwrite',s=>s.delete(id));await tx('b','readwrite',s=>s.delete(IDBKeyRange.bound(id+':',id+':\uffff')));if(P.id==id){await use(blank());await save()}projects()}
+/* export: real-time render of the canvas + audio mix into a recorded file */
+function expDlg(){if(!total())return toast('Add something to the timeline first');if(!window.MediaRecorder||!CV.captureStream)return toast('This browser cannot export video');
+dlg(`<h2>Export video</h2><label>Quality <select id="eq"><option value="720">720p (recommended for phones)<option value="1080">1080p (needs more memory)</select></label><p>Export runs in real time: a 1 minute video takes about 1 minute. Keep this screen open. The file is MP4 if your browser supports it, otherwise WebM.</p><button class="pri" data-a="xs">Start export</button> <button data-a="xc">Cancel</button>`)}
+async function runExp(q){stop();try{await document.fonts.load("700 24px 'Noto Sans Devanagari'",'अ')}catch{}init();await ctx.resume();size(q);t=0;exporting=1;out.gain.value=0;
+mt=['video/mp4;codecs=avc1.42E01E,mp4a.40.2','video/mp4','video/webm;codecs=vp9,opus','video/webm;codecs=vp8,opus','video/webm'].find(x=>MediaRecorder.isTypeSupported(x));
+const s=CV.captureStream(30);dst.stream.getAudioTracks().forEach(a=>s.addTrack(a));chunks=[];
+try{rcr=new MediaRecorder(s,{...(mt?{mimeType:mt}:{}),videoBitsPerSecond:q==1080?8e6:5e6})}catch{resetExp();return dlg('<h2>Export failed</h2><p>This browser could not start the recorder.</p>'+cls)}
+rcr.ondataavailable=e=>e.data.size&&chunks.push(e.data);rcr.onstop=doneExp;rcr.onerror=()=>{cancelExp();dlg('<h2>Export failed</h2><p>The recorder reported an error.</p>'+cls)};
+dlg('<h2>Exporting…</h2><progress id="pg" max="1" value="0"></progress><p>Keep this screen open.</p><button data-a="xc">Cancel</button>');rcr.start(1000);play=1;last=performance.now();raf=requestAnimationFrame(loop)}
+function resetExp(){exporting=0;if(out)out.gain.value=1;size(540);frame()}
+function fin(){play=0;cancelAnimationFrame(raf);Object.values(M).forEach(m=>m.type!='image'&&m.el.pause());rcr.stop()}
+function cancelExp(){if(rcr){rcr.onstop=null;try{rcr.stop()}catch{}}stop();resetExp()}
+function doneExp(){const ext=mt&&mt.includes('mp4')?'mp4':'webm',b=new Blob(chunks,{type:(mt||'video/webm').split(';')[0]});chunks=[];resetExp();
+dlg(`<h2>Export ready</h2><p>${ext.toUpperCase()} · ${(b.size/1048576).toFixed(1)} MB</p><a class="btn pri" download="${esc(P.name)}.${ext}" href="${URL.createObjectURL(b)}">Download</a> `+cls)}
+D.addEventListener('close',()=>{if(exporting)cancelExp()});
+document.addEventListener('visibilitychange',()=>{if(exporting&&document.hidden){cancelExp();D.close();toast('Export cancelled: the screen left the app. Try again and keep it open.')}});
+/* wiring */
+document.addEventListener('click',async e=>{const b=e.target.closest('[data-a]');if(!b)return;const a=b.dataset.a,id=b.dataset.id;
+if(a=='imp')$('#fi').click();else if(a=='pp')toggle();else if(a=='txt')edit(()=>{const c=addText();P.clips.push(c);sel=c.id},1);else if(a=='rec')rec();else if(a=='split')split();else if(a=='del')del();
+else if(a=='un')undo();else if(a=='re')undo(1);else if(a=='zo'){pps=Math.max(15,pps/1.4);rt()}else if(a=='zi'){pps=Math.min(300,pps*1.4);rt()}
+else if(a=='tpl')dlg('<h2>Templates</h2><p>Adds timed, editable text placeholders and sets the canvas. Add your own footage on the Video track.</p>'+TP.map((x,i)=>`<div class="pj"><span>${x[0]}<small>${x[1]}</small></span><button data-a="tp" data-id="${i}">Use</button></div>`).join('')+cls);
+else if(a=='tp')applyTp(+id);else if(a=='pj')projects();else if(a=='add')addClip(id,b.dataset.k);else if(a=='rm')rmM(id);else if(a=='cl'){sel=null;rt();pr()}
+else if(a=='pn'){if(await guard()){await use(blank());await save();D.close()}}
+else if(a=='po'){if(await guard()){await use(await tx('p','readonly',s=>s.get(id)));D.close()}}
+else if(a=='pd')dup(id);else if(a=='px')delP(id);else if(a=='ex')expDlg();else if(a=='xs')runExp(+$('#eq').value);else if(a=='xc'){cancelExp();D.close()}});
+$('#fi').onchange=e=>{imp([...e.target.files]);e.target.value=''};
+$('#sk').oninput=e=>{if(play)stop();seek(e.target.value/1000*total())};
+$('#ar').onchange=e=>edit(()=>{P.ratio=e.target.value;size(540)},1);
+$('#nm').oninput=e=>{P.name=e.target.value||'Untitled project';dirtyIt()};
+addEventListener('keydown',e=>{if(/INPUT|TEXTAREA|SELECT/.test(e.target.tagName))return;const k=e.key.toLowerCase(),m=e.ctrlKey||e.metaKey;
+if(m&&k=='z'){e.preventDefault();undo(e.shiftKey)}else if(m&&k=='y'){e.preventDefault();undo(1)}
+else if(k==' '&&e.target.tagName!='BUTTON'){e.preventDefault();toggle()}else if(k=='delete'||k=='backspace')del();else if(k=='s'&&!m)split();
+else if(k=='enter'&&e.target.classList.contains('clip')){sel=e.target.dataset.id;rt();pr()}});
+addEventListener('beforeunload',e=>{if(dirty)e.preventDefault()});
+(async()=>{try{const l=await tx('p','readonly',s=>s.getAll());await use(l.length?l.sort((a,b)=>b.upd-a.upd)[0]:blank())}catch{await use(blank());setSt('Not saved: storage unavailable');toast('Local storage is unavailable, so projects cannot be saved.')}})();
+</script></body></html>
