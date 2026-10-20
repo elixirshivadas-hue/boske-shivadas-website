@@ -446,7 +446,7 @@ const back=()=>{const s=S.stack.pop();if(s){S.view=s.v;S.vp=s.p;draw()}else root
 addEventListener('popstate',()=>{if(S.me)back()});
 
 /* ====== Auth / boot ====== */
-async function afterLogin(u){S.me={uid:u.uid,phone:u.phoneNumber||((u.email||'').endsWith('@nijok.app')?'+'+u.email.split('@')[0]:'')};let p=null;try{p=await getProfile(u.uid)}catch(e){}
+async function afterLogin(u){if(u.email&&!/@nijok\.app$/.test(u.email)&&!u.emailVerified){root('verify');return}S.me={uid:u.uid,phone:u.phoneNumber||((u.email||'').endsWith('@nijok.app')?'+'+u.email.split('@')[0]:'')};let p=null;try{p=await getProfile(u.uid)}catch(e){}
  if(!p){root('setup');return}S.me={...p,uid:u.uid};S.U[u.uid]=S.me;
  if(!await ensure(S.me)){root('unlock');return}start()}
 async function start(){S.unsubs.forEach(f=>f());S.unsubs=[];S.chats=[];S.cm={};S.kc={};
@@ -462,8 +462,18 @@ Au.onAuthStateChanged(auth,u=>{if(!u){S.unsubs.forEach(f=>f());S.unsubs=[];S.me=
 
 /* ====== Auth views ====== */
 const logo=`<img src="icon-192.png" alt="">`;
-V.welcome=()=>{app.innerHTML=`<div class="wl2">${PH.hero?`<div class="hero herop" style="background-image:url(${PH.hero})"></div>`:HERO}<div class="wl2c"><div>${WM(1)}<div class="ft">Food to Nature</div><div class="kl">Know &nbsp;·&nbsp; Learn &nbsp;·&nbsp; Explore &nbsp;·&nbsp; Protect</div></div><div style="width:100%;display:flex;flex-direction:column;align-items:center"><div class="qt">Better Food<br>Healthier People<br>A Greener Planet</div><button class="btn" data-a="go" data-v="auth">Get Started &nbsp;→</button>${standalone?'':'<button class="btn o" style="background:#ffffffaa" data-a="install">📲 Install app</button>'}<div class="by" style="color:#fff">by <b style="color:#fff">Boske Shivadas</b></div></div></div></div>`};
-V.auth=()=>{app.innerHTML=`<div class="hd"><button class="ib" data-a="back">←</button><h2>Login / Create account</h2></div><form class="pg" data-f="auth"><h2>Your mobile number</h2><p class="lead">Your number is your NIJOK account. Use the same number and password on any phone.</p>${S.em?'<label class="fld"><input name="em" type="email" placeholder="Email address" required autocomplete="email"></label>':`<div class="ph"><select name="cc">${CC.map(c=>`<option value="${c[0]}">${E(c[1])} ${c[0]}</option>`).join('')}</select><input name="num" type="tel" inputmode="numeric" placeholder="Mobile number" required></div>`}<label class="fld"><input name="pw" type="password" placeholder="Password (min 6)" minlength="6" required autocomplete="current-password"></label><div class="err" id="er"></div><button class="btn" value="login">Login</button><button class="btn o" value="reg">Create new account</button><p class="lead" style="text-align:center;margin-top:14px;cursor:pointer;color:var(--g2)" data-a="authem">${S.em?'Use mobile number instead':'Use email instead'}</p></form>`};
+const MT='<svg viewBox="0 0 360 150" preserveAspectRatio="none"><path d="M0 150V84l50-42 45 38 60-58 70 64 50-36 85 50v50z" fill="#14503a" opacity=".12"/><path d="M0 150v-36l60-32 55 36 70-52 80 58 95-40v66z" fill="#14503a" opacity=".22"/></svg>';
+const LK='<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>',ML='<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>';
+V.welcome=()=>{app.innerHTML=`<div class="au"><div class="aum">${MT}</div><div class="auc" style="text-align:center;padding-top:calc(70px + env(safe-area-inset-top))"><img class="wlg" src="icon-192.png" alt=""><div style="margin-top:16px">${WM(1)}</div><p class="wtg">Learn. Adopt. Grow.</p><p class="wsb">Food · Books · People · Nature</p><button class="btn" data-a="go" data-v="auth" style="margin-top:38px">Get Started →</button>${standalone?'':'<button class="btn o" data-a="install">📲 Install app</button>'}<p class="lead" style="margin-top:16px">by <b>Boske Shivadas</b></p></div></div>`};
+V.auth=()=>{if(S.em===undefined)S.em=true;S.am=S.am||'login';const reg=S.am==='reg',em=S.em;
+ app.innerHTML=`<div class="au"><div class="aum">${MT}</div><div class="auc"><div class="auh">${WM(1)}<p>LEARN. ADOPT. GROW.</p></div><h2>${reg?'Create account':'Welcome Back'}</h2><p class="lead">${reg?'Sign up with your email to start your journey with NIJØK.':'Sign in to continue your journey with NIJØK.'}</p>
+ <form data-f="auth">${em?`<label class="aif"><span>${ML}</span><input name="em" type="email" placeholder="yourname@gmail.com" required autocomplete="email"></label>`:`<div class="ph"><select name="cc">${CC.map(c=>`<option value="${c[0]}">${E(c[1])} ${c[0]}</option>`).join('')}</select><input name="num" type="tel" inputmode="numeric" placeholder="Mobile number" required></div>`}
+ <label class="aif"><span>${LK}</span><input name="pw" type="password" placeholder="Password (min 6)" minlength="6" required autocomplete="${reg?'new-password':'current-password'}"><i data-a="pweye">👁</i></label>
+ ${reg&&em?`<label class="aif"><span>${LK}</span><input name="pw2" type="password" placeholder="Confirm password" minlength="6" required autocomplete="new-password"></label>`:''}
+ <div class="err" id="er"></div><button class="btn" value="${reg?'reg':'login'}">${reg?'Create account':'Log in'}</button>${!reg&&em?'<p class="aul" data-a="forgot">Forgot password?</p>':''}</form>
+ <p class="aus">${reg?'Already have an account? <b data-a="amode" data-m="login">Log in</b>':'New to NIJØK? <b data-a="amode" data-m="reg">Create account</b>'}</p>
+ <p class="aul" data-a="authem">${em?'Old mobile account? Log in with number':'← Back to email login'}</p></div></div>`};
+V.verify=()=>{const u=auth.currentUser;if(!u)return root('welcome');app.innerHTML=`<div class="au"><div class="aum">${MT}</div><div class="auc" style="text-align:center"><div class="auh">${WM(1)}</div><div class="vbig">✉️</div><h2>Verify your email</h2><p class="lead">We sent a verification link to <b>${E(u.email)}</b>. Open Gmail, tap the link, then come back here.</p><div class="err" id="er"></div><a class="btn" href="https://mail.google.com" target="_blank" rel="noopener">Open Gmail</a><button class="btn o" data-a="vdone">I have verified</button><p class="aul" data-a="vresend">Resend email</p><p class="aul" data-a="logout">Use a different email</p></div></div>`};
 V.unlock=()=>{app.innerHTML=`<div class="hd"><h2>Unlock chats</h2></div><form class="pg" data-f="unlock"><h2>Enter your password</h2><p class="lead">This phone needs your password once to unlock your encrypted chats.</p><label class="fld"><input name="pw" type="password" required></label><div class="err" id="er"></div><button class="btn">Unlock</button><button type="button" class="btn rd" data-a="logout">Log out</button></form>`};
 V.setup=()=>{app.innerHTML=`<div class="pg"><h2>Set up your profile</h2><p class="lead">${E(S.me.phone?fph(S.me.phone):auth.currentUser.email)}</p><form data-f="setup"><div style="display:flex;justify-content:center" data-a="dp">${av(S.ng?.me||{name:'?'},84)}</div><label class="fld"><span>Your name *</span><input name="name" maxlength="40" required></label><label class="fld"><span>Username ${S.me.phone?'(optional)':'*'}</span><input name="un" maxlength="24" placeholder="e.g. boske" ${S.me.phone?'':'required'}></label><label class="fld"><span>About</span><input name="about" maxlength="80" value="Hey there! I am using NIJOK."></label><div class="err" id="er"></div><button class="btn">Continue</button></form></div>`};
 
@@ -519,8 +529,8 @@ const discHTML=()=>(S.disc||[]).map(c=>`<div class="row">${av({photo:c.photo,emo
 const HBI={ls:'🍬',lsalt:'🧂',lf:'🥑',hp:'💪',hf:'🌾',noadd:'✅'};
 const HERO=`<svg class="hero" viewBox="0 0 390 800" preserveAspectRatio="xMidYMid slice"><defs><linearGradient id="sk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#a9cde0"/><stop offset=".38" stop-color="#f6e2c2"/><stop offset=".62" stop-color="#f8efd9"/></linearGradient></defs><rect width="390" height="800" fill="url(#sk)"/><circle cx="285" cy="330" r="44" fill="#fff7dc" opacity=".9"/><path d="M0 470 L60 400 L110 440 L190 340 L260 430 L320 380 L390 450 V800H0z" fill="#9db9c4" opacity=".75"/><path d="M0 520 L90 430 L150 480 L235 395 L310 485 L390 440 V800H0z" fill="#6f9a82"/><path d="M0 600 Q100 540 200 580 T390 555 V800H0z" fill="#3b7a56"/><path d="M0 670 Q120 625 240 655 T390 640 V800H0z" fill="#1d5a3b"/><path d="M-10 40 Q40 10 80 60 Q40 90 -10 40z" fill="#3f8f5c"/><path d="M-10 110 Q30 80 70 120 Q30 150 -10 110z" fill="#2f7a52"/><path d="M400 30 Q350 0 310 50 Q350 85 400 30z" fill="#3f8f5c"/><path d="M400 100 Q360 70 325 110 Q360 145 400 100z" fill="#2f7a52"/></svg>`;
 const NAVS=[['home',SV(IC.home),''],['explore',SV(IC.compass),''],['chats',SV(IC.chat),''],['notes',SV(IC.notes),''],['more',SV(IC.user),'']];
-const QRI='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.3"/><rect x="14" y="3" width="7" height="7" rx="1.3"/><rect x="3" y="14" width="7" height="7" rx="1.3"/><path d="M14 14h3v3M21 14v.01M14 21h3M21 17v4h-3"/></svg>';
-const navBar=a=>`<div class="nav nv3"><button class="${a==='home'?'on':''}" data-a="tab" data-v="home" aria-label="Home"><b>${SV(IC.home)}</b></button><button class="qrb${a==='scan'?' on':''}" data-a="qrx" aria-label="Search and scan"><b>${QRI}</b></button><button class="${a==='more'?'on':''}" data-a="tab" data-v="more" aria-label="Profile"><b>${SV(IC.user)}</b></button></div>`;
+const QRI='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3"/><path d="M8 9v6M11 9v6M14 9v6M17 9v6" stroke-width="1.4"/></svg>';
+const navBar=a=>`<div class="nav nv3"><button class="${a==='home'?'on':''}" data-a="tab" data-v="home" aria-label="Home"><b>${SV(IC.home)}</b><span>Home</span></button><button class="qrb${a==='scan'?' on':''}" data-a="tab" data-v="scan" aria-label="Scan"><b>${QRI}</b></button><button data-a="srx" aria-label="Search"><b>${SV(IC.search)}</b><span>Search</span></button></div>`;
 const PV={text:'🔒 Message',img:'📷 Photo',voice:'🎤 Voice message',contact:'👤 Contact'};
 const rowHTML=c=>{const i=info(c),lm=c.lastMessage,n=unreadOf(c);const pv=lm?(lm.ty==='sys'?lm.x:(lm.from===S.me.uid?'You: ':'')+(PV[lm.ty]||'Message')):'Tap to chat';
  return `<div class="row" data-a="chat" data-id="${c.id}">${i.av}<div class="m"><b>${E(i.name)}${PIN().includes(c.id)?' 📌':''}${MUTE().includes(c.id)?' 🔕':''}</b><small>${E(pv)}</small></div><div class="t"><span style="${n?'color:#25a95b':''}">${TS(lm?.at||c.updatedAt)}</span>${n?`<span class="bdg">${n}</span>`:''}</div></div>`};
@@ -579,7 +589,7 @@ function chipsOf(p){const n=p.nut||{},c=[],f=v=>typeof v==='number';
 function simpleWords(p){const n=p.nut||{},t=[];if(p.nova==4)t.push('This is an ultra-processed food with ingredients and additives not usually used in a home kitchen.');else if(p.nova==3)t.push('This is a processed food made by adding salt, sugar or oil.');else if(p.nova==1||p.nova==2)t.push('This is a minimally processed food.');
  if(typeof n.sugar==='number')t.push(n.sugar>22.5?`It has a lot of sugar (${n.sugar} g per 100 g).`:n.sugar<=5?'It is low in sugar.':`Sugar is moderate (${n.sugar} g per 100 g).`);if(typeof n.salt==='number'&&n.salt>1.5)t.push(`It is high in salt (${n.salt} g per 100 g).`);
  return t.join(' ')||'Not enough nutrition data for this product yet.'}
-V.scan=()=>{app.innerHTML=`<div class="hd dk"><h2>Scan Anything</h2><span class="sp"></span><button class="ib" data-a="manual">🔍</button></div><div class="scanv"><video id="vid" playsinline muted autoplay></video><div class="frm"><i></i></div><div class="sct" id="sct">Scan a food barcode or a book ISBN</div><div class="sca3"><div data-a="gallery"><span>🖼</span>Gallery</div><div data-a="torch"><span>🔦</span>Flash</div><div data-a="histgo"><span>🕘</span>Scan History</div></div></div>${navBar('scan')}`;startCam()};
+V.scan=()=>{app.innerHTML=`<div class="hd dk"><h2>Scan Anything</h2><span class="sp"></span><button class="ib" data-a="manual">🔍</button></div><div class="scanv"><video id="vid" playsinline muted autoplay></video><div class="frm"><i></i></div><div class="sct" id="sct">Scan a food barcode, book ISBN or any QR code</div><div class="sca3"><div data-a="gallery"><span>🖼</span>Gallery</div><div data-a="torch"><span>🔦</span>Flash</div><div data-a="histgo"><span>🕘</span>Scan History</div></div></div>${navBar('scan')}`;startCam()};
 async function startCam(){const msg=t=>{const e=$('#sct');if(e)e.textContent=t};if(!navigator.mediaDevices?.getUserMedia)return msg('Camera not available. Tap ⌨ to type the barcode.');
  try{S.stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'}},audio:false});const v=$('#vid');if(!v){stopCam();return}v.srcObject=S.stream;await v.play().catch(()=>{});
   if('BarcodeDetector'in window){const det=new BarcodeDetector({formats:['ean_13','ean_8','upc_a','upc_e','code_128','code_39','qr_code']});S.scanT=setInterval(async()=>{try{const r=await det.detect(v);if(r[0]){clearInterval(S.scanT);navigator.vibrate?.(60);scanRoute(r[0].rawValue)}}catch(e){}},350)}else msg('Auto-scan needs Chrome on Android. Tap ⌨ to type the barcode.')}
@@ -600,20 +610,20 @@ V.notes=()=>{app.innerHTML=`${BNR('')}<div class="pgh"><span class="pgi">🍃</s
 V.note=({id})=>{const n=S.notes.find(x=>x.id===id)||{id:'',title:'',body:'',cat:'Personal',imp:false,tags:''};
  app.innerHTML=`<div class="hd"><button class="ib" data-a="back">←</button><h2>${n.id?'Edit Note':'Add Note'}</h2>${n.id?`<button class="ib" data-a="delnote" data-id="${n.id}"><svg class="tr" viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12M9 7V4h6v3"/></svg></button>`:''}</div><form class="pg" data-f="note"><input type="hidden" name="id" value="${E(n.id)}"><label class="fld"><span>Note title</span><input name="title" value="${E(n.title)}" maxlength="80" placeholder="e.g. Healthy food ideas"></label><div class="fld"><span>Category</span><div class="pills">${NCATS.map(c=>`<label class="pl"><input type="radio" name="cat" value="${c}" ${(n.cat||'Personal')===c?'checked':''}><span>${c}</span></label>`).join('')}</div></div><label class="fld"><span>Note</span><textarea name="body" rows="8" placeholder="Write your note…">${E(n.body)}</textarea></label><label class="fld"><span>Tags</span><input name="tags" value="${E(n.tags||'')}" placeholder="#food #health"></label><label class="tg"><span>⭐ Mark as Important</span><input type="checkbox" name="imp" ${n.imp?'checked':''}></label><button class="btn">Save note</button></form>`};
 const saveNote=(title,body,cat='Personal')=>F.setDoc(F.doc(db,'users',S.me.uid,'notes',uid_()),{title,body,cat,imp:false,tags:'',ts:Date.now()}).then(()=>toast('Saved to Notes ✓'));
-V.home=()=>{const h=new Date().getHours(),gr=h<12?'Good Morning':h<17?'Good Afternoon':'Good Evening',nm=E((S.me.name||'').split(' ')[0]),
- bg=(u,g)=>`background:${g}${u?`,url(${u}) center/cover`:''}`,un=S.chats.reduce((t,c)=>t+unreadOf(c),0),
- SL=[['Scan Food','Know what you eat','Scan any barcode and see what is inside.','tab','scan',PH.scanbanner||PH.bowl||PH.h1,'#14503a'],
- ['Explore World','Discover India & World','States, cultures, heritage and nature.','tab','explore',NKBEACH,'#0f5a6b'],
- ['Books','Good books, better days','Scan, review and discuss with the community.','tab','books',BI.hero,'#5a3d1f'],
- ['Notebook','Your ideas, beautifully kept','Capture notes, lists and photos.','tab','notes',NKHERO,'#4a3a22'],
- ['Food & Health','Learn • Eat • Live better','Daily food facts and nutrition.','go','facts',BI.food||PH.h1,'#7a4b14']],
- C=(ht,k,t,sub,ic,a,v,img,g,gl,bd)=>`<div class="mc ${k}" style="height:${ht}px;${bg(img,g)}" data-a="${a}"${v?` data-v="${v}"`:''}><span class="mci">${SV(IC[ic])}</span>${gl?`<span class="mcg">${SV(IC[gl])}</span>`:''}${bd?`<span class="bdg mcb">${bd}</span>`:''}<div class="mct"><b>${t}</b><small>${sub}</small></div><em>→</em></div>`;
- app.innerHTML=`<div class="body hm"><div class="hh"><div class="hhs" id="hhs">${SL.map(x=>`<div class="hs" style="${bg(x[5],'linear-gradient(180deg,#0000 30%,#0b1a14e6 100%)')};background-color:${x[6]}"><div class="hst"><small>${x[0]}</small><h2>${x[1]}</h2><p>${x[2]}</p><button data-a="${x[3]}" data-v="${x[4]}">Open ${x[0]} →</button></div></div>`).join('')}</div>
- <div class="hht"><div class="hhb">${WM()}<span class="sp"></span><div data-a="tab" data-v="more" style="cursor:pointer">${av(S.me,38)}</div></div><div class="hhg"><small>${gr}</small><h1>${nm} 👋</h1><p>Small choices. Big impact.</p></div></div>
- <div class="hhd" id="hhd">${SL.map((x,i)=>`<i class="${i?'':'on'}"></i>`).join('')}</div></div>
+V.home=()=>{const h=new Date().getHours(),gr=h<12?'Good Morning':h<17?'Good Afternoon':'Good Evening',nm=E((S.me.name||'').split(' ')[0]),un=S.chats.reduce((t,c)=>t+unreadOf(c),0),
+ SL=[['Scan','Food','Scan any barcode and see exactly what is inside your food.','tab','scan',PH.scanbanner||PH.bowl,'scan','Scan Food'],
+ ['Explore','World','States, cultures, heritage and nature of India and the world.','tab','explore',NKBEACH,'compass','Explore World'],
+ ['Discover','Books','Scan, review and discuss books with the community.','tab','books',BI.hero,'books','Open Books'],
+ ['Your','Notebook','Capture notes, lists and photos, beautifully kept.','tab','notes',NKHERO,'notes','Open Notebook'],
+ ['Food &','Health','Daily food facts, nutrition and healthy living made simple.','go','facts',PH.h1,'leaf','Food Facts']],
+ C=(ht,k,t,sub,ic,a,v,img,g,bd)=>`<div class="mc ${k}" style="height:${ht}px;${img?`background:#1c6b4b url(${img}) center/cover`:`background:${g}`}" data-a="${a}"${v?` data-v="${v}"`:''}><span class="mci">${SV(IC[ic])}</span>${bd?`<span class="bdg mcb">${bd}</span>`:''}<div class="mct"><b>${t}</b><small>${sub}</small></div><em>→</em></div>`;
+ app.innerHTML=`<div class="body hm"><div class="hmt">${WM()}<span class="sp"></span><div data-a="tab" data-v="more" style="cursor:pointer">${av(S.me,40)}</div></div>
+ <div class="hmg"><small>${gr}</small><h1>${nm} 👋</h1><p>Small choices. Big impact.</p></div>
+ <div class="hcs" id="hhs">${SL.map(x=>`<div class="hcw"><div class="hc"><div class="hci" style="${x[5]?`background-image:url(${x[5]})`:'background:linear-gradient(135deg,#2f5d46,#e8b36a)'}"></div><div class="hct"><small>NIJØK | ${(x[0]+' '+x[1]).toUpperCase()}</small><h2>${x[0]}<br><em>${x[1]}</em></h2><p>${x[2]}</p><button data-a="${x[3]}" data-v="${x[4]}">${x[7]} →</button></div><i class="hcb">${SV(IC[x[6]])}</i></div></div>`).join('')}</div>
+ <div class="hhd" id="hhd">${SL.map((x,i)=>`<i class="${i?'':'on'}"></i>`).join('')}</div>
  <div class="hsec"><b>Your NIJØK</b><small>Everything in one place</small></div>
- <div class="mas"><div class="mcol">${C(220,'','Books','Read • Discover • Discuss','books','tab','books',BI.lib,'linear-gradient(135deg,#1c6b4b,#0d3b2a)')}${C(170,'lt','Notebook','Notes • Lists • Ideas','notes','tab','notes',NKQC,'#efe4cf')}${C(150,'','Chat','Talk privately & safely','chat','tab','chats','','linear-gradient(135deg,#2a8f66,#0d3b2a)','chat',un||'')}${C(190,'','Community','Share • Learn • Grow','post','go','community','','linear-gradient(135deg,#b4546a,#6e2a3f)','groups')}</div>
- <div class="mcol">${C(210,'','Food & Health','Learn • Eat • Live Better','leaf','go','facts',BI.food,'linear-gradient(135deg,#c2751d,#6b3d0c)')}${C(300,'','Explore World','Places • Cultures • Wildlife','compass','tab','explore',PH.lake,'linear-gradient(135deg,#2f8f9d,#0f4a5a)')}${C(200,'','Shop','NIJØK Premium Shop','cart','shop','','','linear-gradient(135deg,#d8a846,#8a5a14)','cart')}</div></div></div>${navBar('home')}`;
+ <div class="mas"><div class="mcol">${C(220,'','Books','Read • Discover • Discuss','books','tab','books',BI.lib,'')}${C(170,'lt','Notebook','Notes • Lists • Ideas','notes','tab','notes',NKQC,'')}${C(160,'','Chat','Talk privately & safely','chat','tab','chats',BI.cafe,'',un||'')}${C(190,'','Community','Share • Learn • Grow','post','go','community',PH.plants,'')}</div>
+ <div class="mcol">${C(210,'','Food & Health','Learn • Eat • Live Better','leaf','go','facts',BI.food,'')}${C(300,'','Explore World','Places • Cultures • Wildlife','compass','tab','explore',PH.lake,'')}${C(200,'','Shop','NIJØK Premium Shop','bag','shop','',BI.biz,'')}</div></div></div>${navBar('home')}`;
  const hs=$('#hhs'),ds=[...document.querySelectorAll('#hhd i')];let i=0;
  hs.onscroll=()=>{i=Math.round(hs.scrollLeft/hs.clientWidth);ds.forEach((d,j)=>d.classList.toggle('on',j===i))};
  hs.ontouchstart=()=>{S.hhP=1};hs.ontouchend=()=>setTimeout(()=>{S.hhP=0},3500);
@@ -813,9 +823,9 @@ document.addEventListener('click',e=>{if(S.lp&&Date.now()-S.lp<700)return;const 
 /* ====== Forms ====== */
 const err=(m,id='er')=>{const e=document.getElementById(id);if(e)e.textContent=m};
 const FORM={
- async auth(d,f,mode){let p=null,em;if(S.em){em=(d.em||'').trim().toLowerCase();if(!/^\S+@\S+\.\S+$/.test(em))return err('Enter a valid email')}else{p=normPhone(d.cc,d.num);if(!p)return err('Enter a valid mobile number');em=emailOf(p)}if(d.pw.length<6)return err('Password needs 6+ characters');S.pw=d.pw;const bs=$$('.btn',f);bs.forEach(b=>b.disabled=true);
-  try{if(mode==='reg')await Au.createUserWithEmailAndPassword(auth,em,d.pw);else await Au.signInWithEmailAndPassword(auth,em,d.pw)}
-  catch(e){bs.forEach(b=>b.disabled=false);const c=e.code||'';err(c.includes('api-key')?'Firebase API key is wrong. Paste the exact key from Firebase console.':c==='auth/email-already-in-use'?'This number already has an account. Tap Login.':c==='auth/operation-not-allowed'?'Enable Email/Password in Firebase, Authentication, Sign-in method.':c.includes('invalid-credential')||c.includes('user-not-found')||c.includes('wrong-password')?'Wrong number or password. New here? Tap Create new account.':c||e.message)}},
+ async auth(d,f,mode){let p=null,em;if(S.em){em=(d.em||'').trim().toLowerCase();if(!/^\S+@\S+\.\S+$/.test(em))return err('Enter a valid email')}else{p=normPhone(d.cc,d.num);if(!p)return err('Enter a valid mobile number');em=emailOf(p)}if(d.pw.length<6)return err('Password needs 6+ characters');if(mode==='reg'&&d.pw2!==undefined&&d.pw2!==d.pw)return err('Passwords do not match');S.pw=d.pw;const bs=$$('.btn',f);bs.forEach(b=>b.disabled=true);
+  try{if(mode==='reg'){const cr=await Au.createUserWithEmailAndPassword(auth,em,d.pw);if(S.em)try{await Au.sendEmailVerification(cr.user)}catch(e){}}else await Au.signInWithEmailAndPassword(auth,em,d.pw)}
+  catch(e){bs.forEach(b=>b.disabled=false);const c=e.code||'';err(c.includes('api-key')?'Firebase API key is wrong. Paste the exact key from Firebase console.':c==='auth/email-already-in-use'?'This email already has an account. Tap Log in.':c==='auth/operation-not-allowed'?'Enable Email/Password in Firebase, Authentication, Sign-in method.':c.includes('invalid-credential')||c.includes('user-not-found')||c.includes('wrong-password')?'Wrong email or password. New here? Tap Create account.':c||e.message)}},
  async unlock(d,f){try{await Au.signInWithEmailAndPassword(auth,auth.currentUser.email,d.pw);S.pw=d.pw;afterLogin(auth.currentUser)}catch(e){err('Wrong password')}},
  async setup(d){const un=(d.un||'').trim().toLowerCase().replace(/^@/,'');if(un||!S.me.phone){if(!/^[a-z][a-z0-9_]{3,23}$/.test(un))return err('Username needs 4-24 letters, numbers or _');if((await F.getDocs(F.query(F.collection(db,'users'),F.where('uname','==',un)))).docs.length)return err('Username already taken')}const p={name:d.name.trim(),about:d.about.trim(),color:COLORS[Math.floor(Math.random()*8)],phone:S.me.phone,createdAt:F.serverTimestamp(),lastLogin:F.serverTimestamp()};if(un)p.uname=un;if(S.dpTmp)p.photo=S.dpTmp;S.dpTmp=null;await saveProfile(S.me.uid,p);if(S.me.phone)await F.setDoc(F.doc(db,'phones',S.me.phone),{uid:S.me.uid}).catch(()=>{});afterLogin(auth.currentUser)},
  async send(d,f){const t=d.t.trim();if(!t)return;f.elements.t.value='';f.elements.t.style.height='auto';$('#mic').style.display='';$('#sb').style.display='none';send({t:'text',x:t})},
@@ -1191,6 +1201,16 @@ app.innerHTML=`<div class="hd xdh" style="--c:${col}"><button class="ib" data-a=
 T.forEach((t,i)=>xw(t).then(r=>{const q=r.find(x=>x.i),e=document.getElementById('xti'+i);if(q&&e)e.style.background=`linear-gradient(0deg,${pa} 0%,${pa}00 30%),url(${q.i}) center/cover`}).catch(()=>{}))};
 Object.assign(ACT,{xc(d){d.k==='st'||d.k==='ut'?nav('xlist',{k:d.k}):nav('xtopic',{k:d.k})},xd(d){if(d.wd)sheet();nav('xdet',{n:d.n,c:d.c,w:d.wd?1:0})},xworld(){sheet('<h3 style="margin:0 0 8px">🌍 Discover More World</h3><input id="cq" class="cqi" placeholder="Search country — type A, B, C…" autocomplete="off"><div class="cw" id="cl"></div>');const draw=q=>{q=q.trim().toLowerCase();const L=XCO.filter(x=>!q||x.toLowerCase().startsWith(q));$('#cl').innerHTML=L.length?L.map(x=>{const[n,c]=x.split('|'),dn=n.replace(/ \(.*\)/,'');return`<div class="crow" data-a="xd" data-n="${E(n)}" data-c="${E(c)}" data-wd="1"><i style="background:${xcol(dn)}">${E(dn[0])}</i><div><b>${E(dn)}</b><small>${E(c)}</small></div><em>›</em></div>`}).join(''):'<div class="emp">No country found</div>'};draw('');$('#cq').oninput=e=>draw(e.target.value)},xq(d){xrun(d.q)},xg(){nav('xtopic',{k:'tru'})},xs(){const q=($('#xq')?.value||'').trim();if(!q)return;const c=S.view==='xtopic'&&XC.find(x=>x[0]===S.vp.k),n=S.view==='xdet'?' '+S.vp.n.replace(/ \(.*\)/,''):'';xrun(q+(c&&c[5]&&!q.toLowerCase().includes(c[5].toLowerCase())?' '+c[5]:'')+n)}});
 /*XPLORE_END*/
+IC.bag='<path d="M6 8h12l1 12H5zM9 8V6a3 3 0 0 1 6 0v2"/>';
+const sxHome=()=>`<h4 class="qxh">Quick access</h4><div class="qxch">${QXF.map(f=>`<span data-a="${f[2]||'shop'}" data-v="${f[3]}">${f[1]} ${f[0]}</span>`).join('')}</div><h4 class="qxh">Try searching</h4><div class="qxch">${['Odisha','Millets','Atomic Habits','Ladakh','Turmeric'].map(t=>`<span data-a="sxtry" data-t="${t}">${t}</span>`).join('')}</div>`;
+Object.assign(ACT,{srx(){if($('#qrx'))return;const el=document.createElement('div');el.id='qrx';el.className='sx';el.innerHTML=`<div class="sxd" data-a="srclose"></div><div class="sxp" id="sxp">${sxHome()}</div><div class="sxb"><span class="sxi">${SV(IC.search)}</span><input id="qxi" placeholder="Search food, books, places, notes…" autocomplete="off" enterkeyhint="search"><button class="sxc" data-a="srclose" aria-label="Close">✕</button></div>`;app.appendChild(el);requestAnimationFrame(()=>el.classList.add('open'));const i=$('#qxi');i.oninput=e=>{const q=e.target.value;$('#sxp').innerHTML=q.trim()?qxFind(q):sxHome()};setTimeout(()=>i.focus(),260)},
+ srclose(){const e=$('#qrx');if(!e)return;e.classList.remove('open');setTimeout(()=>e.remove(),320)},
+ sxtry(d){const i=$('#qxi');i.value=d.t;$('#sxp').innerHTML=qxFind(d.t);i.focus()},
+ async vdone(){try{await auth.currentUser.reload()}catch(e){}if(auth.currentUser?.emailVerified)afterLogin(auth.currentUser);else err('Not verified yet. Open the link in your email first.')},
+ async vresend(){try{await Au.sendEmailVerification(auth.currentUser);toast('Verification email sent ✓','Check inbox and spam')}catch(e){err(e.code==='auth/too-many-requests'?'Too many requests. Try again in a few minutes.':(e.code||e.message))}},
+ forgot(){const em=(document.querySelector('[name=em]')?.value||'').trim().toLowerCase();if(!/^\S+@\S+\.\S+$/.test(em))return err('Type your email above first');Au.sendPasswordResetEmail(auth,em).then(()=>toast('Reset link sent ✓','Check your email')).catch(e=>err(e.code||e.message))},
+ amode(d){S.am=d.m;V.auth()},pweye(){document.querySelectorAll('.aif input[name^=pw]').forEach(i=>i.type=i.type==='password'?'text':'password')}});
+
 const QXF=[['Scan Food','🥗','tab','scan'],['Food Facts','🍃','go','facts'],['Notebook','📓','tab','notes'],['Books','📚','tab','books'],['Explore','🧭','tab','explore'],['Chat','💬','tab','chats'],['Groups','👥','go','groups'],['Community','🌐','go','community'],['Shop','🛍','shop',''],['Scan History','🕘','go','hist'],['Profile','👤','tab','more']];
 const QXS=[['🥗','Food barcode','Packed food details','Scan a food barcode'],['📚','Book ISBN','Details & reviews','Scan the ISBN barcode on a book'],['▦','QR code','Links & codes','Point the camera at a QR code'],['🖼','From photo','Pick from gallery','']];
 const qxHome=()=>`<h4 class="qxh">Scan</h4><div class="qxs4">${QXS.map((x,i)=>`<div class="qsc" data-a="qrscan" data-i="${i}"><span>${x[0]}</span><b>${x[1]}</b><small>${x[2]}</small></div>`).join('')}</div><h4 class="qxh">Go to</h4><div class="qxch">${QXF.map(f=>`<span data-a="${f[2]||'shop'}" data-v="${f[3]}">${f[1]} ${f[0]}</span>`).join('')}</div>`;
@@ -1454,5 +1474,84 @@ wpph(){zpick(s=>{zls('nk_wpi_'+S.vp.id,s);zls('nk_wp_'+S.vp.id,'p');zwp($('#msgs
 .qr3{display:flex;align-items:center;gap:12px;background:#fffdf8;border-radius:18px;padding:10px 12px;margin-bottom:8px;box-shadow:0 3px 8px #0b3d2e14;cursor:pointer}
 .qr3>span{width:40px;height:40px;border-radius:14px;background:#e3efe4;display:grid;place-items:center;font-size:20px;flex:none}.qr3>div{flex:1;min-width:0}
 .qr3 b{display:block;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.qr3 small{color:#6d7a72;font-size:11.5px}.qr3 em{font-style:normal;color:#b0822f;font-size:20px}
+
+/* ===== NIJØK premium skin (all pages) ===== */
+@keyframes nkF{from{opacity:0}to{opacity:1}}
+.body>*{animation:nkF .35s both}
+.pgh h2{font:700 24px 'Playfair Display',Georgia,serif;color:var(--g)}
+.sec b,.pgh+.sec b{font-family:'Playfair Display',Georgia,serif}
+.btn:not(.o):not(.rd){background:linear-gradient(145deg,#1f7a56,#0d3b2a);box-shadow:0 5px 0 #08281d,0 10px 16px #0b3d2e33;transition:transform .12s,box-shadow .12s}
+.btn:not(.o):not(.rd):active{transform:translateY(4px);box-shadow:0 1px 0 #08281d}
+.sinp:focus,.fld input:focus,.xq input:focus{border-color:#14503a;box-shadow:0 0 0 3px #14503a22;outline:0}
+.card{border-radius:22px;box-shadow:0 6px 16px #0b3d2e14}
+.fab{background:linear-gradient(145deg,#2a8f66,#14503a);box-shadow:0 7px 0 #0b3d2e,0 12px 18px #0b3d2e55;transition:transform .12s,box-shadow .12s}
+.fab:active{transform:translateY(5px);box-shadow:0 2px 0 #0b3d2e,0 4px 8px #0b3d2e55}
+.fo button{border-radius:20px;padding:8px 14px;border:1px solid var(--ln);background:#fff;box-shadow:0 3px 0 #e6dfcc;cursor:pointer;white-space:nowrap}
+.fo button.on{background:linear-gradient(145deg,#1f7a56,#0d3b2a);color:#fff;border-color:#0d3b2a;box-shadow:0 3px 0 #08281d}
+.row{background:#fffdf8;border-radius:20px;margin:6px 12px;border:0;box-shadow:0 4px 12px #0b3d2e14;padding:11px 12px}
+.row:active{transform:scale(.985)}
+/* profile */
+.cvr{margin:0;height:220px;border-radius:0 0 36px 36px;box-shadow:0 14px 30px #0b3d2e33}
+.cvr .cvt{font-family:'Dancing Script',cursive;font-size:28px;line-height:1.15;text-shadow:0 2px 12px #0008}
+.pcard{margin:-72px 18px 12px;border-radius:28px;background:#fffdf8f2;backdrop-filter:blur(10px);box-shadow:0 14px 30px #0b3d2e30}
+.pin h3{font-family:'Playfair Display',Georgia,serif}
+.stats{background:none;border:0;gap:10px;margin:8px 14px 14px}
+.stats>div{background:#fffdf8;border-radius:22px;padding:14px 4px;box-shadow:0 6px 0 #d7e3d3,0 12px 18px #0b3d2e22}
+.jcard{background:linear-gradient(135deg,#1f7a56,#0d3b2a);color:#fff;border-radius:24px;box-shadow:0 10px 22px #0b3d2e40;margin:12px 14px}
+.jcard b{font:700 18px 'Playfair Display',Georgia,serif}.jcard small{color:#cfe8da}
+.pcat{border-radius:22px;background:#fffdf8;border:0;box-shadow:0 5px 0 #e1e8dc,0 10px 18px #0b3d2e1a;transition:transform .12s,box-shadow .12s}
+.pcat:active{transform:translateY(4px);box-shadow:0 1px 0 #e1e8dc}
+.pcat .ic{border-radius:15px;box-shadow:inset 0 2px 3px #fff8,0 4px 0 #0002}
+.pcat.pw{margin:8px 12px}
+@media (prefers-reduced-motion:reduce){.body>*{animation:none}}
+
+/* ===== v4: home hero cards, nav, search popup, auth ===== */
+.nav.nv3{height:64px;padding:0 10px;gap:2px;border-radius:34px;background:#fffdf8f2}
+.nav.nv3:before,.nav.nv3:after,.nav.nv3 button:before,.nav.nv3 button:after{display:none!important}
+.nav.nv3 button{width:74px;height:56px;border-radius:24px;flex-direction:column;gap:1px;color:#14503a;background:none;box-shadow:none}
+.nav.nv3 button b{font-size:0;display:grid;place-items:center;margin:0;width:auto;height:auto;background:none;border:0}
+.nav.nv3 button svg{width:24px;height:24px;stroke-width:1.6}
+.nav.nv3 button span{font-size:10.5px;font-weight:500;display:block}
+.nav.nv3 button.on{background:#e4efe3;color:#0d3b2a;box-shadow:none}
+.nav.nv3 button.qrb,.nav.nv3 button.qrb.on{width:64px;height:64px;border-radius:50%;margin:-28px 6px 0;background:linear-gradient(145deg,#1f7a56,#0d3b2a);color:#fff;border:4px solid var(--cr);box-shadow:0 8px 16px #0b3d2e55,inset 0 2px 3px #fff4}
+.nav.nv3 .qrb svg{width:28px;height:28px}
+.nav.nv3 .qrb.on{outline:3px solid #2a8f66}
+.hm{background:var(--cr)}
+.hmt{display:flex;align-items:center;padding:calc(8px + env(safe-area-inset-top)) 16px 0}.hmt .wmk{font-size:24px;color:#14503a}
+.hmg{padding:14px 18px 6px}.hmg small{font-size:12.5px;letter-spacing:2.5px;text-transform:uppercase;color:#b0822f}
+.hmg h1{font:700 32px/1.1 'Playfair Display',Georgia,serif;color:#14211a;margin-top:2px}.hmg p{font-size:13px;color:var(--mut);margin-top:3px}
+.hcs{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none}.hcs::-webkit-scrollbar{display:none}
+.hcw{flex:0 0 100%;scroll-snap-align:center;padding:10px 14px 12px;box-sizing:border-box}
+.hc{position:relative;border-radius:30px;background:#fbf6ea;box-shadow:0 8px 20px #0002,inset 0 2px 4px #fff;min-height:340px;overflow:hidden}
+.hci{position:absolute;right:0;top:0;bottom:0;width:46%;background-size:cover;background-position:center;clip-path:ellipse(95% 100% at 100% 50%)}
+.hct{position:relative;width:54%;padding:22px 6px 22px 16px}
+.hct small{letter-spacing:2px;font-size:10px;color:#b0822f}
+.hct h2{font:700 28px/1.12 'Playfair Display',Georgia,serif;margin:8px 0;color:#14211a}.hct h2 em{font-style:normal;color:#b0822f}
+.hct p{font-size:12px;line-height:1.5;color:#2b352f;margin:8px 0 16px;display:-webkit-box;-webkit-line-clamp:5;-webkit-box-orient:vertical;overflow:hidden}
+.hct button{background:linear-gradient(145deg,#1f7a56,#0d3b2a);color:#fff;border:0;border-radius:24px;padding:10px 14px;font-size:12px;font-weight:600;box-shadow:0 5px 0 #08281d;cursor:pointer;line-height:1.25}
+.hct button:active{transform:translateY(4px);box-shadow:0 1px 0 #08281d}
+.hcb{position:absolute;right:12px;bottom:12px;width:68px;height:68px;border-radius:50%;background:#14503a;border:3px solid #fff;display:grid;place-items:center;color:#fff;box-shadow:0 6px 14px #0004}.hcb svg{width:30px;height:30px}
+.hhd{display:flex;justify-content:center;gap:6px;margin:0 0 2px}.hhd i{width:7px;height:7px;border-radius:4px;background:#14503a40;transition:.25s}.hhd i.on{width:22px;background:#14503a}
+.sx{position:absolute;inset:0;z-index:45}
+.sxd{position:absolute;inset:0;background:#0b1a1455;backdrop-filter:blur(3px);opacity:0;transition:opacity .25s}.sx.open .sxd{opacity:1}
+.sxb{position:absolute;left:50%;bottom:calc(14px + env(safe-area-inset-bottom));transform:translateX(-50%);width:124px;height:58px;background:#fff;border:2px solid #14503a;border-radius:30px;box-shadow:0 10px 28px #0b3d2e55;display:flex;align-items:center;gap:8px;padding:0 8px 0 16px;overflow:hidden;transition:width .38s cubic-bezier(.2,.8,.2,1);box-sizing:border-box}
+.sx.open .sxb{width:calc(100% - 28px)}
+.sxi{color:#14503a;display:grid;flex:none}
+.sxb input{flex:1;min-width:0;border:0;outline:0;background:none;font-size:16px;opacity:0;transition:opacity .2s .2s;color:#1d1d1b}.sx.open .sxb input{opacity:1}
+.sxc{width:36px;height:36px;border-radius:50%;border:0;background:#eef3ec;flex:none;font-size:14px}
+.sxp{position:absolute;left:14px;right:14px;bottom:calc(84px + env(safe-area-inset-bottom));max-height:52vh;overflow-y:auto;background:#fffdf8;border-radius:26px;padding:6px 14px 14px;box-shadow:0 18px 40px #0b3d2e45;opacity:0;transform:translateY(16px) scale(.97);transform-origin:bottom center;transition:opacity .3s .1s,transform .3s .1s}
+.sx.open .sxp{opacity:1;transform:none}
+.au{position:relative;flex:1;overflow-y:auto;background:var(--cr)}
+.aum{position:absolute;left:0;right:0;bottom:0;height:150px;pointer-events:none}.aum svg{width:100%;height:100%;display:block}
+.auc{position:relative;padding:calc(30px + env(safe-area-inset-top)) 24px 170px;max-width:420px;margin:auto}
+.auh{text-align:center;margin-bottom:18px}.auh p{color:#b0822f;letter-spacing:3px;font-size:11px;margin-top:6px}
+.auc h2{font:700 28px 'Playfair Display',Georgia,serif;color:#14503a}
+.aif{display:flex;align-items:center;gap:10px;background:#fffdf8;border:1px solid #e3dac6;border-radius:18px;padding:0 14px;height:54px;margin:12px 0;box-shadow:0 4px 0 #ece4cf}.aif:focus-within{border-color:#14503a;box-shadow:0 4px 0 #14503a33}
+.aif input{flex:1;border:0;outline:0;background:none;font-size:15px;min-width:0}.aif span{color:#14503a;display:grid}.aif i{font-style:normal;cursor:pointer;opacity:.6}
+.aus{text-align:center;margin:18px 0 6px;font-size:14px}.aus b{color:#14503a;cursor:pointer}
+.aul{text-align:center;color:#6d7a72;font-size:13px;margin:10px 0;cursor:pointer}
+.vbig{font-size:52px;text-align:center;margin:6px 0}
+.wlg{width:110px;height:110px;border-radius:30px;box-shadow:0 12px 26px #0b3d2e33;object-fit:cover}
+.wtg{font:600 22px 'Playfair Display',Georgia,serif;color:#14503a;margin-top:8px}.wsb{color:#6d7a72;font-size:13px;letter-spacing:1px;margin-top:4px}
 </style>
 </body></html>
