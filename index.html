@@ -2150,6 +2150,13 @@ Object.assign(ACT,{psvid:()=>toast('Video guides are coming soon'),pscon:()=>{lo
 /* entry point under NIJØK Studio in the profile panel */
 {const _pg=ACT.pdgo;ACT.pdgo=function(d){if(d.k==='psp'){ACT.pdclose();go2('pshome');return}_pg(d)}}
 
+/* ===== Home: Pinterest-style big cards, no quote tile, blue theme · Chats: blue full-page ===== */
+{const _vh3=V.home;V.home=function(){_vh3();const m=$('.mas');if(!m)return;
+ const cs=$$('.mc',m),H=[[340,270,330,290],[280,360,260,310]],cols=[0,1].map(()=>{const d=document.createElement('div');d.className='pscol';return d});
+ cs.forEach((c,i)=>{const col=i%2,k=Math.floor(i/2);c.style.height=H[col][k%4]+'px';cols[col].appendChild(c)});
+ m.className='mas psmas';m.innerHTML='';cols.forEach(c=>m.appendChild(c))}}
+draw=(o=>function(){o();document.documentElement.classList.toggle('blv',['home','chats'].includes(S.view)||/^ps/.test(S.view||''))})(draw);
+
 </script><style id="nb-fix">.body.nbp{order:0!important}.nbp.body+.nav,.nbp.body~.nav{order:1}
 .qc{margin:14px 0 6px;border-radius:26px;padding:16px 12px 14px;background-size:cover;background-position:center;box-shadow:0 6px 18px #0002;overflow:hidden}
 .qc>b{display:block;font:600 26px 'Dancing Script','Segoe Print',cursive;color:#14503a}
@@ -3203,6 +3210,30 @@ html.night .ic.oxi svg{color:#8fd6ae}
 .ps .sw{width:46px;height:26px;border-radius:14px;background:#cbd7ee;position:relative;display:block;flex:none}.ps .sw:after{content:"";position:absolute;left:3px;top:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:.2s}.ps .sw.on{background:#1f5fe0}.ps .sw.on:after{left:23px}
 html.night .ps{background:linear-gradient(#0c1730,#0a1226)!important;color:#e6edfb}html.night .hd.psh{background:#0c1730!important;color:#e6edfb!important;border-color:#1c2c52!important}html.night .hd.psh h2,html.night .hd.psh .ib,html.night .nkw,html.night .pst,html.night .psgr{color:#e6edfb}
 html.night .psc,html.night .psm,html.night .psq div,html.night .psin,html.night .psf input,html.night .psf select,html.night .psf textarea,html.night .psmp select,html.night .psch,html.night .psloc,html.night .psbd,html.night .psmr select,html.night .psrs{background:#111f3f;border-color:#1f3263;color:#e6edfb}html.night .pshero{background:linear-gradient(135deg,#13234a,#0f1b38);border-color:#1f3263}html.night .psn,html.night .m small,html.night .psm small,html.night .psf label,html.night .psmp,html.night .psti small,html.night .pstr small{color:#9db0d6}html.night .psr:before{background:#111f3f}html.night .psi,html.night .psq i,html.night .psti i,html.night .psm i{background:#1a2d5c;color:#7fa8ff}html.night .psdz{background:#0f1b38;border-color:#2a4580}html.night .psmh{background:#16264d;color:#9db0d6}html.night .psb,html.night .pshero i{background:#111f3f}html.night .psch.on{background:#1f5fe0;color:#fff}html.night .psset,html.night .psf2,html.night .psmr{border-color:#1f3263}
+</style>
+<style id="ps3-css">
+html.blv .body.hm{background:linear-gradient(#eaf3ff,#f6faff)!important;font-family:Inter,Poppins,system-ui,sans-serif}
+html.blv .hmt .wmk{color:#0f2552!important}html.blv .hmt .mtg{background:#fff!important;color:#1f5fe0;box-shadow:0 3px 10px #1f5fe022}
+html.blv .hmg small{color:#1f5fe0!important;font-weight:600}html.blv .hmg h1{font:800 30px/1.1 Inter,system-ui,sans-serif!important;color:#0f2552!important}html.blv .hmg p{color:#6b7a99}
+html.blv .hsec b{font:700 20px Inter,system-ui,sans-serif;color:#0f2552}html.blv .hsec small{color:#6b7a99}
+html.blv .hct button{background:#fff;color:#1f5fe0;box-shadow:0 5px 0 #0f255255}html.blv .hhd i{background:#1f5fe040}html.blv .hhd i.on{background:#1f5fe0}
+.psmas{display:flex!important;gap:10px;padding:0 10px 110px!important}.pscol{flex:1;display:flex;flex-direction:column;gap:10px;min-width:0}
+.psmas .mc{border-radius:24px;box-shadow:0 8px 22px #1f5fe026}html.blv .psmas .mci{background:#1f5fe0d9;border-color:#fff6}.psmas .mct b{font:700 19px/1.15 Inter,system-ui,sans-serif}.psmas .mct small{font-size:12px}.psmas .mc em{background:#fff4}
+html.blv .fnpill{background:#fffffff5;box-shadow:0 8px 26px #1f5fe030}html.blv .fnpill button{color:#1f5fe0}html.blv .fnpill button:active{background:#e8f0ff}html.blv .fnpill .qrb{background:linear-gradient(135deg,#2f6df0,#1f5fe0);color:#fff;border-color:#fff;box-shadow:0 6px 14px #1f5fe055}
+/* chats */
+html.blv .nbx.cx{padding:0 0 110px;background:linear-gradient(#eaf3ff,#f6faff);font-family:Inter,Poppins,system-ui,sans-serif;color:#0f2552}
+html.blv .cx .pgx{background:#fff;border-bottom:1px solid #e1ebfb;padding:calc(10px + env(safe-area-inset-top)) 14px 12px;margin:0}
+html.blv .cx .pgxt h1{font:800 22px Inter,system-ui,sans-serif;color:#0f2552}html.blv .cx .pgxt small{color:#6b7a99;font-size:12.5px}
+html.blv .cx .pgxh,html.blv .cx .pgxb{background:#e8f0ff;color:#1f5fe0}html.blv .cx .pgxa{box-shadow:0 0 0 2px #1f5fe0}
+html.blv .cx .nbxs{padding:10px 14px 0}html.blv .cx .nbxs input{width:100%;padding:12px 14px;border:1px solid #d3e0f7;border-radius:12px;background:#fff;font:inherit;color:#0f2552}
+html.blv .cx .nbf{padding:12px 14px}html.blv .cx .nbf button{background:#fff!important;border:1px solid #d3e0f7;color:#44557a!important;font:600 13.5px Inter,system-ui,sans-serif;padding:8px 16px}html.blv .cx .nbf .on{background:#1f5fe0!important;border-color:#1f5fe0;color:#fff!important}
+html.blv .cx #list{background:#fff;border-top:1px solid #e1ebfb;min-height:60vh}
+html.blv .cx #list .row{background:#fff;border:0;border-bottom:1px solid #e6eefc;border-radius:0;margin:0;box-shadow:none;padding:13px 16px!important}
+html.blv .cx #list .row .m b{color:#0f2552;font-weight:600}html.blv .cx #list .row .m small{color:#6b7a99}html.blv .cx #list .row .t span{color:#6b7a99}html.blv .cx #list .row .bdg{background:#1f5fe0;color:#fff}
+html.blv .cx .cfb{background:linear-gradient(135deg,#2f6df0,#1f5fe0);box-shadow:0 8px 20px #1f5fe055;border-radius:50%}
+html.blv .cfp button{color:#1f5fe0}html.blv .cfp button svg{color:#1f5fe0}
+html.night.blv .body.hm,html.night.blv .nbx.cx{background:linear-gradient(#0c1730,#0a1226)!important}html.night.blv .hmt .wmk,html.night.blv .hmg h1,html.night.blv .hsec b,html.night.blv .cx .pgxt h1{color:#e6edfb!important}html.night.blv .hmt .mtg{background:#111f3f!important}
+html.night.blv .cx .pgx,html.night.blv .cx #list,html.night.blv .cx #list .row,html.night.blv .cx .nbxs input,html.night.blv .cx .nbf button{background:#111f3f!important;border-color:#1f3263;color:#e6edfb!important}html.night.blv .cx #list .row .m b{color:#e6edfb}html.night.blv .cx .nbf .on{background:#1f5fe0!important}html.night.blv .fnpill{background:#111f3ff5}
 </style>
 
 </body></html>
