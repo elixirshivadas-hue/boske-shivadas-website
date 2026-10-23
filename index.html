@@ -2155,7 +2155,7 @@ Object.assign(ACT,{psvid:()=>toast('Video guides are coming soon'),pscon:()=>{lo
  const cs=$$('.mc',m),H=[[340,270,330,290],[280,360,260,310]],cols=[0,1].map(()=>{const d=document.createElement('div');d.className='pscol';return d});
  cs.forEach((c,i)=>{const col=i%2,k=Math.floor(i/2);c.style.height=H[col][k%4]+'px';cols[col].appendChild(c)});
  m.className='mas psmas';m.innerHTML='';cols.forEach(c=>m.appendChild(c))}}
-draw=(o=>function(){o();document.documentElement.classList.toggle('blv',['home','chats'].includes(S.view)||/^ps/.test(S.view||''))})(draw);
+draw=(o=>function(){o();document.documentElement.classList.toggle('blv',/^ps/.test(S.view||''))})(draw);
 
 
 /* ===== NIJØK Admin Control Center ===== */
@@ -3296,7 +3296,7 @@ html.blv .hmg small{color:#1f5fe0!important;font-weight:600}html.blv .hmg h1{fon
 html.blv .hsec b{font:700 20px Inter,system-ui,sans-serif;color:#0f2552}html.blv .hsec small{color:#6b7a99}
 html.blv .hct button{background:#fff;color:#1f5fe0;box-shadow:0 5px 0 #0f255255}html.blv .hhd i{background:#1f5fe040}html.blv .hhd i.on{background:#1f5fe0}
 .psmas{display:flex!important;gap:10px;padding:0 10px 110px!important}.pscol{flex:1;display:flex;flex-direction:column;gap:10px;min-width:0}
-.psmas .mc{border-radius:24px;box-shadow:0 8px 22px #1f5fe026}html.blv .psmas .mci{background:#1f5fe0d9;border-color:#fff6}.psmas .mct b{font:700 19px/1.15 Inter,system-ui,sans-serif}.psmas .mct small{font-size:12px}.psmas .mc em{background:#fff4}
+.psmas .mc{border-radius:24px;box-shadow:0 8px 22px #0f2a1e26}html.blv .psmas .mci{background:#1f5fe0d9;border-color:#fff6}.psmas .mct b{font:700 19px/1.15 Inter,system-ui,sans-serif}.psmas .mct small{font-size:12px}.psmas .mc em{background:#fff4}
 html.blv .fnpill{background:#fffffff5;box-shadow:0 8px 26px #1f5fe030}html.blv .fnpill button{color:#1f5fe0}html.blv .fnpill button:active{background:#e8f0ff}html.blv .fnpill .qrb{background:linear-gradient(135deg,#2f6df0,#1f5fe0);color:#fff;border-color:#fff;box-shadow:0 6px 14px #1f5fe055}
 /* chats */
 html.blv .nbx.cx{padding:0 0 110px;background:linear-gradient(#eaf3ff,#f6faff);font-family:Inter,Poppins,system-ui,sans-serif;color:#0f2552}
