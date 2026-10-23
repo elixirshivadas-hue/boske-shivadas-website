@@ -1606,7 +1606,7 @@ Object.assign(ACT,{
 
 /* ---------- profile panel: opens from the RIGHT, clean large text ---------- */
 function pdOpen(){let e=$('#pd');if(!e){e=document.createElement('div');e.id='pd';document.body.appendChild(e)}const m=S.me,night=document.documentElement.classList.contains('night');
- const R=[['user','View profile','Your public Openworld page','view'],['edit','Edit profile','Photo, name, username, bio','edit'],['users','Followers','People who follow you','followers'],['uplus','Following','People you follow','following'],['grid','My posts','Posts, photos and reposts','mine'],['mark','Saved posts','Bookmarks','saved'],['moon','Dark mode','Extra dark theme','night'],['lock','Settings &amp; privacy','Account, privacy, app','settings'],['lock','Rights &amp; privacy','Your data, roles, safety','rights'],['block','Blocked accounts','Manage blocked people','blocked'],['film','NIJØK Studio','Your creator tools','studio'],['out','Log out','','logout']];
+ const R=[['user','View profile','Your public Openworld page','view'],['edit','Edit profile','Photo, name, username, bio','edit'],['users','Followers','People who follow you','followers'],['uplus','Following','People you follow','following'],['grid','My posts','Posts, photos and reposts','mine'],['mark','Saved posts','Bookmarks','saved'],['moon','Dark mode','Extra dark theme','night'],['lock','Settings &amp; privacy','Account, privacy, app','settings'],['lock','Rights &amp; privacy','Your data, roles, safety','rights'],['block','Blocked accounts','Manage blocked people','blocked'],['film','NIJØK Studio','Your creator tools','studio'],['box','Private Space','Inventory, audits, team','psp'],['out','Log out','','logout']];
  e.innerHTML=`<div class="pdb" data-a="pdclose"></div><aside class="pdp" role="dialog" aria-label="Profile"><div class="pdt"><button data-a="pdclose" aria-label="Close">←</button><span></span><button data-a="pdgo" data-k="edit" aria-label="Edit profile">${IC2('edit',22)}</button></div><div class="pdh"><div data-a="pdgo" data-k="view">${av(m,112)}</div><h2>${E(m.name)}</h2><p>${m.uname?'@'+E(m.uname):'Add a username'}</p><div class="pds"><div data-a="pdgo" data-k="followers"><b id="pdr">–</b><small>Followers</small></div><div data-a="pdgo" data-k="following"><b id="pdg">–</b><small>Following</small></div><div data-a="pdgo" data-k="mine"><b id="pdq">–</b><small>Posts</small></div></div></div><nav>${R.map((r,i)=>`<button class="pdr${r[3]==='logout'?' dng':''}" style="--i:${i}" data-a="pdgo" data-k="${r[3]}"><i>${IC2(r[0],24)}</i><span><b>${r[1]}</b>${r[2]?`<small>${r[2]}</small>`:''}</span>${r[3]==='night'?`<em class="sw${night?' on':''}" id="pdsw"></em>`:''}</button>`).join('')}</nav></aside>`;
  requestAnimationFrame(()=>requestAnimationFrame(()=>e.classList.add('open')));
  const c=async(q,el)=>{try{const n=(await F.getCountFromServer(q)).data().count;const x=$(el);x&&(x.textContent=n)}catch(_){}};
@@ -1884,6 +1884,195 @@ new MutationObserver(()=>{cancelAnimationFrame(S.oxr);S.oxr=requestAnimationFram
 {const _vh2=V.home;V.home=function(){_vh2();$$('.mtg').forEach(e=>e.remove())}}
 {const _it=PCAT.app.items;PCAT.app.items=()=>_it().filter(i=>i[2]!=='night')}
 owIcons();
+
+/* ================= NIJØK PRIVATE SPACE (workspaces · inventory · audit · team) ================= */
+const PSI={box:'<path d="M3 7l9-4 9 4v10l-9 4-9-4z"/><path d="M3 7l9 4 9-4M12 11v10"/>',scan:'<path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3M7 12h10"/>',up:'<path d="M12 16V4M7 9l5-5 5 5M4 20h16"/>',doc:'<path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M9 13h7M9 17h5"/>',task:'<rect x="4" y="4" width="16" height="16" rx="3"/><path d="m8 12 3 3 5-6"/>',list:'<path d="M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01"/>',cloud:'<path d="M7 18a4 4 0 0 1-.5-8A6 6 0 0 1 18 9a4.5 4.5 0 0 1-.5 9z"/>',shield:'<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="m9 12 2 2 4-4"/>',trash:'<path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/>'};
+IP.box=PSI.box;
+const pi=(k,s=22)=>I(PSI[k]||IP[k]||IP.grid,s);
+const PS={w:null,list:[],prods:null,imp:null,au:null};
+const ROLES={owner:'Owner',admin:'Admin / Manager',employee:'Employee',vendor:'Vendor'};
+const myRole=()=>PS.w?.roles?.[S.me.uid]||'';
+const isMgr=()=>['owner','admin'].includes(myRole());
+const canWork=()=>['owner','admin','employee'].includes(myRole());
+const wcol=n=>F.collection(db,'workspaces',PS.w.id,n);
+const wdoc=(n,id)=>F.doc(db,'workspaces',PS.w.id,n,id);
+const pid=c=>String(c).trim().replace(/[\/\s.#\[\]]/g,'_').slice(0,120);
+const psErr=e=>e&&e.code==='permission-denied'?'Not allowed. Publish the Private Space Firestore rules first.':(e&&e.message)||'Something went wrong';
+const psDate=t=>t?new Date(t).toLocaleString([], {day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}):'';
+const psPage=(t,b,r='')=>{app.innerHTML=`<div class="hd"><button class="ib" data-a="back">←</button><h2>${t}</h2><span class="sp"></span>${r}</div><div class="body ps">${b}</div>`};
+const psLoad=async id=>{const s=snap(await F.getDoc(F.doc(db,'workspaces',id)));if(!s)throw new Error('Workspace not found');PS.w=s;PS.prods=null;return s};
+const psProds=async(force)=>{if(PS.prods&&!force)return PS.prods;PS.prods=(await F.getDocs(wcol('products'))).docs.map(snap);return PS.prods};
+const psCalc=(prods,au)=>{const loc=au.loc,P=prods.filter(p=>!p.location||p.location===loc||loc==='All'),c=au.counts||{},rows=[];let ex=0,got=0,mt=0,mm=0,ms=0,un=0;
+ P.forEach(p=>{const g=c[p.id]||0,e=p.qty||0;ex+=e;got+=g;const st=g===e?'match':g===0?'missing':'diff';st==='match'?mt++:st==='missing'?ms++:mm++;rows.push({id:p.id,name:p.name,exp:e,got:g,st})});
+ const known=new Set(P.map(p=>p.id));Object.keys(c).forEach(k=>{if(!known.has(k)){un++;got+=c[k];rows.push({id:k,name:'Unexpected item',exp:0,got:c[k],st:'unexp'})}});
+ return{rows,ex,got,mt,mm,ms,un,tot:P.length,pct:P.length?Math.round(mt/P.length*100):0}};
+const ST={match:['Matched','ok'],missing:['Missing','bad'],diff:['Mismatch','wr'],unexp:['Unexpected','wr']};
+const psRing=p=>`<div class="psr" style="--p:${p}"><b>${p}%</b><small>Matched</small></div>`;
+const psMet=(l,v,c='')=>`<div class="psm ${c}"><small>${l}</small><b>${v}</b></div>`;
+const psCSV=(rows,name)=>{const q=v=>{v=String(v??'');return /[",\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v};const t=rows.map(r=>r.map(q).join(',')).join('\n'),a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\ufeff'+t],{type:'text/csv'}));a.download=name;document.body.appendChild(a);a.click();a.remove();toast('Report downloaded',name)};
+const psParseCSV=t=>{const out=[];let r=[],c='',q=false;for(let i=0;i<t.length;i++){const ch=t[i];if(q){if(ch==='"'){if(t[i+1]==='"'){c+='"';i++}else q=false}else c+=ch}else if(ch==='"')q=true;else if(ch===','||ch===';'||ch==='\t'){r.push(c);c=''}else if(ch==='\n'||ch==='\r'){if(ch==='\r'&&t[i+1]==='\n')i++;r.push(c);c='';if(r.some(x=>x.trim()))out.push(r);r=[]}else c+=ch}r.push(c);if(r.some(x=>x.trim()))out.push(r);return out};
+const psXLSX=()=>window.XLSX?Promise.resolve():new Promise((ok,no)=>{const s=document.createElement('script');s.src='https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';s.onload=ok;s.onerror=()=>no(new Error('Could not load the Excel reader. Check internet or upload a CSV.'));document.head.appendChild(s)});
+const noAccess=()=>`<div class="emp"><div class="psi big">${pi('lock',30)}</div><b>Limited access</b><p>Your role (${ROLES[myRole()]||'none'}) can only use the workflows the owner authorizes.</p></div>`;
+
+/* ---- list of workspaces ---- */
+V.pshome=async()=>{psPage('Private Space',`<div class="psb">${pi('lock',28)}<div><b>Your Business. Your Data. Your Space.</b><small>Inventory, stock audits and team work. Every workspace is private.</small></div></div><h3 class="pst">Your workspaces</h3><div id="pwl"><div class="emp">Loading…</div></div><button class="btn" data-a="go" data-v="psnew">Create workspace</button>`);
+ try{const s=await F.getDocs(F.query(F.collection(db,'workspaces'),F.where('members','array-contains',S.me.uid)));if(S.view!=='pshome')return;PS.list=s.docs.map(snap);
+  $('#pwl').innerHTML=PS.list.length?PS.list.map(w=>`<div class="row" data-a="psopen" data-id="${w.id}"><div class="psi">${w.logo?`<img src="${E(w.logo)}">`:pi('box')}</div><div class="m"><b>${E(w.name)}</b><small>${E(w.type||'')} · ${(w.members||[]).length} member${(w.members||[]).length>1?'s':''} · ${ROLES[w.roles?.[S.me.uid]]||''}</small></div></div>`).join(''):'<div class="emp"><b>No workspace yet</b><p>Create one to manage stock with your team.</p></div>'}
+ catch(e){const x=$('#pwl');x&&(x.innerHTML=`<div class="emp">${E(psErr(e))}</div>`)}};
+
+V.psnew=()=>{S.pslogo='';psPage('Create Workspace',`<form data-f="psnew" class="psf"><label>Workspace name *<input name="name" maxlength="60" placeholder="e.g. GreenMart Retail" required></label>
+<label>Business type *<select name="type"><option>Retail Store</option><option>Supermarket</option><option>Warehouse</option><option>Book Store</option><option>Pharmacy</option><option>Restaurant</option><option>Other</option></select></label>
+<label>Company / store details<input name="company" maxlength="80" placeholder="e.g. GreenMart Supermarket Pvt. Ltd."></label>
+<label>Description (optional)<textarea name="desc" maxlength="200" rows="2" placeholder="Fresh food, groceries and daily essentials."></textarea></label>
+<label>Store locations (comma separated)<input name="locs" value="Main Store" placeholder="Main Store, Warehouse, Outlet"></label>
+<div class="psl"><div class="psi" id="pslg">${pi('box')}</div><button type="button" class="btn o" data-a="pslogo" style="width:auto;margin:0">Add logo (optional)</button></div>
+<div id="er" class="er"></div><button class="btn">Create Workspace</button><p class="psn">Private by default. Only people you add can open it.</p></form>`)};
+Object.assign(ACT,{
+ async psopen(d){try{await psLoad(d.id);nav('psws')}catch(e){toast('Could not open',psErr(e))}},
+ pslogo(){pickImg(async f=>{S.pslogo=await shrink(f,200,.8);const g=$('#pslg');g&&(g.innerHTML=`<img src="${S.pslogo}">`)})},
+ psgo(d){nav(d.v,d.id?{id:d.id}:{})},
+ psset(){nav('psset')}
+});
+Object.assign(FORM,{
+ async psnew(d,f){const name=(d.name||'').trim();if(name.length<2)return err('Enter the workspace name');const locs=[...new Set((d.locs||'Main Store').split(',').map(x=>x.trim()).filter(Boolean))].slice(0,10),id=uid_();const b=f.querySelector('.btn');b.disabled=true;
+  try{await F.setDoc(F.doc(db,'workspaces',id),{name,type:d.type,company:(d.company||'').trim(),desc:(d.desc||'').trim(),logo:S.pslogo||'',locations:locs.length?locs:['Main Store'],owner:S.me.uid,members:[S.me.uid],roles:{[S.me.uid]:'owner'},vis:'private',at:F.serverTimestamp()});await psLoad(id);toast('Workspace created',name);rep('psws')}
+  catch(e){err(psErr(e));b.disabled=false}}
+});
+
+/* ---- dashboard ---- */
+V.psws=async()=>{const w=PS.w;if(!w)return root('pshome');
+ psPage(E(w.name),`<div id="psd"><div class="emp">Loading…</div></div>`,`<button class="ib" data-a="psset" aria-label="Settings">${pi('gear')}</button>`);
+ if(!canWork()){$('#psd').innerHTML=noAccess();return}
+ try{const [pr,as,im]=await Promise.all([psProds(true),F.getDocs(F.query(wcol('audits'),F.orderBy('at','desc'),F.limit(20))),F.getDocs(F.query(wcol('imports'),F.orderBy('at','desc'),F.limit(1)))]);if(S.view!=='psws')return;
+  const au=as.docs.map(snap),last=au[0],c=last?psCalc(pr,last):null,li=im.docs[0]&&snap(im.docs[0]),pend=au.filter(a=>a.status==='review').length,has=pr.length>0;
+  const ex=has?pr.reduce((s,p)=>s+(p.qty||0),0):null;
+  const act=[['up','Import','psimp',isMgr()],['list','Inventory','psinv',true],['scan','Scan Audit','psaud',true],['doc','Reports','psrep',isMgr()],['task','Tasks','pstk',true],['users','Team','pstm',isMgr()]].filter(a=>a[3]);
+  $('#psd').innerHTML=`<div class="psg">${psMet('Total products',has?pr.length:'—')}${psMet('Expected qty',ex??'—')}${psMet('Counted qty',c?c.got:'—')}${psMet('Mismatch',c?c.mm+c.ms+c.un:'—',c&&(c.mm+c.ms+c.un)?'bad':'')}</div>
+  <div class="psc"><h3 class="pst">Audit progress</h3>${c?`<div class="psrw">${psRing(c.pct)}<div class="psk"><span><i class="ok"></i>Matched <b>${c.mt}</b></span><span><i class="wr"></i>Mismatched <b>${c.mm}</b></span><span><i class="bad"></i>Missing <b>${c.ms}</b></span><span><i class="wr"></i>Unexpected <b>${c.un}</b></span></div></div><small class="psn">${E(last.loc)} · ${E(last.status)} · ${psDate(last.at)}</small>`:'<div class="psn">No audit yet. Import stock, then start a scan audit.</div>'}</div>
+  <div class="psc"><h3 class="pst">Quick actions</h3><div class="psq">${act.map(a=>`<div data-a="go" data-v="${a[2]}"><i>${pi(a[0],24)}</i><span>${a[1]}</span></div>`).join('')}</div></div>
+  <div class="psc"><h3 class="pst">Status</h3><div class="psn">Pending reviews: <b>${pend}</b><br>Data source: ${li?E(li.file)+' · '+li.rows+' rows · '+psDate(li.at):'No import yet'}<br>Role: ${ROLES[myRole()]}</div></div>`}
+ catch(e){const x=$('#psd');x&&(x.innerHTML=`<div class="emp">${E(psErr(e))}</div>`)}};
+
+/* ---- inventory ---- */
+V.psinv=async()=>{psPage('Inventory',`<input id="psq" class="psin" placeholder="Search product, barcode or SKU…"><div id="psl"><div class="emp">Loading…</div></div>`,isMgr()?`<button class="ib" data-a="go" data-v="psimp">${pi('up')}</button>`:'');
+ try{await psProds(true);if(S.view==='psinv')psInvDraw('')}catch(e){const x=$('#psl');x&&(x.innerHTML=`<div class="emp">${E(psErr(e))}</div>`)}};
+const psInvDraw=q=>{const el=$('#psl');if(!el)return;q=q.trim().toLowerCase();const L=(PS.prods||[]).filter(p=>!q||[p.name,p.barcode,p.sku,p.category].join(' ').toLowerCase().includes(q)).slice(0,300);
+ el.innerHTML=L.length?L.map(p=>`<div class="row"><div class="m"><b>${E(p.name)}</b><small>${E(p.barcode)}${p.sku?' · SKU '+E(p.sku):''}${p.category?' · '+E(p.category):''}${p.location?' · '+E(p.location):''}</small></div><span class="pq">${p.qty??0}</span></div>`).join(''):`<div class="emp"><b>${PS.prods?.length?'No match':'No products yet'}</b><p>${PS.prods?.length?'Try another search.':'Import an Excel or CSV file to add stock.'}</p></div>`};
+document.addEventListener('input',e=>{if(e.target.id==='psq')psInvDraw(e.target.value)});
+
+/* ---- import: upload → map → review → commit ---- */
+const IMF=[['barcode','Barcode *',/barcode|ean|upc|isbn|code/i],['name','Product name *',/name|title|product|item|desc/i],['sku','SKU',/sku|item.?code/i],['category','Category',/categ|group|dept/i],['location','Location',/loc|store|shelf|branch/i],['qty','Expected quantity',/qty|quant|stock|count|units/i]];
+V.psimp=()=>{if(!isMgr())return psPage('Import',noAccess());const I_=PS.imp||{step:1};
+ if(I_.step===1)return psPage('Import Inventory',`<div class="psc"><div class="psdz"><i>${pi('up',34)}</i><b>Upload Excel or CSV file</b><small>.xlsx · .xls · .csv · max 5 MB, 20,000 rows</small><label class="btn" style="width:auto;display:inline-block">Choose file<input id="psf" type="file" accept=".csv,.xlsx,.xls" hidden></label></div><div id="er" class="er"></div><button class="btn o" data-a="psample" style="color:var(--g);border-color:var(--g)">Download sample CSV</button></div><div class="psn">Nothing changes in your stock until you review the summary and confirm.</div>`);
+ if(I_.step===2)return psPage('Map Your Columns',`<div class="psn">Match your file columns with NIJØK fields. First ${Math.min(3,I_.rows.length)} rows are shown below.</div><div class="psc">${IMF.map(([k,l])=>`<label class="psmp">${l}<select data-pm="${k}"><option value="">— not used —</option>${I_.head.map((h,i)=>`<option value="${i}"${I_.map[k]===i?' selected':''}>${E(h||'Column '+(i+1))}</option>`).join('')}</select></label>`).join('')}</div><div class="psc psn">${I_.rows.slice(0,3).map(r=>E(r.join(' | '))).join('<br>')}</div><div id="er" class="er"></div><button class="btn" data-a="psimpmap">Next: validate</button><button class="btn o" data-a="psimpreset" style="color:var(--g);border-color:var(--g)">Back</button>`);
+ const R=I_.res;psPage('Review & Import',`<div class="psg">${psMet('Valid rows',R.ok.length)}${psMet('Errors',R.bad.length,R.bad.length?'bad':'')}${psMet('New items',R.add)}${psMet('Existing items',R.upd)}</div>
+ <div class="psc"><label class="psmp">If a barcode already exists<select id="psmode"><option value="add">Add new only — keep existing as is</option><option value="upd">Update existing quantity too</option></select></label><p class="psn">Your current stock is never overwritten silently. Failed imports can be safely re-run.</p></div>
+ ${R.bad.length?`<div class="psc"><h3 class="pst">Row errors</h3>${R.bad.slice(0,25).map(b=>`<div class="psn">Row ${b.n}: ${E(b.e)}</div>`).join('')}${R.bad.length>25?`<div class="psn">…and ${R.bad.length-25} more</div>`:''}</div>`:''}
+ <div id="er" class="er"></div><button class="btn" data-a="psimpgo"${R.ok.length?'':' disabled'}>Import ${R.ok.length} items</button><button class="btn o" data-a="psimpreset" style="color:var(--g);border-color:var(--g)">Cancel</button>`)};
+async function psFile(f){if(!f)return;if(f.size>5*1048576)return err('File is larger than 5 MB');let rows;
+ try{if(/\.csv$/i.test(f.name))rows=psParseCSV(await f.text());else{await psXLSX();const wb=XLSX.read(await f.arrayBuffer(),{type:'array'});rows=XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{header:1,defval:'',raw:false})}}catch(e){return err(e.message||'Could not read the file')}
+ rows=rows.filter(r=>r.some(x=>String(x).trim()));if(rows.length<2)return err('The file needs a header row and at least one data row');if(rows.length>20001)return err('Too many rows (max 20,000)');
+ const head=rows[0].map(x=>String(x).trim()),map={};IMF.forEach(([k,,re])=>{const i=head.findIndex((h,j)=>re.test(h)&&!Object.values(map).includes(j));if(i>=0)map[k]=i});
+ PS.imp={step:2,file:f.name,head,rows:rows.slice(1).map(r=>r.map(x=>String(x).trim())),map};rep('psimp')}
+document.addEventListener('change',e=>{if(e.target.id==='psf')psFile(e.target.files[0])});
+Object.assign(ACT,{
+ psample(){psCSV([['Barcode','Product Name','SKU','Category','Location','Quantity'],['8901234567890','Organic Milk','OM001','Dairy','Main Store','50'],['8901234567891','Whole Wheat Bread','WB001','Bakery','Main Store','30']],'nijok-sample-inventory.csv')},
+ psimpreset(){PS.imp=null;rep('psimp')},
+ async psimpmap(){const I_=PS.imp,m={};$$('[data-pm]').forEach(s=>{if(s.value!=='')m[s.dataset.pm]=+s.value});if(m.barcode===undefined||m.name===undefined)return err('Barcode and Product name must be mapped');I_.map=m;
+  const ex=new Map((await psProds(true)).map(p=>[p.id,p])),seen=new Set(),ok=[],bad=[];let add=0,upd=0;
+  I_.rows.forEach((r,i)=>{const n=i+2,bc=(r[m.barcode]||'').trim(),nm=(r[m.name]||'').trim(),qs=m.qty!==undefined?(r[m.qty]||'').trim():'0';
+   if(!bc)return bad.push({n,e:'Missing barcode'});if(!nm)return bad.push({n,e:'Missing product name'});
+   const q=qs===''?0:Number(qs);if(!Number.isFinite(q)||q<0||!Number.isInteger(q))return bad.push({n,e:'Invalid quantity "'+qs+'"'});
+   const id=pid(bc);if(seen.has(id))return bad.push({n,e:'Duplicate barcode in file: '+bc});seen.add(id);
+   ex.has(id)?upd++:add++;ok.push({id,barcode:bc,name:nm.slice(0,120),sku:m.sku!==undefined?r[m.sku]:'',category:m.category!==undefined?r[m.category]:'',location:m.location!==undefined?r[m.location]:'',qty:q,exists:ex.has(id)})});
+  I_.res={ok,bad,add,upd};I_.step=3;rep('psimp')},
+ async psimpgo(){const I_=PS.imp,mode=$('#psmode').value,list=I_.res.ok.filter(x=>mode==='upd'||!x.exists),btn=$('[data-a=psimpgo]');btn.disabled=true;btn.textContent='Importing…';const jid=uid_();let done=0;
+  try{await F.setDoc(wdoc('imports',jid),{file:I_.file,rows:I_.rows.length,status:'running',by:S.me.uid,at:F.serverTimestamp()});
+   for(let i=0;i<list.length;i+=400){const b=F.writeBatch(db);list.slice(i,i+400).forEach(x=>{const{exists,...p}=x;b.set(wdoc('products',x.id),{...p,imp:jid,at:F.serverTimestamp()},{merge:true})});await b.commit();done=Math.min(i+400,list.length)}
+   await F.updateDoc(wdoc('imports',jid),{status:'done',added:list.filter(x=>!x.exists).length,updated:list.filter(x=>x.exists).length,skipped:I_.res.ok.length-list.length,errors:I_.res.bad.length});
+   PS.imp=null;PS.prods=null;toast('Import complete',done+' items saved');back()}
+  catch(e){try{await F.updateDoc(wdoc('imports',jid),{status:'failed',saved:done})}catch(_){}err(psErr(e)+' ('+done+' saved. Safe to run again.)');btn.disabled=false;btn.textContent='Retry import'}}
+});
+
+/* ---- audit ---- */
+V.psaud=async()=>{if(!canWork())return psPage('Stock Audit',noAccess());
+ psPage('Stock Audit',`<form data-f="psaudgo" class="psc psf"><h3 class="pst">New audit session</h3><label>Store location<select name="loc">${(PS.w.locations||['Main Store']).map(l=>`<option>${E(l)}</option>`).join('')}</select></label><div id="er" class="er"></div><button class="btn">Start audit</button></form><h3 class="pst">Audit sessions</h3><div id="psal"><div class="emp">Loading…</div></div>`);
+ try{const a=(await F.getDocs(F.query(wcol('audits'),F.orderBy('at','desc'),F.limit(30)))).docs.map(snap);const el=$('#psal');if(!el)return;
+  el.innerHTML=a.length?a.map(x=>`<div class="row" data-a="psgo" data-v="${x.status==='open'?'psscan':'psres'}" data-id="${x.id}"><div class="m"><b>${E(x.loc)}</b><small>${psDate(x.at)} · ${x.scanN||0} scans</small></div><span class="pt ${x.status==='approved'?'ok':x.status==='review'?'wr':''}">${x.status}</span></div>`).join(''):'<div class="emp">No audits yet</div>'}catch(e){const x=$('#psal');x&&(x.innerHTML=`<div class="emp">${E(psErr(e))}</div>`)}};
+FORM.psaudgo=async(d,f)=>{try{const prods=await psProds(true);if(!prods.length)return err('Import your expected stock first');const id=uid_();await F.setDoc(wdoc('audits',id),{loc:d.loc,status:'open',by:S.me.uid,counts:{},scanN:0,at:F.serverTimestamp()});nav('psscan',{id})}catch(e){err(psErr(e))}};
+const psFind=code=>{const id=pid(code),P=PS.prods||[];return P.find(p=>p.id===id)||P.find(p=>p.sku&&p.sku.toLowerCase()===String(code).trim().toLowerCase())||null};
+V.psscan=async({id})=>{psPage('Scan Audit',`<div class="emp">Loading…</div>`);
+ try{const au=snap(await F.getDoc(wdoc('audits',id)));await psProds();if(S.view!=='psscan')return;PS.au={...au,counts:au.counts||{},recent:[]};
+  psPage('Scan · '+E(au.loc),`<div class="scanv psv"><video id="vid" playsinline muted autoplay></video><div class="frm"><i></i><b class="c1"></b><b class="c2"></b><b class="c3"></b><b class="c4"></b></div><div class="sct" id="sct">Point the camera at a product barcode</div></div>
+  <div class="psc" id="psl2"><div class="psn">Nothing scanned yet.</div></div>
+  <form data-f="psman" class="psc psf" style="display:flex;gap:8px"><input name="code" class="psin" placeholder="Type barcode manually" inputmode="numeric" style="flex:1;margin:0"><input name="qty" class="psin" value="1" inputmode="numeric" style="width:64px;margin:0"><button class="btn" style="width:auto;margin:0">Add</button></form>
+  <button class="btn" data-a="psfin">Finish &amp; review</button>`);psCam()}catch(e){psPage('Scan Audit',`<div class="emp">${E(psErr(e))}</div>`)}};
+async function psCam(){const msg=t=>{const e=$('#sct');if(e)e.textContent=t};if(!navigator.mediaDevices?.getUserMedia)return msg('Camera not available. Use manual entry below.');
+ try{S.stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'}},audio:false});const v=$('#vid');if(!v){stopCam();return}v.srcObject=S.stream;await v.play().catch(()=>{});
+  if(!('BarcodeDetector'in window))return msg('Auto-scan needs Chrome on Android. Use manual entry below.');
+  const det=new BarcodeDetector({formats:['ean_13','ean_8','upc_a','upc_e','code_128','code_39','qr_code']});let lastC='',lastT=0;
+  S.scanT=setInterval(async()=>{try{const r=await det.detect(v);if(r[0]){const c=r[0].rawValue,n=Date.now();if(c===lastC&&n-lastT<2000)return;lastC=c;lastT=n;navigator.vibrate?.(60);psHit(c,1)}}catch(e){}},350)}
+ catch(e){msg('Camera permission needed. You can still use manual entry.')}}
+async function psHit(code,q){const au=PS.au;if(!au)return;code=String(code).trim();if(!code)return;const p=psFind(code),k=p?p.id:pid(code),was=au.counts[k]||0;au.counts[k]=was+q;
+ au.recent.unshift({k,name:p?p.name:'Unexpected item',code,exp:p?p.qty:null,got:au.counts[k],dup:was>0});au.recent=au.recent.slice(0,6);
+ try{await F.updateDoc(wdoc('audits',au.id),{['counts.'+k]:F.increment(q),scanN:F.increment(1)});F.addDoc(wdoc0('audits',au.id,'scans'),{code,pid:k,qty:q,by:S.me.uid,at:F.serverTimestamp()}).catch(()=>{})}catch(e){au.counts[k]=was;au.recent.shift();return toast('Could not save scan',psErr(e))}
+ const el=$('#psl2');if(el)el.innerHTML=au.recent.map(r=>`<div class="row" style="margin:0 0 6px"><div class="m"><b>${E(r.name)}</b><small>${E(r.code)}${r.exp!=null?' · Expected '+r.exp:''}${r.dup?' · scanned again':''}</small></div><span class="pt ${r.exp==null?'wr':r.got===r.exp?'ok':r.got>r.exp?'wr':''}">${r.got}${r.exp!=null?' / '+r.exp:''}</span></div>`).join('')}
+const wdoc0=(a,b,c)=>F.collection(db,'workspaces',PS.w.id,a,b,c);
+Object.assign(FORM,{psman:async(d,f)=>{const q=Math.max(1,parseInt(d.qty)||1);await psHit(d.code,q);f.code.value='';f.code.focus()}});
+Object.assign(ACT,{async psfin(){const a=PS.au;if(!a)return;if(!confirm('Finish this audit and send for review?'))return;try{await F.updateDoc(wdoc('audits',a.id),{status:'review',fat:F.serverTimestamp()});rep('psres',{id:a.id})}catch(e){toast('Could not finish',psErr(e))}}});
+
+/* ---- results / approval / report ---- */
+V.psres=async({id})=>{psPage('Audit Results',`<div class="emp">Loading…</div>`);
+ try{const au=snap(await F.getDoc(wdoc('audits',id)));const pr=await psProds();if(S.view!=='psres')return;PS.au=au;const c=psCalc(pr,au);PS.rc=c;
+  psPage('Audit Results',`<div class="psc"><div class="psrw">${psRing(c.pct)}<div class="psk"><span><i class="ok"></i>Matched <b>${c.mt}</b></span><span><i class="wr"></i>Mismatched <b>${c.mm}</b></span><span><i class="bad"></i>Missing <b>${c.ms}</b></span><span><i class="wr"></i>Unexpected <b>${c.un}</b></span></div></div><small class="psn">${E(au.loc)} · ${psDate(au.at)} · status: <b>${E(au.status)}</b>${au.apby?' · approved by '+E((S.U[au.apby]||{}).name||'manager'):''}</small></div>
+  <h3 class="pst">Discrepancies</h3>${c.rows.filter(r=>r.st!=='match').map(r=>`<div class="row"><div class="m"><b>${E(r.name)}</b><small>${E(r.id)} · Expected ${r.exp} · Found ${r.got}</small></div><span class="pt ${ST[r.st][1]}">${r.got-r.exp>0?'+':''}${r.got-r.exp}</span></div>`).join('')||'<div class="emp">No discrepancies</div>'}
+  <button class="btn o" data-a="psexp" style="color:var(--g);border-color:var(--g)">Export CSV report</button>
+  ${isMgr()&&au.status==='review'?`<button class="btn" data-a="psappr">Approve audit</button>`:''}
+  ${isMgr()&&au.status==='approved'&&!au.applied?`<button class="btn o" data-a="psapply" style="color:var(--g);border-color:var(--g)">Apply counted quantities to stock</button>`:''}
+  ${au.status==='open'&&canWork()?`<button class="btn" data-a="psgo" data-v="psscan" data-id="${au.id}">Continue scanning</button>`:''}`)}catch(e){psPage('Audit Results',`<div class="emp">${E(psErr(e))}</div>`)}};
+const psRepRows=(au,c)=>[['NIJØK Private Space — Audit report'],['Workspace',PS.w.name],['Business type',PS.w.type||''],['Store location',au.loc],['Audit started',psDate(au.at)],['Audit status',au.status],['Approved by',au.apby?(S.U[au.apby]||{}).name||au.apby:''],['Report generated',psDate(Date.now())],[],['Expected total',c.ex,'Counted total',c.got,'Matched',c.mt,'Mismatched',c.mm,'Missing',c.ms,'Unexpected',c.un],[],['Barcode / ID','Product','Expected','Counted','Difference','Status'],...c.rows.map(r=>[r.id,r.name,r.exp,r.got,r.got-r.exp,ST[r.st][0]])];
+Object.assign(ACT,{
+ psexp(){psCSV(psRepRows(PS.au,PS.rc),'audit-'+PS.w.name.replace(/\W+/g,'-')+'-'+PS.au.id+'.csv')},
+ async psappr(){if(!isMgr())return;if(!confirm('Approve this audit? Stock records stay unchanged until you apply them.'))return;try{await F.updateDoc(wdoc('audits',PS.au.id),{status:'approved',apby:S.me.uid,apat:F.serverTimestamp()});toast('Audit approved');rep('psres',{id:PS.au.id})}catch(e){toast('Could not approve',psErr(e))}},
+ async psapply(){if(!isMgr())return;const rows=PS.rc.rows.filter(r=>r.st!=='match'&&r.st!=='unexp');if(!confirm('Update stock quantity for '+rows.length+' items to the counted values?'))return;
+  try{for(let i=0;i<rows.length;i+=400){const b=F.writeBatch(db);rows.slice(i,i+400).forEach(r=>b.update(wdoc('products',r.id),{qty:r.got,at:F.serverTimestamp()}));await b.commit()}await F.updateDoc(wdoc('audits',PS.au.id),{applied:true});PS.prods=null;toast('Stock updated');rep('psres',{id:PS.au.id})}catch(e){toast('Could not apply',psErr(e))}}
+});
+V.psrep=async()=>{if(!isMgr())return psPage('Reports',noAccess());psPage('Reports',`<button class="btn" data-a="psinvcsv">Download inventory CSV</button><h3 class="pst">Audit reports</h3><div id="psal"><div class="emp">Loading…</div></div>`);
+ try{const a=(await F.getDocs(F.query(wcol('audits'),F.orderBy('at','desc'),F.limit(30)))).docs.map(snap);const el=$('#psal');if(!el)return;el.innerHTML=a.length?a.map(x=>`<div class="row" data-a="psgo" data-v="psres" data-id="${x.id}"><div class="m"><b>Audit · ${E(x.loc)}</b><small>${psDate(x.at)} · ${x.scanN||0} scans</small></div><span class="pt ${x.status==='approved'?'ok':'wr'}">${x.status}</span></div>`).join(''):'<div class="emp">No audit reports yet</div>'}catch(e){const x=$('#psal');x&&(x.innerHTML=`<div class="emp">${E(psErr(e))}</div>`)}};
+ACT.psinvcsv=async()=>{try{const p=await psProds(true);psCSV([['Workspace',PS.w.name],['Generated',psDate(Date.now())],[],['Barcode','Name','SKU','Category','Location','Expected qty'],...p.map(x=>[x.barcode,x.name,x.sku||'',x.category||'',x.location||'',x.qty??0])],'inventory-'+PS.w.name.replace(/\W+/g,'-')+'.csv')}catch(e){toast('Failed',psErr(e))}};
+
+/* ---- team ---- */
+V.pstm=async()=>{if(!isMgr())return psPage('Team',noAccess());const w=PS.w;await loadU(w.members||[]);const own=myRole()==='owner';
+ psPage('Team',`<div class="psc"><h3 class="pst">Members (${(w.members||[]).length})</h3>${(w.members||[]).map(u=>{const r=w.roles[u],p=S.U[u]||{};return`<div class="row" style="margin:0 0 6px">${av(p,40)}<div class="m"><b>${E(p.name||'Member')}${u===S.me.uid?' (You)':''}</b><small>${p.uname?'@'+E(p.uname):''}</small></div>${own&&u!==w.owner?`<select class="psin" style="width:auto;margin:0" data-psrole="${u}">${['admin','employee','vendor'].map(x=>`<option value="${x}"${x===r?' selected':''}>${ROLES[x]}</option>`).join('')}</select><button class="ib" data-a="psrm" data-id="${u}" aria-label="Remove">${pi('trash',18)}</button>`:`<span class="pt ok">${ROLES[r]}</span>`}</div>`}).join('')}</div>
+ ${own?`<form data-f="psinv" class="psc psf"><h3 class="pst">Add member</h3><label>Their NIJØK @username or email<input name="who" placeholder="@username" required></label><label>Role<select name="role"><option value="admin">Admin / Manager</option><option value="employee" selected>Employee</option><option value="vendor">Vendor</option></select></label><div id="er" class="er"></div><button class="btn">Add to workspace</button><p class="psn">Only you can add people. Each person signs in with their own account.</p></form>`:''}`)};
+document.addEventListener('change',async e=>{const u=e.target.dataset?.psrole;if(!u)return;try{await F.updateDoc(F.doc(db,'workspaces',PS.w.id),{['roles.'+u]:e.target.value});PS.w.roles[u]=e.target.value;toast('Role updated')}catch(x){toast('Could not change role',psErr(x))}});
+FORM.psinv=async(d,f)=>{const q=(d.who||'').trim().toLowerCase().replace(/^@/,'');if(!q)return err('Enter a username or email');let r;
+ try{r=await F.getDocs(F.query(F.collection(db,'users'),F.where('uname','==',q),F.limit(1)));if(r.empty&&q.includes('@'))r=await F.getDocs(F.query(F.collection(db,'users'),F.where('email','==',q),F.limit(1)))}catch(e){return err(psErr(e))}
+ if(!r||r.empty)return err('No NIJØK user found. Ask them to sign up and share their @username.');const u=r.docs[0].id;if((PS.w.members||[]).includes(u))return err('Already a member');
+ try{await F.updateDoc(F.doc(db,'workspaces',PS.w.id),{members:F.arrayUnion(u),['roles.'+u]:d.role});PS.w.members=[...(PS.w.members||[]),u];PS.w.roles[u]=d.role;toast('Member added');rep('pstm')}catch(e){err(psErr(e))}};
+ACT.psrm=async d=>{if(!confirm('Remove this member?'))return;try{await F.updateDoc(F.doc(db,'workspaces',PS.w.id),{members:F.arrayRemove(d.id),['roles.'+d.id]:F.deleteField()});PS.w.members=PS.w.members.filter(x=>x!==d.id);delete PS.w.roles[d.id];rep('pstm')}catch(e){toast('Could not remove',psErr(e))}};
+
+/* ---- tasks ---- */
+V.pstk=async()=>{if(!canWork())return psPage('Tasks',noAccess());await loadU(PS.w.members||[]);
+ psPage('Tasks',`${isMgr()?`<form data-f="pstask" class="psc psf"><h3 class="pst">New task</h3><input name="title" class="psin" placeholder="e.g. Check low stock items" required maxlength="100"><div style="display:flex;gap:8px"><input type="date" name="due" class="psin" style="margin:0"><select name="to" class="psin" style="margin:0">${(PS.w.members||[]).map(u=>`<option value="${u}">${E((S.U[u]||{}).name||'Member')}</option>`).join('')}</select></div><div id="er" class="er"></div><button class="btn">Add task</button></form>`:''}<div id="pstl"><div class="emp">Loading…</div></div>`);
+ try{const t=(await F.getDocs(F.query(wcol('tasks'),F.orderBy('at','desc'),F.limit(100)))).docs.map(snap).filter(x=>isMgr()||x.to===S.me.uid);const el=$('#pstl');if(!el)return;
+  el.innerHTML=t.length?t.map(x=>`<div class="row"><button class="psck${x.done?' on':''}" data-a="pstog" data-id="${x.id}" data-v="${x.done?0:1}" aria-label="Toggle">${x.done?pi('task',18):''}</button><div class="m"><b style="${x.done?'text-decoration:line-through;opacity:.6':''}">${E(x.title)}</b><small>${E((S.U[x.to]||{}).name||'')}${x.due?' · Due '+E(x.due):''}</small></div>${isMgr()?`<button class="ib" data-a="pstdel" data-id="${x.id}" aria-label="Delete">${pi('trash',18)}</button>`:''}</div>`).join(''):'<div class="emp">No tasks yet</div>'}catch(e){const x=$('#pstl');x&&(x.innerHTML=`<div class="emp">${E(psErr(e))}</div>`)}};
+FORM.pstask=async d=>{try{await F.addDoc(wcol('tasks'),{title:d.title.trim(),due:d.due||'',to:d.to,by:S.me.uid,done:false,at:F.serverTimestamp()});rep('pstk')}catch(e){err(psErr(e))}};
+Object.assign(ACT,{async pstog(d){try{await F.updateDoc(wdoc('tasks',d.id),{done:d.v==='1'});rep('pstk')}catch(e){toast('Failed',psErr(e))}},async pstdel(d){try{await F.deleteDoc(wdoc('tasks',d.id));rep('pstk')}catch(e){toast('Failed',psErr(e))}}});
+
+/* ---- settings ---- */
+V.psset=()=>{const w=PS.w,own=myRole()==='owner';psPage('Workspace Settings',`<div class="psc"><div class="row" style="margin:0 0 6px"><div class="psi">${w.logo?`<img src="${E(w.logo)}">`:pi('box')}</div><div class="m"><b>${E(w.name)}</b><small>${E(w.type||'')} · Private</small></div></div>
+ ${own?`<form data-f="psedit" class="psf"><label>Name<input name="name" value="${E(w.name)}" maxlength="60"></label><label>Company / store details<input name="company" value="${E(w.company||'')}"></label><label>Description<textarea name="desc" rows="2">${E(w.desc||'')}</textarea></label><label>Locations (comma separated)<input name="locs" value="${E((w.locations||[]).join(', '))}"></label><div id="er" class="er"></div><button class="btn">Save changes</button></form>`:`<div class="psn">${E(w.company||'')}<br>${E(w.desc||'')}<br>Locations: ${E((w.locations||[]).join(', '))}</div>`}</div>
+ <div class="psc"><h3 class="pst">Integrations</h3><div class="psn">Connect your inventory software (Tally, Zoho Inventory, SAP…). A connector is built only after the software and its official API are confirmed; credentials stay on a server, never in this app.</div></div>
+ <div class="psc"><h3 class="pst">Security &amp; privacy</h3><div class="psn">${pi('shield',16)} Private workspace · role-based access · data visible only to members · no public sharing.</div></div>
+ ${own?`<button class="btn o" data-a="psdel" style="color:var(--red);border-color:var(--red)">Delete workspace</button>`:''}`)};
+FORM.psedit=async d=>{const locs=[...new Set((d.locs||'').split(',').map(x=>x.trim()).filter(Boolean))].slice(0,10);if(!d.name.trim()||!locs.length)return err('Name and at least one location are needed');try{await F.updateDoc(F.doc(db,'workspaces',PS.w.id),{name:d.name.trim(),company:d.company.trim(),desc:d.desc.trim(),locations:locs});Object.assign(PS.w,{name:d.name.trim(),company:d.company.trim(),desc:d.desc.trim(),locations:locs});toast('Saved')}catch(e){err(psErr(e))}};
+ACT.psdel=async()=>{if(myRole()!=='owner')return;if(prompt('This permanently deletes all stock, audits and tasks. Type DELETE to confirm.')!=='DELETE')return;
+ try{for(const n of ['products','imports','tasks','audits']){const s=await F.getDocs(wcol(n));for(let i=0;i<s.docs.length;i+=400){const b=F.writeBatch(db);s.docs.slice(i,i+400).forEach(x=>b.delete(x.ref));await b.commit()}}await F.deleteDoc(F.doc(db,'workspaces',PS.w.id));PS.w=null;toast('Workspace deleted');root('pshome')}catch(e){toast('Could not delete',psErr(e))}};
+
+/* ---- entry point under NIJØK Studio in the profile panel ---- */
+{const _pg=ACT.pdgo;ACT.pdgo=function(d){if(d.k==='psp'){ACT.pdclose();go2('pshome');return}_pg(d)}}
+
 </script><style id="nb-fix">.body.nbp{order:0!important}.nbp.body+.nav,.nbp.body~.nav{order:1}
 .qc{margin:14px 0 6px;border-radius:26px;padding:16px 12px 14px;background-size:cover;background-position:center;box-shadow:0 6px 18px #0002;overflow:hidden}
 .qc>b{display:block;font:600 26px 'Dancing Script','Segoe Print',cursive;color:#14503a}
@@ -2896,6 +3085,25 @@ html.night .scx .frm{border:0!important}
 .ic.oxi svg{display:block;margin:auto;color:#1f7a56}
 html.night .ic.oxi svg{color:#8fd6ae}
 .ib svg{display:block;margin:auto}
+</style>
+
+<style id="ps-css">
+.ps{padding:14px 14px 90px}.ps *{box-sizing:border-box}
+.psb{display:flex;gap:12px;align-items:center;padding:16px;border-radius:22px;background:linear-gradient(135deg,#e6f3e0,#f6f2e9);border:1px solid #e4ddcb;color:#0b3d2e;margin-bottom:14px}.psb b{display:block;font-size:15px}.psb small{color:#4d6a5b}
+.pst{font-size:15px;margin:14px 2px 8px;color:inherit}.psc{background:#fff;border:1px solid #efe6d0;border-radius:20px;padding:14px;margin-bottom:12px;box-shadow:0 2px 10px #0b3d2e12}.psc .pst:first-child{margin-top:0}
+.psi{width:46px;height:46px;border-radius:14px;background:#e4efe3;color:#14684a;display:grid;place-items:center;flex:none;overflow:hidden}.psi img{width:100%;height:100%;object-fit:cover}.psi.big{width:64px;height:64px;margin:0 auto 10px}
+.psg{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}.psm{background:#fff;border:1px solid #efe6d0;border-radius:18px;padding:14px;box-shadow:0 2px 10px #0b3d2e12}.psm small{display:block;color:#6d7a72;font-size:12px}.psm b{font-size:24px;color:#0b3d2e}.psm.bad b{color:#d94c3a}
+.psrw{display:flex;gap:16px;align-items:center}.psr{--p:0;width:96px;height:96px;border-radius:50%;background:conic-gradient(#14684a calc(var(--p)*1%),#e4ddcb 0);display:grid;place-content:center;text-align:center;position:relative;flex:none}.psr:before{content:"";position:absolute;inset:10px;background:#fff;border-radius:50%}.psr>*{position:relative}.psr b{font-size:20px}.psr small{font-size:10px;color:#6d7a72}
+.psk{display:grid;gap:5px;font-size:13px;flex:1}.psk span{display:flex;align-items:center;gap:6px}.psk b{margin-left:auto}.psk i{width:9px;height:9px;border-radius:50%;background:#14684a}.psk i.wr,.pt.wr{background:#f6e3c8;color:#b4691f}.psk i.wr{background:#e49a3c}.psk i.bad{background:#d94c3a}
+.psq{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.psq div{display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px 4px;border-radius:16px;background:#f3f8f1;color:#0b3d2e;font-size:12px;cursor:pointer;text-align:center}.psq i{width:44px;height:44px;border-radius:14px;background:#fff;display:grid;place-items:center;color:#14684a;box-shadow:0 2px 8px #0b3d2e1a}
+.psn{font-size:12.5px;color:#6d7a72;line-height:1.5}.er{color:#d94c3a;font-size:13px;min-height:4px;margin-top:6px}
+.psf label,.psmp{display:block;font-size:12.5px;color:#6d7a72;margin-bottom:10px}.psin,.psf input,.psf select,.psf textarea,.psmp select{display:block;width:100%;margin-top:4px;padding:12px 14px;border:1px solid #e4ddcb;border-radius:14px;background:#fff;font-size:15px;color:#1c2a23}.psin{margin-bottom:10px}
+.psl{display:flex;gap:12px;align-items:center;margin:4px 0 8px}.pq{font-weight:600;color:#0b3d2e}.pt{font-size:11.5px;padding:4px 10px;border-radius:12px;background:#eee;color:#555;flex:none;text-transform:capitalize}.pt.ok{background:#dcf0d6;color:#14684a}.pt.bad{background:#fbe0db;color:#d94c3a}
+.psdz{border:2px dashed #b9d6bd;border-radius:20px;padding:24px 14px;text-align:center;background:#f6fbf4;margin-bottom:12px}.psdz i{display:block;color:#14684a;margin-bottom:6px}.psdz b{display:block}.psdz small{display:block;color:#6d7a72;margin:4px 0 12px}
+.psck{width:26px;height:26px;border-radius:8px;border:2px solid #b9d6bd;background:none;color:#fff;display:grid;place-items:center;flex:none;cursor:pointer;padding:0}.psck.on{background:#14684a;border-color:#14684a}
+.psv{position:relative;height:300px!important;min-height:0!important;border-radius:22px;overflow:hidden;margin-bottom:12px;background:#000}.psv video{width:100%;height:100%;object-fit:cover}
+html.night .psc,html.night .psm,html.night .psin,html.night .psf input,html.night .psf select,html.night .psf textarea,html.night .psmp select{background:#14231c;border-color:#24382d;color:#e8efe9}
+html.night .psb{background:linear-gradient(135deg,#15302a,#14231c);border-color:#24382d;color:#dcefe2}html.night .psb small,html.night .psn,html.night .psm small,html.night .psf label,html.night .psmp{color:#9db3a5}html.night .psm b,html.night .pq{color:#dcefe2}html.night .psr:before{background:#14231c}html.night .psq div{background:#1a2d24;color:#dcefe2}html.night .psq i,html.night .psi{background:#223a2e;color:#7fd1a4}html.night .psdz{background:#14231c;border-color:#2c4a3a}
 </style>
 
 </body></html>
