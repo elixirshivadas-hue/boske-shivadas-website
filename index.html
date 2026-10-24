@@ -2377,6 +2377,38 @@ Object.assign(ACT,{
  nkpk(d){nkTr(d.id,t=>t.pack[+d.j].d=!t.pack[+d.j].d)},nkpr(d){nkTr(d.id,t=>t.pack.splice(+d.j,1))},nkpa(d){const v=$('#nkpi').value.trim();if(v)nkTr(d.id,t=>t.pack.push({t:v,d:false}))},
  nkex(d){const v=$('#nkei').value.trim(),a=+$('#nkea').value;if(v&&a>0)nkTr(d.id,t=>(t.exp=t.exp||[]).push({t:v,a}))},nkex2(d){nkTr(d.id,t=>t.exp.splice(+d.j,1))}});
 
+
+/* ===================== Private Space: Stock Check + Stock Lookup ===================== */
+const ckKey=()=>'chk_'+(PS.w?PS.w.id:'x'),ckGet=()=>nkL(ckKey(),{}),ckSet=v=>nkW(ckKey(),v);
+const ckTime=t=>new Date(t).toLocaleString('en-IN',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
+V.pschk=async()=>{if(!PS.w)return root('pshome');if(!canWork())return psPage('Stock Check',noAccess());
+ psPage(psTi('scan','Stock Check',E(PS.w.name)),`<div id="ckb"><div class="emp">Loading…</div></div>`);
+ try{await psProds()}catch(e){}if(S.view!=='pschk')return;S.ck=null;ckDraw()};
+function ckDraw(){const el=$('#ckb');if(!el)return;const D=ckGet(),R=Object.entries(D).sort((a,b)=>b[1].t-a[1].t),tq=R.reduce((s,x)=>s+x[1].qty,0),sc=R.reduce((s,x)=>s+x[1].n,0),c=S.ck,p=c&&c.p,have=c?(D[c.k]?.qty||0):0;
+ el.innerHTML=`<div class="psc"><div class="psrw" style="gap:8px"><button class="btn" data-a="ckscan" style="margin:0;flex:1">${pi('scan',18)} Scan barcode</button></div><div class="psrw" style="gap:8px;margin-top:10px"><input id="ckc" class="psin" placeholder="Or type barcode / SKU" style="margin:0;flex:1"><button class="btn o" data-a="ckfind" style="width:auto;margin:0">Find</button></div></div>
+${c?`<div class="psc"><div class="psrw"><div class="psi">${pi('box',22)}</div><div class="m"><b>${E(p?p.name:'Item not in inventory')}</b><small>Barcode: ${E(c.code)}${p&&p.sku?' · SKU '+E(p.sku):''}</small></div></div><div class="pstr" style="margin-top:10px"><div><b>${p?(p.qty??0):'—'}</b><small>System stock</small></div><div><b>${have}</b><small>Counted so far</small></div><div><b>${p&&p.location?E(p.location):'—'}</b><small>Location</small></div></div><div class="psrw" style="margin-top:10px;gap:8px"><input id="ckq" class="psin" value="1" inputmode="numeric" style="width:76px;margin:0;text-align:center"><button class="btn" data-a="ckadd" style="margin:0;flex:1">Add quantity</button></div></div>`:''}
+<div class="psg">${psMet('Items',R.length,'box')}${psMet('Total counted',tq.toLocaleString(),'box')}${psMet('Scans',sc,'scan')}${psMet('Differences',R.filter(x=>x[1].exp!=null&&x[1].exp!==x[1].qty).length,'warn','bad')}</div>
+<div class="psrh"><h3 class="pst">Scanned data</h3><span class="pslk" data-a="ckclr">Clear all</span></div>
+${R.length?R.map(([k,r])=>{const df=r.exp==null?null:r.qty-r.exp;return`<div class="psc" style="padding:12px;margin-bottom:8px"><div class="psrw"><div class="m" style="flex:1"><b>${E(r.name)}</b><small>${E(r.code)} · ${r.n} scan${r.n>1?'s':''} · ${ckTime(r.t)}</small><small>System: ${r.exp==null?'not in inventory':r.exp} ${df==null?'':`· <b class="${df===0?'okt':'badt'}">${df===0?'Matched':df>0?'+'+df+' extra':(-df)+' short'}</b>`}</small></div><div class="nkcq"><button data-a="ckadj" data-k="${E(k)}" data-v="-1">−</button><b>${r.qty}</b><button data-a="ckadj" data-k="${E(k)}" data-v="1">＋</button></div></div></div>`}).join(''):'<div class="emp"><b>Nothing scanned yet</b><p>Scan a barcode, enter the quantity and it appears here.</p></div>'}
+${R.length?`<div class="psbt"><button class="btn" data-a="ckxl">Export to Excel</button></div>`:''}<p class="psn" style="text-align:center">This check is kept on this phone and is separate from audits.</p>`}
+function ckPick(code){code=String(code||'').trim();if(!code)return;const p=psFind(code);S.ck={code,p,k:p?p.id:pid(code)};ckDraw();const q=$('#ckq');if(q){q.focus();q.select()}}
+Object.assign(ACT,{
+ ckscan(){nkScan(ckPick)},ckfind(){ckPick($('#ckc')?.value)},
+ ckadd(){const c=S.ck;if(!c)return;const q=Math.max(1,parseInt($('#ckq')?.value)||1),D=ckGet(),r=D[c.k]||{code:c.code,name:c.p?c.p.name:'Unknown item',qty:0,n:0,exp:c.p?(c.p.qty??0):null};r.qty+=q;r.n++;r.t=Date.now();D[c.k]=r;ckSet(D);S.ck=null;toast('Added',r.name+' · total '+r.qty);ckDraw()},
+ ckadj(d){const D=ckGet(),r=D[d.k];if(!r)return;r.qty+=+d.v;if(r.qty<=0)delete D[d.k];else r.t=Date.now();ckSet(D);ckDraw()},
+ ckclr(){if(!Object.keys(ckGet()).length||!confirm('Clear all scanned data?'))return;ckSet({});S.ck=null;ckDraw()},
+ ckxl(){nkSafe(async()=>{const R=Object.values(ckGet()).sort((a,b)=>b.t-a.t);if(!R.length)return toast('Nothing to export');await nkXlsx('stock-check-'+dk()+'.xlsx','Stock Check',[['#','Barcode','Product','Counted Qty','System Stock','Difference','Scans','Last Scan'],...R.map((r,i)=>[i+1,r.code,r.name,r.qty,r.exp==null?'Not in inventory':r.exp,r.exp==null?'':r.qty-r.exp,r.n,ckTime(r.t)]),['','','TOTAL',R.reduce((s,r)=>s+r.qty,0),'','',R.reduce((s,r)=>s+r.n,0),'']]);toast('Excel downloaded ✓')})},
+ lkscan(){nkScan(c=>{const i=$('#lkq');if(i){i.value=c;lkDraw(c)}})}});
+V.pslook=async()=>{if(!PS.w)return root('pshome');if(!canWork())return psPage('Stock Lookup',noAccess());
+ psPage(psTi('box','Stock Lookup',E(PS.w.name)),`<div class="psrw" style="gap:8px"><input id="lkq" class="psin" placeholder="Search product, barcode or SKU…" style="margin:0;flex:1"><button class="psplus" data-a="lkscan" aria-label="Scan">${pi('scan',20)}</button></div><div id="lkr"><div class="emp">Loading…</div></div>`);
+ try{await psProds()}catch(e){}if(S.view!=='pslook')return;lkDraw('');const i=$('#lkq');i.oninput=e=>lkDraw(e.target.value)};
+function lkDraw(q){q=(q||'').trim().toLowerCase();const P=PS.prods||[],tot=a=>a.reduce((s,p)=>s+(p.qty||0),0),st=p=>(p.qty??0)<=0?['Out of stock','bad']:p.qty<=10?['Low stock','wr']:['In stock','ok'];
+ if(!q){const G={};P.forEach(p=>{const l=p.location||'No location';(G[l]=G[l]||[]).push(p)});
+  psFill('#lkr',P.length?`<div class="psg">${psMet('Products',P.length.toLocaleString(),'box')}${psMet('Total stock',tot(P).toLocaleString(),'box')}${psMet('Low stock',P.filter(p=>p.qty>0&&p.qty<=10).length,'warn','or')}${psMet('Out of stock',P.filter(p=>(p.qty??0)<=0).length,'warn','bad')}</div><h3 class="pst">Stock by location</h3>${Object.entries(G).map(([l,a])=>`<div class="psc psrw" style="padding:12px;margin-bottom:8px"><div class="psi">${pi('store',20)}</div><div class="m" style="flex:1"><b>${E(l)}</b><small>${a.length} products</small></div><span class="pt ok">${tot(a).toLocaleString()}</span></div>`).join('')}<p class="psn" style="text-align:center">Type or scan to see one product's stock.</p>`:'<div class="emp"><b>No products yet</b><p>Import an Excel or CSV file to add stock.</p></div>');return}
+ const L=P.filter(p=>[p.name,p.barcode,p.sku,p.category,p.location].join(' ').toLowerCase().includes(q)).slice(0,100);
+ psFill('#lkr',L.length?`<p class="psn" style="margin:4px 2px 8px">${L.length} match${L.length>1?'es':''} · total stock <b>${tot(L).toLocaleString()}</b></p>`+L.map(p=>{const s=st(p);return`<div class="psc" style="padding:14px;margin-bottom:10px"><div class="psrw"><div class="psi">${pi('box',20)}</div><div class="m" style="flex:1"><b>${E(p.name)}</b><small>${E(p.barcode||'')}${p.sku?' · SKU '+E(p.sku):''}</small></div><span class="pt ${s[1]}">${s[0]}</span></div><div class="pstr" style="margin-top:10px"><div><b>${p.qty??0}</b><small>In stock</small></div><div><b>${E(p.location||'—')}</b><small>Location</small></div><div><b>${E(p.category||'—')}</b><small>Category</small></div></div></div>`}).join(''):'<div class="emp"><b>No match</b><p>Try another name, barcode or SKU.</p></div>')}
+{const _w=V.psws;V.psws=async function(){await _w.apply(this,arguments);if(S.view!=='psws'||!canWork())return;const q=$('.psq');if(!q||q.querySelector('[data-v=pschk]'))return;const a=q.children[1];const h=`<div data-a="go" data-v="pschk"><i>${pi('scan',22)}</i><span>Stock Check</span></div><div data-a="go" data-v="pslook"><i>${pi('box',22)}</i><span>Stock Lookup</span></div>`;a?a.insertAdjacentHTML('afterend',h):q.insertAdjacentHTML('afterbegin',h)}}
+
 </script><style id="nb-fix">.body.nbp{order:0!important}.nbp.body+.nav,.nbp.body~.nav{order:1}
 .qc{margin:14px 0 6px;border-radius:26px;padding:16px 12px 14px;background-size:cover;background-position:center;box-shadow:0 6px 18px #0002;overflow:hidden}
 .qc>b{display:block;font:600 26px 'Dancing Script','Segoe Print',cursive;color:#14503a}
@@ -3698,4 +3730,10 @@ html.night #app .msgs .b.ot{background:#1e2a24;color:#e8efe9}html.night #app .in
 .nkad{display:flex;gap:8px;margin-top:10px}.nkad input{flex:1;min-width:0;background:#ffffff12;border:1px solid #ffffff22;border-radius:14px;color:#f4ebe0;padding:11px 12px;outline:none}.nkad button{width:42px;border:0;border-radius:14px;background:#e9bf9b;color:#2a413b;display:grid;place-items:center}
 .nkbar{height:8px;border-radius:8px;background:#ffffff1f;overflow:hidden;margin:6px 0}.nkbar i{display:block;height:100%;background:#e9bf9b}
 html.night .nkfs{background:#0c1512}
+/* v4.1 */
+.nkfd .bk3r2{display:none!important}
+.nkfd .nx3 .bk3s{height:188px}.nkfd .nx3 .bk3s .im{flex:0 0 50%}.nkfd .nx3 .bk3s .bk3ic{top:calc(188px*.5 - 16px)}
+.nkfd .nx3 .bk3s .tx{padding:20px 8px 8px 9px;overflow:visible}.nkfd .nx3 .bk3s b{font-size:13px}.nkfd .nx3 .bk3s small{font-size:10.5px}
+.nkcq{display:flex;align-items:center;gap:8px}.nkcq button{width:32px;height:32px;border-radius:50%;border:1px solid #1d4ed833;background:#eaf0ff;color:#1d4ed8;font-size:16px}.nkcq b{min-width:26px;text-align:center;font-size:17px}
+.okt{color:#16a34a}.badt{color:#dc2626}
 </style></body></html>
