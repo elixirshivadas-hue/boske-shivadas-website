@@ -4057,4 +4057,114 @@ h3.pst{border:0!important;background:none!important;box-shadow:none!important;pa
 .owpf2 .btn.owbt{background:linear-gradient(135deg,#4f7bff,#2e55e6)!important;box-shadow:0 8px 18px #3b6cff44!important;border:0!important;color:#fff!important}
 .owpf2 .pl span{background:#fff!important;border:1px solid var(--ol)!important;color:var(--om)!important;border-radius:999px}.owpf2 .pl input:checked+span{background:#3b6cff!important;border-color:#3b6cff!important;color:#fff!important}
 .owpf2 .npp{border:1.5px dashed #c9d6ff}
-</style></body></html>
+</style><style id="nk-v5">
+/* ===== NIJØK v5: keyboard fix · profile hero · notebook cards · home + chat animation ===== */
+@keyframes nkPop{0%{opacity:0;transform:scale(.6)}70%{transform:scale(1.06)}100%{opacity:1;transform:none}}
+@keyframes nkSheet{from{transform:translateY(60px);opacity:0}to{transform:none;opacity:1}}
+@keyframes nkFade{from{opacity:0}to{opacity:1}}
+@keyframes nkFl{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+@keyframes nkRing{0%{box-shadow:0 0 0 0 #1f9d6e66}100%{box-shadow:0 0 0 18px #1f9d6e00}}
+@keyframes nkKB{from{background-size:112%;background-position:35% 50%}to{background-size:128%;background-position:65% 50%}}
+@keyframes nkSw{0%{transform:translateX(-120%) skewX(-18deg)}60%,100%{transform:translateX(260%) skewX(-18deg)}}
+@keyframes nkWv{0%,60%,100%{transform:rotate(0)}10%,30%{transform:rotate(16deg)}20%,40%{transform:rotate(-10deg)}50%{transform:rotate(8deg)}}
+/* 1. keyboard: app always = visible area, header never scrolls away */
+html,body{height:var(--vh,100%)!important;overflow:hidden!important}
+body{position:fixed!important;left:0;right:0;top:var(--vt,0px)!important;width:100%}
+#app{height:100%!important}
+.inp{padding-bottom:max(8px,env(safe-area-inset-bottom))}
+/* 2. profile: big cover, avatar + name + tick + @user on photo */
+.owpf .owcv{position:relative!important;height:380px!important;background-size:cover!important;background-position:center!important}
+.owpf .owcv:after{content:"";position:absolute;inset:0;background:linear-gradient(#0007 0,#0000 24%,#0000 45%,#000d 100%);pointer-events:none;z-index:0}
+.owpf .owcv>.owib,.owpf .owcv>.sp{position:relative;z-index:3}
+.owpf .owcv>.owpr{position:absolute;left:18px;right:16px;bottom:44px;z-index:2;display:flex;align-items:flex-end;gap:14px;margin:0;animation:nkUp .6s both}
+.owpf .owcv .owpv{padding:4px;background:#fff;border-radius:50%;box-shadow:0 10px 26px #0009;flex:none}
+.owpf .owcv .owpv .av{width:132px!important;height:132px!important;font-size:48px!important}
+.owpf .owcv .owpn{min-width:0;color:#fff;padding-bottom:6px}
+.owpf .owcv .owpn h2{color:#fff!important;font-size:28px;line-height:1.1;text-shadow:0 2px 12px #000a;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.owpf .owcv .owhn{color:#ffffffd9!important;font-size:15px;margin-top:2px;text-shadow:0 1px 8px #000a}
+.owpf .owcv .owvt{margin-top:8px;display:inline-flex;align-items:center;gap:5px;background:#ffffff2e!important;color:#fff!important;border:1px solid #ffffff55;-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);padding:5px 11px;border-radius:999px;font-size:12.5px}
+.owpf .owpc{margin-top:-26px!important;position:relative;z-index:4;border-radius:28px 28px 0 0!important;padding-top:20px!important}
+/* 3. notebook: 2 big cards fit per column, readable chips */
+.nkm{padding:0 14px 110px!important;gap:14px!important}
+.nkm>div{display:flex;flex-direction:column;gap:14px}
+.nkcp{height:clamp(190px,calc((var(--vh,100vh) - 300px)/2 - 56px),310px)!important;box-shadow:inset 0 70px 50px -40px #0008,inset 0 -70px 50px -40px #0007}
+.nkch{background:#000000a6!important;color:#fff!important;border:1px solid #ffffff40;font-size:12px!important;padding:5px 11px!important;position:relative;z-index:2}
+.nkcb b{font-size:16px}
+.nkc:active{transform:scale(.96)}
+/* 4. home animation */
+.hmg{animation:nkUp .55s both}.hmg h1 .wv{display:inline-block;transform-origin:70% 70%;animation:nkWv 2.6s 1s infinite}
+.hcw{animation:nkUp .65s .1s both}
+.hc{animation:nkKB 16s ease-in-out infinite alternate;transition:transform .25s}.hc:active,.nkfit:active{transform:scale(.97)}
+.hct small{animation:nkIn .7s .3s both}.hct h2{animation:nkUp .7s .4s both}.hct p{animation:nkUp .7s .5s both}
+.hct button{position:relative;overflow:hidden;animation:nkPop .6s .65s both}
+.hct button:after{content:"";position:absolute;top:0;bottom:0;width:40%;left:0;background:linear-gradient(90deg,#fff0,#fff9,#fff0);animation:nkSw 3.4s 1.5s infinite}
+.hcb{animation:nkFl 3.4s ease-in-out infinite,nkRing 2.4s infinite;border-radius:50%}
+.hhd i{transition:width .35s,background .35s}
+.nkfit{animation:nkUp .7s .3s both;transition:transform .25s}
+.nkfit:before{content:"";position:absolute;top:0;bottom:0;width:36%;background:linear-gradient(90deg,#fff0,#ffffff55,#fff0);animation:nkSw 5s 2s infinite;pointer-events:none;z-index:1}
+.nkfit .nkfr>*:first-child{animation:nkPop .8s .6s both}.nkfit .nkfr b{display:inline-block;animation:nkFl 2.2s ease-in-out infinite}
+.nkrv{opacity:0;transform:translateY(24px);transition:opacity .6s,transform .6s cubic-bezier(.2,.8,.3,1)}.nkrv.in{opacity:1;transform:none}
+/* 5. chat redesign + animation */
+.msgs{background:radial-gradient(circle at 15% 8%,#dff0df 0,#0000 38%),radial-gradient(circle at 92% 70%,#fbeccb 0,#0000 36%),#f6f1e4!important;padding:12px 12px 8px!important}
+html.night .msgs{background:transparent!important}
+#msgs>.b:last-child{animation:nkPop .3s cubic-bezier(.2,1.3,.4,1) both}#msgs>.b.me:last-child{transform-origin:100% 100%}#msgs>.b.ot:last-child{transform-origin:0 100%}
+.b{max-width:82%;box-shadow:0 2px 8px #0b3d2e1a!important}
+.b.me:after,.b.ot:after{content:"";position:absolute;bottom:0;width:10px;height:12px}
+.b.me,.b.ot{position:relative}
+.b.me:after{right:-5px;background:#0b3d2e;clip-path:polygon(0 0,0 100%,100% 100%);border-radius:0 0 0 2px}
+.b.ot:after{left:-5px;background:#fff;clip-path:polygon(100% 0,100% 100%,0 100%)}
+.inp{margin:0 8px 6px;border-radius:30px!important;padding:6px!important;box-shadow:0 8px 24px #0b3d2e22!important;background:#fffffff2!important}
+.inp textarea{box-shadow:none!important;background:#f3efe3!important}
+.inp .snd{animation:nkPop .25s both}
+.hd .cl{transition:opacity .2s}.hd .cl:active{opacity:.6}
+/* sheets + attach grid + reactions */
+.sh{animation:nkFade .2s both}.sh>div{animation:nkSheet .32s cubic-bezier(.2,.9,.3,1) both}
+.sh .si{animation:nkUp .38s both}.sh .si:nth-child(2){animation-delay:.04s}.sh .si:nth-child(3){animation-delay:.08s}.sh .si:nth-child(4){animation-delay:.12s}.sh .si:nth-child(5){animation-delay:.16s}.sh .si:nth-child(6){animation-delay:.2s}.sh .si:nth-child(n+7){animation-delay:.24s}
+.sh [data-a=mrx]{display:inline-block;animation:nkPop .45s both;transition:transform .15s}.sh [data-a=mrx]:active{transform:scale(1.5)}
+.sh [data-a=mrx]:nth-child(2){animation-delay:.05s}.sh [data-a=mrx]:nth-child(3){animation-delay:.1s}.sh [data-a=mrx]:nth-child(4){animation-delay:.15s}.sh [data-a=mrx]:nth-child(5){animation-delay:.2s}.sh [data-a=mrx]:nth-child(6){animation-delay:.25s}
+.sh>div:has(.si[data-a=sendimg]){display:grid;grid-template-columns:repeat(3,1fr);gap:18px 8px;padding:22px 16px max(26px,env(safe-area-inset-bottom))}
+.sh>div:has(.si[data-a=sendimg])>.si{flex-direction:column;gap:8px;border:0;padding:0;text-align:center;font-size:12.5px}
+.sh>div:has(.si[data-a=sendimg])>.si>span{width:58px;height:58px;border-radius:50%;display:grid;place-items:center;font-size:26px;color:#fff;background:linear-gradient(135deg,#1f9d6e,#0b3d2e);box-shadow:0 8px 16px #0b3d2e44;transition:transform .2s}
+.sh>div:has(.si[data-a=sendimg])>.si:active>span{transform:scale(.88)}
+.sh>div:has(.si[data-a=sendimg])>.si:nth-child(2)>span{background:linear-gradient(135deg,#7c5cff,#4a2fd0)}
+.sh>div:has(.si[data-a=sendimg])>.si:nth-child(3)>span{background:linear-gradient(135deg,#ff7a59,#d9392b)}
+.sh>div:has(.si[data-a=sendimg])>.si:nth-child(4)>span{background:linear-gradient(135deg,#38a8ff,#1763d6)}
+.sh>div:has(.si[data-a=sendimg])>.si:nth-child(5)>span{background:linear-gradient(135deg,#ffc247,#e08a00)}
+/* side drawer + nav items */
+.pdp .pdr{animation:nkIn .45s both}.pdp .pdr:nth-of-type(2){animation-delay:.05s}.pdp .pdr:nth-of-type(3){animation-delay:.1s}.pdp .pdr:nth-of-type(4){animation-delay:.15s}.pdp .pdr:nth-of-type(5){animation-delay:.2s}.pdp .pdr:nth-of-type(6){animation-delay:.25s}.pdp .pdr:nth-of-type(7){animation-delay:.3s}
+.pdp .pdr:active,.owbt:active,.row:active{transform:scale(.97)}
+@media (prefers-reduced-motion:reduce){.hc,.hcb,.nkfit:before,.hct button:after,.hmg h1 .wv{animation:none!important}}
+</style>
+<script id="nk-v5js">
+(function(){
+ var vv=window.visualViewport,R=document.documentElement,mt=document.querySelector('meta[name=viewport]');
+ if(mt&&!/interactive-widget/.test(mt.content))mt.content+=',interactive-widget=resizes-content';
+ var last=0;
+ function fit(){var h=vv?vv.height:innerHeight,t=vv?vv.offsetTop:0;R.style.setProperty('--vh',Math.round(h)+'px');R.style.setProperty('--vt',Math.round(t)+'px');
+  if(window.scrollY)window.scrollTo(0,0);
+  var m=document.getElementById('msgs');if(m&&Math.abs(h-last)>60&&last){m.scrollTop=m.scrollHeight}last=h}
+ if(vv){vv.addEventListener('resize',fit);vv.addEventListener('scroll',fit)}
+ addEventListener('resize',fit);addEventListener('scroll',function(){if(scrollY)scrollTo(0,0)},{passive:true});
+ document.addEventListener('focusin',function(e){if(e.target.matches&&e.target.matches('textarea,input')){[40,200,450].forEach(function(t){setTimeout(fit,t)})}});
+ document.addEventListener('focusout',function(){setTimeout(fit,120);setTimeout(fit,400)});
+ fit();
+ var io=('IntersectionObserver' in window)?new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:.08}):null;
+ var busy=false;
+ function tweak(){
+  if(busy)return;busy=true;
+  try{
+   var cv=document.querySelector('.owpf .owcv');
+   if(cv){var pr=document.querySelector('.owpf .owpc>.owpr');if(pr)cv.appendChild(pr)}
+   var h1=document.querySelector('.hmg h1');
+   if(h1&&!h1.querySelector('.wv')&&h1.textContent.indexOf('👋')>-1){h1.innerHTML=h1.innerHTML.replace('👋','<span class="wv">👋</span>')}
+   var hm=document.querySelector('.hmg');
+   if(hm){var p=hm.parentNode,k=0;Array.prototype.forEach.call(p.children,function(c){if(c===hm||c.classList.contains('nkrv')||c.classList.contains('hcs')||c.classList.contains('hhd')||c.classList.contains('nkfit')||c.classList.contains('nav'))return;if(c.getBoundingClientRect().top<innerHeight-40)return;c.classList.add('nkrv');if(io)io.observe(c);else c.classList.add('in');setTimeout(function(){c.classList.add('in')},2500)})}
+  }catch(e){}
+  busy=false;
+ }
+ var app=document.getElementById('app'),to;
+ if(app)new MutationObserver(function(){clearTimeout(to);to=setTimeout(tweak,30)}).observe(app,{childList:true,subtree:true});
+ tweak();
+})();
+</script>
+</body></html>
