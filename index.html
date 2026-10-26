@@ -2713,6 +2713,13 @@ const NKSV={mic:'<svg viewBox="0 0 24 24" width="24" height="24" fill="none" str
 function nkBtn(){[['#mic',e=>e.classList.contains('rec')||e.textContent.trim()==='⏹'?'stop':'mic'],['#sb',()=>'send']].forEach(([q,f])=>{const e=document.querySelector(q);if(!e)return;const k=f(e);if(e.dataset.ik===k&&e.querySelector('svg'))return;e.dataset.ik=k;e.innerHTML=NKSV[k]})}
 {let t;new MutationObserver(()=>{cancelAnimationFrame(t);t=requestAnimationFrame(nkBtn)}).observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['class']})}
 nkBtn();
+
+/* ===== v9c: Telegram-style chat menu popover ===== */
+const NKMI=[[/mute|notif/i,'bellx'],[/search/i,'search'],[/tool|wallpaper|theme|colour|color/i,'pal'],[/star/i,'star'],[/clear/i,'trash'],[/delete|leave|exit/i,'trash'],[/block/i,'block'],[/report/i,'flag'],[/call/i,'phone'],[/pin/i,'pin'],[/archive/i,'arc'],[/media|photo|image/i,'img'],[/edit|rename|name/i,'edit'],[/member|group|add|contact|info|profile|view/i,'user'],[/lock|encrypt|key/i,'lock'],[/folder|move/i,'archive'],[/note|save/i,'mark'],[/disappear|timer|time/i,'clock']];
+function nkMenuIcons(){document.querySelectorAll('.sh').forEach(sh=>{const pop=!!sh.querySelector('[data-a=csrch2]');sh.classList.toggle('nkpop',pop);if(!pop)return;
+ sh.querySelectorAll('.si').forEach(it=>{if(it.dataset.ni)return;it.dataset.ni='1';const t=(it.querySelector('b')||it).textContent.trim(),m=NKMI.find(x=>x[0].test(t)),k=m?m[1]:'dots',sp=it.querySelector('span');if(!sp)return;
+  const ic=IP[k]||NKP[k];if(ic)sp.innerHTML=nkI(ic,22);if(/delete|clear|leave|block|report/i.test(t))it.classList.add('nkdg')})})}
+{let t;new MutationObserver(()=>{cancelAnimationFrame(t);t=requestAnimationFrame(nkMenuIcons)}).observe(document.body,{childList:true,subtree:true})}
 </script><style id="nb-fix">.body.nbp{order:0!important}.nbp.body+.nav,.nbp.body~.nav{order:1}
 .qc{margin:14px 0 6px;border-radius:26px;padding:16px 12px 14px;background-size:cover;background-position:center;box-shadow:0 6px 18px #0002;overflow:hidden}
 .qc>b{display:block;font:600 26px 'Dancing Script','Segoe Print',cursive;color:#14503a}
@@ -4338,6 +4345,26 @@ html body #app .snd.rec,html body #app #mic.rec{background:linear-gradient(150de
 html.night .wmk,html.night .hmt .wmk{color:#dfe6cf!important}
 .hhb .wmk,.wlt .wmk,.aup .wmk,.owh .wmk{color:#fff!important}
 .wmk:after{content:none!important;display:none!important}.wmk .jj::before{display:none!important}.wmk .oo::after{width:.04em!important}
+
+/* ===== v9c ===== */
+.wmk,.hmt .wmk,html.night .hmt .wmk,html.blv .hmt .wmk{font-family:'Playfair Display',Georgia,serif!important;font-weight:700!important;letter-spacing:.07em!important;color:#14201a!important;font-size:25px}
+html.night .wmk,html.night .hmt .wmk{color:#f6efdf!important}
+.hhb .wmk,.wlt .wmk,.aup .wmk,.owh .wmk{color:#fff!important}
+.wmk.big{font-size:46px}
+.wmk .jj::before{display:block!important;background:#c9a24a!important}
+.wmk .oo::after{background:#c9a24a!important;width:.055em!important}
+@keyframes nkPopM{0%{opacity:0;transform:scale(.6) translateY(-8px)}100%{opacity:1;transform:none}}
+.sh.nkpop{align-items:flex-start!important;justify-content:flex-end!important;background:#0000!important;backdrop-filter:none}
+.sh.nkpop>div{width:min(292px,82vw)!important;max-width:none!important;margin:calc(66px + env(safe-area-inset-top)) 10px 0 0!important;padding:6px 0!important;border-radius:22px!important;transform-origin:top right;animation:nkPopM .24s cubic-bezier(.2,1.15,.3,1) both!important;box-shadow:0 18px 44px #0000004d,0 0 0 1px #0000000d!important;max-height:72vh;overflow-y:auto;background:#fff}
+.sh.nkpop>div>h3{display:none}
+.sh.nkpop .si{display:flex!important;flex-direction:row!important;align-items:center;gap:16px!important;padding:13px 20px!important;border:0!important;font-size:15.5px;color:#14201a;text-align:left;animation:nkUp .32s both}
+.sh.nkpop .si:active{background:#0000000a}
+.sh.nkpop .si>span{width:24px!important;height:24px!important;border-radius:0!important;background:none!important;box-shadow:none!important;color:#14201a!important;display:grid;place-items:center;font-size:19px;flex:none}
+.sh.nkpop .si>span:after{display:none!important}.sh.nkpop .si>span svg{stroke:#14201a;filter:none}
+.sh.nkpop .si b{font-weight:400!important}
+.sh.nkpop .si.nkdg,.sh.nkpop .si.nkdg>span,.sh.nkpop .si.nkdg>span svg{color:#d94c3a!important;stroke:#d94c3a}
+.sh.nkpop .si:nth-child(1){animation-delay:.02s}.sh.nkpop .si:nth-child(2){animation-delay:.05s}.sh.nkpop .si:nth-child(3){animation-delay:.08s}.sh.nkpop .si:nth-child(4){animation-delay:.11s}.sh.nkpop .si:nth-child(5){animation-delay:.14s}.sh.nkpop .si:nth-child(n+6){animation-delay:.17s}
+html.night .sh.nkpop>div{background:#1c1c1e}html.night .sh.nkpop .si,html.night .sh.nkpop .si>span,html.night .sh.nkpop .si>span svg{color:#f1f1f1!important;stroke:#f1f1f1}html.night .sh.nkpop .si.nkdg,html.night .sh.nkpop .si.nkdg>span,html.night .sh.nkpop .si.nkdg>span svg{color:#ff7a6b!important;stroke:#ff7a6b}
 </style>
 <script id="nk-v5js">
 (function(){
