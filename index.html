@@ -115,7 +115,7 @@ button,input,textarea,select{font:inherit;color:inherit}
 .nijok-mini-card b{display:block;font-size:12px;color:#1e3d31}
 .nijok-mini-card small{display:block;color:#687b73;font-size:10px;margin-top:4px}
 .nijok-bottom-fill{height:86px}
-.nijok-bottom-nav{position:fixed;left:50%;bottom:14px;transform:translateX(-50%);width:min(92vw,430px);display:grid;grid-template-columns:1fr 1fr 1.2fr 1fr;align-items:center;gap:8px;background:rgba(18,40,31,.9);backdrop-filter:blur(16px);border-radius:26px;padding:10px 12px;box-shadow:0 18px 32px rgba(2,17,12,.25)}
+.nijok-bottom-nav{position:fixed;left:50%;bottom:14px;transform:translateX(-50%);width:min(92vw,430px);display:grid;grid-template-columns:1fr 1fr 1.2fr 1fr 1fr;align-items:center;gap:6px;background:rgba(18,40,31,.9);backdrop-filter:blur(16px);border-radius:26px;padding:10px 12px;box-shadow:0 18px 32px rgba(2,17,12,.25)}
 .nijok-bottom-nav button{border:0;background:transparent;color:#dfece5;font-size:10px;display:flex;flex-direction:column;align-items:center;gap:5px;border-radius:18px;padding:7px 0;cursor:pointer;font-weight:600;opacity:.8}
 .nijok-bottom-nav button.active{background:rgba(255,255,255,.08);opacity:1}
 .nijok-bottom-nav .plus{position:relative;background:linear-gradient(135deg,#e8c06d,#7aa470);color:#0a2a1d;padding:16px;border-radius:22px;box-shadow:0 12px 24px rgba(148,123,53,.32)}
@@ -125,7 +125,6 @@ button,input,textarea,select{font:inherit;color:inherit}
 .nijok-scene{animation-duration:8s}
 </style>
 <script type="module">
-/* ====== FIREBASE CONFIG: paste the exact config from Firebase console ====== */
 (() => { const t = localStorage.getItem("nk_theme"), m = matchMedia("(prefers-color-scheme: dark)"), f = () => { const on = t === "1" || (t === null && m.matches); document.documentElement.classList.toggle("night", on); document.documentElement.classList.toggle("dark", on); }; f(); m.addEventListener ? m.addEventListener("change", f) : m.addListener(f); window.addEventListener("storage", e => { if (e.key === "nk_theme") f(); });
 const $=(q,e=document)=>e.querySelector(q),$$=(q,e=document)=>[...e.querySelectorAll(q)];
 const E=s=>String(s??'').replace(/[&<>\"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[c]));
@@ -178,7 +177,7 @@ addEventListener('popstate',()=>{if(S.me)back()});
 async function afterLogin(u){if(u.email&&!/@nijok\.app$/.test(u.email)&&!u.emailVerified){root('verify');return}S.me={uid:u.uid,phone:u.phoneNumber||((u.email||'').endsWith('@nijok.app')?'+'+u.email.replace(/\D/g,'').slice(0,10):''),name:u.displayName||((u.email||'').split('@')[0]||'User'),email:u.email||''};await saveProfile(S.me.uid,{name:S.me.name,phone:S.me.phone,email:S.me.email}).catch(()=>{});S.U[u.uid]=S.me;if(!await ensure(S.me)){root('unlock');return}start();}
 async function start(){S.unsubs.forEach(f=>f());S.unsubs=[];S.chats=[];S.cm={};S.kc={};saveProfile(S.me.uid,{lastLogin:F.serverTimestamp()}).catch(()=>{});let first=true;S.unsubs.push(F.onSnapshot(F.query(F.collection(db,'chats'),F.where('members','array-contains',S.me.uid)),async s=>{const list=s.docs.map(snap);await loadU([...new Set(list.flatMap(c=>c.members||[]))]);list.forEach(c=>S.cm[c.id]=c);S.chats=list.sort((a,b)=>(b.lastMessage?.at||0)-(a.lastMessage?.at||0));if(S.view==='chats' || S.view==='home')draw();if(!first)list.forEach(c=>{const o=S.cm[c.id],lm=c.lastMessage;if(lm&&lm.from!==S.me.uid&&(!o||!o.lastMessage||lm.at>o.lastMessage.at)&&!(S.view==='chat'&&S.vp.id===c.id)){if(!MUTE().includes(c.id))beep();}});first=false;}));S.unsubs.push(F.onSnapshot(F.collection(db,'users',S.me.uid,'notes'),s=>{S.notes=s.docs.map(snap).sort((a,b)=>b.ts-a.ts);if(S.view==='notes')draw();}));navigator.serviceWorker?.register('sw.js').catch(()=>{});root('home');}
 Au.onAuthStateChanged(auth,u=>{if(!u){S.unsubs.forEach(f=>f());S.unsubs=[];S.me=null;S.priv=null;S.pw=null;root('welcome')}else afterLogin(u)});
-const logo=`<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKAAAACgCAIAAAAErfB6AABkjElEQVR4nO29d6BlZXU2/qz17tNvnQIzDAgMXVEExK7YEEs0xhoLX2zBWBJ7TBETo9EkxqhJjDGaqImJPTF+FkQUBOm9Db3OwDDtzr1wr3ZsSx4C0n7Nq7nWf9qrdXkLkR8zITrMxjTmyh0lI5mwJrNuK8EJDc1dVu7eX8I5l0S6O7GhaXwJt2Z7bBFlw5WmZQhnw==" alt="" style="width:30px;height:30px;border-radius:10px">`;
+const logo=`<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKAAAACgCAIAAAAErfB6AABkjElEQVR4nJ1WaWxc1RU+9759ZjxjOxOTOBskJGnK3Jhu9vG1m7Q0aqj+g9zHk0oYvz7jY/tOQAAAC0lEQVR4nJ2S0QmAMAgA44A4YQAAABJRU5ErkJggg==" alt="" style="width:30px;height:30px;border-radius:10px">`;
 const MT='<svg viewBox="0 0 360 150" preserveAspectRatio="none"><path d="M0 150V84l50-42 45 38 60-58 70 64 50-36 85 50v50z" fill="#14503a" opacity=".12"/><path d="M0 150v-36l60-32 55 36 70-52 80 62 57-28 38 34v36z" fill="#14503a" opacity=".08"/></svg>';
 const LK='<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 118 0v3"/></svg>';
 V.welcome=()=>{app.innerHTML=`<div class="au wlp"><div class="wlc" style="background-image:url(data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 800'%3E%3Crect width='1200' height='800' fill='%23edf2eb'/%3E%3Ccircle cx='950' cy='150' r='120' fill='%23f9d9a6' fill-opacity='.75'/%3E%3Cpath d='M0 600C170 520 240 450 390 500C540 550 660 620 760 570C880 510 960 420 1200 480V800H0Z' fill='%239dd1a0' fill-opacity='.26'/%3E%3C/svg%3E)"><div class="wlt">${logo}<h2>Learn. Adopt.<br><em>Grow.</em></h2></div><div class="wlb"><h2>NIJØK</h2><p>Thoughtful spaces, calm living and everyday rituals.</p><div class="row"><button class="btn" data-a="auth">Get started</button><button class="btn o" data-a="guest">Browse</button></div></div></div></div>`;};
@@ -234,7 +233,7 @@ V.home=function(){app.innerHTML=`
   </div>
   <nav class="nijok-bottom-nav" aria-label="Main navigation">
     <button class="active">🏠<span>Home</span></button>
-    <button>📍<span>Explore</span></button>
+    <button>🔎<span>Explore</span></button>
     <button class="plus" aria-label="Add"></button>
     <button>💬<span>Notes</span></button>
     <button>👤<span>Profile</span></button>
