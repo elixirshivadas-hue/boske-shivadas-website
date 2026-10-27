@@ -624,7 +624,7 @@ V.home=()=>{const h=new Date().getHours(),gr=h<12?'Good Morning':h<17?'Good Afte
  <div class="hhd" id="hhd">${SL.map((x,i)=>`<i class="${i?'':'on'}"></i>`).join('')}</div>
  <div class="hsec"><b>Your NIJØK</b><small>Everything in one place</small></div>
  <div class="mas"><div class="mcol">${C(190,'','Chat','Talk privately & safely','chat','tab','chats',BI.cafe,un||'')}${C(170,'','Food & Health','Learn • Eat • Live Better','leaf','go','facts',BI.food,'')}${C(250,'','Explore World','Places • Cultures • Wildlife','compass','tab','explore',PH.nf_travel,'')}${C(200,'','NIJØK VYBE','Learn • Connect • Explore','post','go','eucio',PH.nf_vybe,'')}</div>
- <div class="mcol">${C(260,'','Books','Read • Discover • Discuss','books','tab','books',PH.nf_book,'')}${C(210,'lt','Notebook','Notes • Lists • Ideas','notes','tab','notes',NKQC,'')}${C(230,'','Shop','NIJØK Premium Shop','bag','shop','',BI.biz,'')}</div></div></div>${navBar('home')}`;
+ <div class="mcol">${C(260,'','Books','Read • Discover • Discuss','books','tab','books',PH.nf_book,'')}${C(210,'lt','Notebook','Notes • Lists • Ideas','notes','tab','notes',NKQC,'')}${C(230,'','Shop','NIJØK Premium Shop','bag','shop','',BI.biz,'')}<div class="mc qzc2" style="height:190px" data-a="go" data-v="quiz"><span class="qzbx">🏆</span><div class="mct"><b>Quiz</b><small>Daily 10 • World • India • Geo</small></div><em>→</em></div></div></div></div>${navBar('home')}`;
  const hs=$('#hhs'),ds=[...document.querySelectorAll('#hhd i')];let i=0;
  hs.onscroll=()=>{i=Math.round(hs.scrollLeft/hs.clientWidth);ds.forEach((d,j)=>d.classList.toggle('on',j===i))};
  hs.ontouchstart=()=>{S.hhP=1};hs.ontouchend=()=>setTimeout(()=>{S.hhP=0},3500);
@@ -3221,6 +3221,194 @@ Object.assign(ACT,{nshplace(d){if(!NSL.live)return ACT.nshplaceS(d);if(NSL.busy)
  const ad=lsg('nk_shop_addr','').trim();if(ad.length<8)return toast('Add a delivery address','Tap Change to add one');const ph=String(lsg('nk_shop_phone','')).replace(/\D/g,'');if(ph.length<10)return toast('Add your phone number','The seller needs it to deliver');
  NSL.busy=1;const b=$('#nshpo');if(b)b.disabled=true;const items=ids.map(i=>({id:i,n:nsP(i).n,q:c[i],p:nsP(i).p})),pk=lsg('nk_shop_pay','upi')==='cod'?'cod':'upi',id=S.me.uid.slice(0,4)+Date.now().toString(36),sub=nsSub(),fee=nsFee(),pf=nsPf();
  F.setDoc(F.doc(db,'shop_orders',id),{uid:S.me.uid,name:S.me.name||'',phone:ph,addr:ad,zone:nsZone().n,items,sub,fee,pf,total:sub+fee+pf,pay:pk,paid:false,status:'placed',hist:[{s:'placed',t:Date.now()}],ts:F.serverTimestamp()}).then(()=>{NSL.busy=0;nsSet({});sheet(`<div style="text-align:center;padding:8px"><div style="font-size:42px">✅</div><h3>Order placed</h3><p style="margin:6px 0 12px;color:var(--mut)">Order #${nsCode({id})} was sent to the seller. They will confirm it and the delivery time.${pk==='upi'&&NSL.cfg.upi?' Open the order to pay by UPI.':''}</p><button class="btn" data-a="nshtr" data-id="${id}">Track order</button></div>`)}).catch(e=>{NSL.busy=0;if(b)b.disabled=false;console.warn(e);toast('Could not place the order','Check your connection and try again')})}});
+
+/* ===================== NIJØK QUIZ ===================== */
+{
+const QB={
+world:{n:'World Quiz',t:'World',e:'🌍',c:'#2f6bf0',d:'Countries, capitals, culture and big facts from around the globe.',q:[
+'Which is the largest ocean on Earth?|Pacific Ocean|Atlantic Ocean|Indian Ocean|Arctic Ocean',
+'What is the capital of Australia?|Canberra|Sydney|Melbourne|Perth',
+'Which is the longest river in Africa?|Nile|Congo|Niger|Zambezi',
+'How many continents are there?|7|5|6|8',
+'Which planet is called the Red Planet?|Mars|Venus|Jupiter|Mercury',
+'What is the currency of Japan?|Yen|Won|Yuan|Ringgit',
+'Who painted the Mona Lisa?|Leonardo da Vinci|Michelangelo|Raphael|Picasso',
+'Which is the smallest country in the world?|Vatican City|Monaco|Malta|Nauru',
+'Which is the tallest mountain above sea level?|Mount Everest|K2|Kilimanjaro|Mont Blanc',
+'Where is the UN headquarters?|New York|Geneva|Paris|London',
+'Which is the largest hot desert?|Sahara|Gobi|Kalahari|Thar',
+'Which city hosted the 2024 Summer Olympics?|Paris|Tokyo|Los Angeles|Rome',
+'Which language has the most native speakers?|Mandarin Chinese|English|Spanish|Hindi',
+'Which gas do plants absorb for photosynthesis?|Carbon dioxide|Oxygen|Nitrogen|Hydrogen',
+'Which country gifted the Statue of Liberty to the USA?|France|Britain|Spain|Italy']},
+india:{n:'India Quiz',t:'India',e:'🇮🇳',c:'#ff8a1f',d:'History, leaders, states and pride of Bharat. How well do you know India?',q:[
+'What is the capital of India?|New Delhi|Mumbai|Kolkata|Chennai',
+'Who was independent India\u2019s first Prime Minister?|Jawaharlal Nehru|Sardar Patel|Mahatma Gandhi|Lal Bahadur Shastri',
+'What is India\u2019s national animal?|Tiger|Lion|Elephant|Leopard',
+'The Constitution of India came into effect in?|1950|1947|1949|1952',
+'Who wrote India\u2019s national anthem?|Rabindranath Tagore|Bankim Chandra|Sarojini Naidu|Iqbal',
+'Who chaired the Constitution Drafting Committee?|B. R. Ambedkar|Rajendra Prasad|Jawaharlal Nehru|Sardar Patel',
+'Which is the highest peak in India?|Kangchenjunga|Nanda Devi|Mount Everest|K2',
+'Which is the largest Indian state by area?|Rajasthan|Madhya Pradesh|Maharashtra|Uttar Pradesh',
+'The Taj Mahal is located in which city?|Agra|Delhi|Jaipur|Lucknow',
+'What is India\u2019s national flower?|Lotus|Rose|Marigold|Jasmine',
+'Which mission landed near the Moon\u2019s south pole in 2023?|Chandrayaan-3|Mangalyaan|Aditya-L1|Chandrayaan-2',
+'Which river is called the Dakshin Ganga?|Godavari|Krishna|Kaveri|Narmada',
+'How many states does India have?|28|26|29|30',
+'Who is known as the Iron Man of India?|Sardar Vallabhbhai Patel|Subhas Chandra Bose|Bhagat Singh|Jawaharlal Nehru',
+'Which Indian city is called the Pink City?|Jaipur|Jodhpur|Udaipur|Agra']},
+geo:{n:'Geography Quiz',t:'Geography',e:'🗺️',c:'#17a673',d:'Rivers, mountains, oceans and maps. Travel the planet from your phone.',q:[
+'What is the capital of Canada?|Ottawa|Toronto|Vancouver|Montreal',
+'Which is the largest country by area?|Russia|Canada|China|USA',
+'Which continent has the most countries?|Africa|Asia|Europe|South America',
+'Mount Fuji is in which country?|Japan|China|Nepal|South Korea',
+'The Equator passes through which country?|Brazil|Egypt|India|Spain',
+'Which is the deepest known part of the oceans?|Mariana Trench|Java Trench|Puerto Rico Trench|Tonga Trench',
+'What is the capital of Brazil?|Brasília|Rio de Janeiro|São Paulo|Salvador',
+'The Great Barrier Reef lies off which country?|Australia|Indonesia|Philippines|Fiji',
+'Which imaginary line is 0° longitude?|Prime Meridian|Equator|Tropic of Cancer|Date Line',
+'Which is the largest lake by area?|Caspian Sea|Lake Superior|Lake Victoria|Lake Baikal',
+'Which strait separates Spain and Morocco?|Strait of Gibraltar|Bosphorus|Strait of Malacca|Strait of Hormuz',
+'Which river flows through Paris?|Seine|Rhine|Danube|Thames',
+'Which is the coldest continent?|Antarctica|Europe|North America|Asia',
+'Istanbul is a major city of which country?|Turkey|Greece|Egypt|Iran',
+'The Andes mountain range is in?|South America|Africa|Asia|Europe']},
+pol:{n:'Geopolitics Quiz',t:'Geopolitics',e:'♟️',c:'#e5412d',d:'Alliances, treaties and power games that shape the world order.',q:[
+'How many permanent members does the UN Security Council have?|5|7|10|15',
+'Where is NATO headquartered?|Brussels|Washington D.C.|Geneva|Paris',
+'BRICS: Brazil, Russia, India, China and…?|South Africa|Saudi Arabia|Singapore|Switzerland',
+'Which country left the European Union in 2020?|United Kingdom|Norway|Switzerland|Turkey',
+'Which country hosted the G20 Summit in 2023?|India|Brazil|Indonesia|Japan',
+'Which strait carries a big share of the world\u2019s oil?|Strait of Hormuz|Bering Strait|Strait of Dover|Strait of Magellan',
+'Which country is NOT a member of the Quad?|China|India|Japan|Australia',
+'Where is the WTO headquartered?|Geneva|New York|Brussels|Vienna',
+'Whose permanent members hold the veto power?|UN Security Council|UN General Assembly|WHO|UNESCO',
+'Where is the ASEAN Secretariat?|Jakarta|Singapore|Bangkok|Manila',
+'Which is the largest economy by nominal GDP?|United States|China|Germany|Japan',
+'The disputed India–China border is called?|Line of Actual Control|Radcliffe Line|Durand Line|Maginot Line',
+'Which two countries signed the Indus Waters Treaty (1960)?|India and Pakistan|India and China|Pakistan and Afghanistan|India and Nepal',
+'OPEC countries mainly export which resource?|Oil|Wheat|Coffee|Cotton',
+'Which organisation did Finland join in 2023?|NATO|BRICS|OPEC|ASEAN']},
+sci:{n:'Science Quiz',t:'Science',e:'🔬',c:'#8a55f0',d:'Space, body, tech and everyday science made fun and quick.',q:[
+'What is the chemical formula of water?|H₂O|CO₂|O₂|NaCl',
+'What is the powerhouse of the cell?|Mitochondria|Nucleus|Ribosome|Golgi body',
+'What is the chemical symbol of gold?|Au|Ag|Gd|Go',
+'Who proposed the theory of relativity?|Albert Einstein|Isaac Newton|Galileo|Niels Bohr',
+'Which planet is closest to the Sun?|Mercury|Venus|Earth|Mars',
+'HTML stands for?|HyperText Markup Language|HighText Machine Language|Hyperlink Text Mode Language|Home Tool Markup Language',
+'Which vitamin do we get from sunlight?|Vitamin D|Vitamin C|Vitamin A|Vitamin B12',
+'How many bones are in an adult human body?|206|180|212|300',
+'What is the hardest natural substance?|Diamond|Quartz|Iron|Granite',
+'Which gas is most abundant in the atmosphere?|Nitrogen|Oxygen|Carbon dioxide|Argon',
+'CPU stands for?|Central Processing Unit|Central Program Utility|Computer Power Unit|Core Process Unit',
+'Who is called the father of the computer?|Charles Babbage|Tim Berners-Lee|Steve Jobs|Bill Gates',
+'What is the SI unit of force?|Newton|Joule|Watt|Pascal',
+'Which blood cells fight infection?|White blood cells|Red blood cells|Platelets|Plasma',
+'The speed of light is about?|300,000 km/s|30,000 km/s|3,000 km/s|3,000,000 km/s']}};
+const KS=Object.keys(QB),LC=['#e5412d','#7ec6e8','#8bd17c','#f6c23e','#9b8cf0'];
+const rng=s=>{let h=1779033703^s.length;for(let i=0;i<s.length;i++){h=Math.imul(h^s.charCodeAt(i),3432918353);h=h<<13|h>>>19}return()=>{h=Math.imul(h^h>>>16,2246822507);h=Math.imul(h^h>>>13,3266489909);return((h^=h>>>16)>>>0)/4294967296}};
+const shf=(a,r)=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const day=()=>new Date().toLocaleDateString('en-CA');
+const daily=k=>{const d=day(),r=rng(d+k);return shf(QB[k].q,r).slice(0,10).map(s=>{const p=s.split('|'),o=shf(p.slice(1),r);return{q:p[0],o,a:o.indexOf(p[1])}})};
+const DK=()=>'nk_quiz_'+(S.me&&S.me.uid||'x'),getD=()=>lsg(DK(),{tot:0,hist:[],done:{},fav:{}}),setD=d=>lss(DK(),d);
+const Z={m:'home',lb:null};
+if(!document.getElementById('qzfont')){const l=document.createElement('link');l.id='qzfont';l.rel='stylesheet';l.href='https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700&display=swap';document.head.appendChild(l)}
+const st=document.createElement('style');st.textContent=`
+.qz{background:linear-gradient(180deg,#efe6da,#f6f1ea 40%,#f3ede6)!important;color:#111!important;font-family:Inter,system-ui,sans-serif;padding:max(14px,env(safe-area-inset-top)) 0 110px!important;overflow-x:hidden}
+.qz *{box-sizing:border-box}.qz button{font-family:inherit;cursor:pointer}
+.qzh{display:flex;align-items:center;justify-content:space-between;padding:0 18px}
+.qzb{width:40px;height:40px;border-radius:50%;border:0;background:#fff;box-shadow:0 4px 12px #0002;font-size:18px;color:#111}
+.qzd{background:#fff;border-radius:20px;padding:8px 14px;font-weight:700;font-size:14px;box-shadow:0 4px 12px #0001;color:#111}
+.qzt{font:400 54px/1 Anton,Impact,'Arial Narrow',sans-serif;letter-spacing:.5px;margin:6px 18px 8px;color:#111;text-transform:none}
+.qzt i{font-style:normal;font-size:36px}
+.qzs{margin:0 18px 14px;font-size:12.5px;line-height:1.45;color:#444}
+.qzu{display:flex;align-items:center;gap:12px;margin:0 18px;padding:10px 10px 10px 14px;background:#fff;border-radius:18px;box-shadow:0 6px 18px #0001}
+.qzu>span{font-size:26px}.qzu div{flex:1;min-width:0}.qzu b{display:block;font-size:14px;color:#111}.qzu small{display:block;font-size:10.5px;color:#666;line-height:1.3}
+.qzk{border:0;background:#111;color:#fff;border-radius:16px;padding:12px 20px;font-weight:700;font-size:13px}
+.qzs2{font:400 22px/1 Anton,Impact,sans-serif;letter-spacing:.4px;margin:22px 18px 10px;color:#111}
+.qzr{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;padding:4px 18px 14px;scrollbar-width:none}.qzr::-webkit-scrollbar{display:none}
+.qzc{position:relative;flex:none;width:min(78vw,310px);height:330px;border-radius:30px;padding:16px;color:#fff;overflow:hidden;scroll-snap-align:center;background:linear-gradient(160deg,var(--c),color-mix(in srgb,var(--c) 70%,#000));box-shadow:0 14px 28px color-mix(in srgb,var(--c) 45%,transparent);transition:transform .25s,opacity .25s;transform:scale(var(--s,1))}
+.qzg{display:inline-block;background:#111;color:#fff;border-radius:20px;padding:9px 18px;font-weight:700;font-size:13px}
+.qzf{position:absolute;right:14px;top:14px;width:40px;height:40px;border-radius:50%;border:0;background:#fff;color:#bbb;font-size:18px}.qzf.on{color:#e5412d}
+.qzc h2{font:400 30px/1.05 Anton,Impact,sans-serif;letter-spacing:.4px;margin:60px 0 6px;position:relative;z-index:2;color:#fff}
+.qzc p{font-size:11.5px;line-height:1.4;margin:0;max-width:62%;position:relative;z-index:2;color:#fffe}
+.qzi{position:absolute;right:-10px;bottom:56px;width:150px;height:150px}
+.qzi b{position:absolute;right:22px;bottom:6px;width:104px;height:104px;border-radius:22px;background:#fff;transform:rotate(7deg);display:grid;place-items:center;font-size:58px;box-shadow:0 8px 16px #0004;animation:qzfl 3.4s ease-in-out infinite}
+.qzi s{position:absolute;width:6px;height:22px;border-radius:3px;animation:qzfl 2.6s ease-in-out infinite}
+@keyframes qzfl{0%,100%{transform:translateY(0) rotate(var(--r,7deg))}50%{transform:translateY(-8px) rotate(calc(var(--r,7deg) + 4deg))}}
+.qzi b{--r:7deg}
+.qzgo{position:absolute;left:16px;bottom:16px;right:16px;border:0;border-radius:16px;background:#fff;color:#111;font-weight:700;font-size:13.5px;padding:13px;z-index:3}
+.qzrw{display:flex;align-items:center;gap:12px;margin:0 18px 10px;padding:10px 12px;background:#fff;border-radius:18px;box-shadow:0 4px 12px #0001}
+.qzrw>i{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;font-style:normal;font-size:20px;background:var(--c)}
+.qzrw div{flex:1;min-width:0}.qzrw b{display:block;font-size:14px;color:#111}.qzrw small{font-size:11px;color:#777}
+.qzrw button{border:0;border-radius:16px;padding:9px 14px;font-weight:700;font-size:12px;background:#ff5a45;color:#fff}
+.qzem{margin:0 18px;font-size:12.5px;color:#777;padding:6px 2px}
+.qzlh{display:flex;align-items:center;justify-content:space-between;margin:26px 18px 14px}.qzlh .qzs2{margin:0}
+.qzpo{display:flex;justify-content:center;align-items:flex-end;gap:16px;margin:0 12px 14px}
+.qzpo div{text-align:center;width:96px}.qzpo .f{width:116px}
+.qzpo .av,.qzpo .qza{display:block;margin:0 auto}
+.qzpo .qza{border-radius:50%;padding:4px;background:var(--c);width:fit-content}.qzpo .qza>*{border-radius:50%;display:block}
+.qzpo b{display:block;font-size:12.5px;margin-top:4px;color:#111;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.qzpo small{font-size:10.5px;color:#777}
+.qzlr{display:flex;align-items:center;gap:12px;margin:0 18px;padding:12px 0;border-bottom:1px solid #0001}
+.qzlr>span.qa{width:46px;height:46px;border-radius:50%;overflow:hidden;flex:none;display:block}.qzlr div{flex:1;min-width:0}.qzlr b{display:block;font-size:14px;color:#111}.qzlr small{font-size:11px;color:#777}
+.qzlr em{font-style:normal;background:#111;color:#fff;border-radius:14px;padding:6px 12px;font-size:11px;font-weight:700}
+.qzlr u{text-decoration:none;min-width:36px;height:36px;padding:0 6px;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:700;font-size:12px;background:var(--c)}
+.qzp{position:fixed;left:50%;bottom:max(16px,env(safe-area-inset-bottom));transform:translateX(-50%);display:flex;gap:4px;align-items:center;padding:7px;background:#fffd;-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-radius:34px;box-shadow:0 10px 28px #0003;z-index:50}
+.qzp button{border:0;background:none;color:#111;height:42px;min-width:42px;border-radius:21px;font-size:18px;display:flex;align-items:center;justify-content:center;gap:6px;padding:0 12px;font-weight:700}
+.qzp button.on{background:#111;color:#fff;font-size:13px;padding:0 18px}
+.qzsp{min-height:100%;display:flex;flex-direction:column;align-items:center;text-align:center;padding:30px 28px 40px}
+.qzsp .qzt{margin:30px 0 0;font-size:78px}.qzsp .qzt i{font-size:50px}
+.qzsp h3{font:700 17px Inter,sans-serif;margin:16px 0 8px;color:#111}.qzsp p{font-size:13px;line-height:1.55;color:#777;margin:0 0 24px}
+.qzsp .qzk{width:100%;max-width:300px;padding:17px;font-size:15px;border-radius:26px;box-shadow:0 10px 22px #0004}
+.qzcl{position:relative;width:260px;height:180px;margin:10px auto}
+.qzcl b{position:absolute;display:grid;place-items:center;width:92px;height:92px;border-radius:22px;font-size:48px;box-shadow:0 8px 16px #0003;animation:qzfl 3.4s ease-in-out infinite}
+.qzcl s{position:absolute;width:7px;height:26px;border-radius:3px;animation:qzfl 2.6s ease-in-out infinite}
+.qzpl{padding:max(14px,env(safe-area-inset-top)) 18px 30px;min-height:100%;background:var(--c);color:#fff}
+.qzpl .top{display:flex;align-items:center;gap:12px}.qzpl .qzb{background:#fff3;color:#fff;box-shadow:none}
+.qzpl .top b{flex:1;font:400 22px Anton,Impact,sans-serif;letter-spacing:.4px}.qzpl .tm{background:#111;border-radius:20px;padding:8px 14px;font-weight:700;font-size:14px;min-width:60px;text-align:center}
+.qzpb{height:8px;border-radius:5px;background:#fff4;margin:18px 0 6px;overflow:hidden}.qzpb i{display:block;height:100%;background:#fff;border-radius:5px;transition:width .3s}
+.qzpl small{display:block;font-size:12px;font-weight:600;opacity:.9}
+.qzq{background:#fff;color:#111;border-radius:28px;padding:22px 18px;margin:16px 0;font:600 19px/1.35 Inter,sans-serif;box-shadow:0 12px 26px #0003;min-height:120px;display:flex;align-items:center}
+.qzo{display:block;width:100%;text-align:left;margin:0 0 10px;padding:15px 16px;border-radius:18px;border:2px solid transparent;background:#fffe;color:#111;font-weight:600;font-size:14.5px;transition:transform .1s}
+.qzo:active{transform:scale(.98)}.qzo.ok{background:#1fa95a;color:#fff}.qzo.no{background:#111;color:#fff}.qzo.dim{opacity:.55}
+.qzn{margin-top:6px;width:100%;padding:16px;border:0;border-radius:20px;background:#111;color:#fff;font-weight:700;font-size:15px}
+.qzrs{text-align:center;padding:30px 0 10px}.qzrs h2{font:400 70px/1 Anton,Impact,sans-serif;margin:14px 0 4px;color:#fff}.qzrs p{font-size:14px;opacity:.95;margin:0 0 18px}
+.qzrs .pt{display:inline-block;background:#111;border-radius:22px;padding:10px 20px;font-weight:700;margin-bottom:24px}.qzrs .qzk{display:block;width:100%;margin-bottom:10px;background:#111}.qzrs .qzk.w{background:#fff;color:#111}
+.mc.qzc2{background:linear-gradient(150deg,#ffc2a8,#ff6a4a 70%)!important;color:#111}.mc.qzc2:after{display:none!important}
+.mc.qzc2 .mct b{font:400 34px/1 Anton,Impact,sans-serif;letter-spacing:.4px;color:#111}.mc.qzc2 .mct small{color:#111;opacity:.8}
+.mc.qzc2 .qzbx{position:absolute;right:14px;top:14px;font-size:40px;animation:qzfl 3.4s ease-in-out infinite}
+.mc.qzc2 i.cf{position:absolute;width:5px;height:18px;border-radius:3px;background:#111;opacity:.8}
+`;document.head.appendChild(st);
+const CF=(cs,n)=>{const r=rng('cf'+n);return Array.from({length:n},(_,i)=>`<s style="left:${Math.floor(r()*240)}px;top:${Math.floor(r()*80)}px;background:${cs[i%cs.length]};--r:${Math.floor(r()*80)-40}deg;animation-delay:${(i*.3).toFixed(1)}s;transform:rotate(${Math.floor(r()*80)-40}deg)"></s>`).join('')};
+const lbHtml=()=>{const d=getD(),me=S.me||{},meRow={uid:me.uid,name:me.name||'You',tot:d.tot,n:d.hist.length};let a=(Z.lb||[]).filter(x=>x.uid!==me.uid);a.push(meRow);a.sort((x,y)=>y.tot-x.tot);
+ const P=u=>`<span class="qa">${av(S.U[u.uid]||{name:u.name,uid:u.uid},46)}</span>`,top=a.slice(0,3),ord=top.length===3?[top[1],top[0],top[2]]:top,ring=top.length===3?['#e5412d','#c9a46a','#8bd17c']:['#c9a46a','#e5412d','#8bd17c'],med=['🥈','🥇','🥉'];
+ const pod=ord.map((u,i)=>{const f=top.length===3?i===1:i===0,sz=f?84:66,mi=top.length===3?i:[1,0,2][i];return`<div class="${f?'f':''}"><span class="qza" style="--c:${ring[i]}">${av(S.U[u.uid]||{name:u.name,uid:u.uid},sz)}</span><span style="font-size:20px">${med[top.length===3?i:1]}</span><b>${E((u.name||'Member').split(' ')[0])}</b><small>${u.tot} Diamonds</small></div>`}).join('');
+ return`<div class="qzpo">${pod}</div>`+a.map((u,i)=>`<div class="qzlr">${P(u)}<div><b>${E(u.name||'Member')}</b><small>${u.n||0} quizzes played</small></div>${u.uid===me.uid?'<em>Me</em>':''}<u style="--c:${LC[i%5]}">${u.tot}</u></div>`).join('')};
+const qzLoad=async()=>{try{const s=await F.getDocs(F.collection(db,'quiz_scores'));Z.lb=s.docs.map(x=>({uid:x.id,...x.data()}))}catch(e){Z.lb=null}const el=document.getElementById('qzlb');if(el&&S.view==='quiz'&&Z.m==='home')el.innerHTML=lbHtml()};
+const qzPush=async()=>{const d=getD();try{await F.setDoc(F.doc(db,'quiz_scores',S.me.uid),{name:S.me.name||'Member',tot:d.tot,n:d.hist.length,at:Date.now()})}catch(e){}};
+const home=()=>{const d=getD(),dn=KS.filter(k=>d.done[day()+'|'+k]!=null).length,nx=KS.find(k=>d.done[day()+'|'+k]==null)||KS[0],rec=d.hist.slice(0,4);
+ app.innerHTML=`<div class="body qz" id="qzb"><div class="qzh"><button class="qzb" data-a="back" aria-label="Back">←</button><span class="qzd">💎 ${d.tot}</span></div>
+<h1 class="qzt">Quiz <i>🏆</i></h1><p class="qzs">Challenge yourself every day with 10 fresh questions in each topic, see who comes out on top as the ultimate quiz champion, and earn the bragging rights!</p>
+<div class="qzu"><span>👑</span><div><b>Daily Challenge</b><small>${dn}/5 topics done today · new questions every day</small></div><button class="qzk" data-a="qzplay" data-k="${nx}">${dn>=5?'Review':'Play'}</button></div>
+<h3 class="qzs2">Popular Game 🔥</h3>
+<div class="qzr" id="qzr">${KS.map(k=>{const q=QB[k],dd=d.done[day()+'|'+k];return`<div class="qzc" style="--c:${q.c}"><span class="qzg">${q.t}</span><button class="qzf${d.fav[k]?' on':''}" data-a="qzfav" data-k="${k}" aria-label="Favourite">♥</button><h2>${q.n}</h2><p>${q.d}</p><div class="qzi"><b>${q.e}</b>${CF(['#ffd23f','#111','#fff','#ff5a45'],6)}</div><button class="qzgo" data-a="qzplay" data-k="${k}">${dd!=null?'✓ Done '+dd+'/10 · Practice again':'Play today\u2019s 10 questions →'}</button></div>`}).join('')}</div>
+<h3 class="qzs2">Recent Played</h3>${rec.length?rec.map(h=>`<div class="qzrw"><i style="--c:${QB[h.k].c}">${QB[h.k].e}</i><div><b>${QB[h.k].t}</b><small>${h.s}/10 correct · +${h.p} pts · ${h.d===day()?'Today':h.d}</small></div><button data-a="qzplay" data-k="${h.k}">Play again</button></div>`).join(''):'<p class="qzem">No games yet. Pick a topic above and start!</p>'}
+<div class="qzlh"><h3 class="qzs2" id="qzlt">Leaderboard 🔥</h3><span class="qzd">💎 ${d.tot}</span></div><div id="qzlb">${lbHtml()}</div></div>
+<nav class="qzp"><button class="on" data-a="qzgo" data-k="top">🏠 Home</button><button data-a="qzplay" data-k="${nx}" aria-label="Play">🎯</button><button data-a="qzgo" data-k="rank" aria-label="Ranking">📊</button><button data-a="back" aria-label="Exit">${av(S.me,30)}</button></nav>`;
+ const r=$('#qzr'),sc=()=>{const c=r.getBoundingClientRect(),m=c.left+c.width/2;[...r.children].forEach(e=>{const b=e.getBoundingClientRect(),k=Math.min(1,Math.abs(b.left+b.width/2-m)/c.width);e.style.setProperty('--s',(1-.07*k).toFixed(3))})};r.onscroll=sc;sc();qzLoad()};
+const splash=()=>{const cs=['#ffd23f','#111','#6a4cff','#ff5a45','#17a673'];app.innerHTML=`<div class="body qz"><div class="qzsp"><h1 class="qzt">Quiz <i>🏆</i></h1><div class="qzcl"><b style="left:10px;top:30px;background:#ffd23f;--r:-6deg">🌍</b><b style="left:84px;top:6px;background:#ff8a1f;--r:4deg">🇮🇳</b><b style="left:150px;top:46px;background:#17a673;--r:8deg">🗺️</b><b style="left:46px;top:96px;background:#e5412d;--r:-3deg">♟️</b>${CF(cs,10)}</div><h3>Play To Gain Your Knowledge</h3><p>Five topics, ten fresh questions each, every single day. Climb the NIJØK leaderboard and become the champion.</p><button class="qzk" data-a="qzstart">Get started</button></div></div>`};
+const play=()=>{const q=Z.qs[Z.i],c=QB[Z.k].c;app.innerHTML=`<div class="body qzpl" style="--c:${c}"><div class="top"><button class="qzb" data-a="qzhome" aria-label="Close">✕</button><b>${QB[Z.k].n}</b><span class="tm" id="qzt">⏱ ${Z.tl}</span></div><div class="qzpb"><i style="width:${(Z.i+(Z.a!=null?1:0))*10}%"></i></div><small>Question ${Z.i+1} of 10 · Score ${Z.ok}</small><div class="qzq">${E(q.q)}</div>${q.o.map((o,i)=>`<button class="qzo${Z.a!=null?(i===q.a?' ok':i===Z.a?' no':' dim'):''}" data-a="qzpick" data-i="${i}"${Z.a!=null?' disabled':''}>${E(o)}</button>`).join('')}${Z.a!=null?`<button class="qzn" data-a="qznext">${Z.i<9?'Next question →':'See result'}</button>`:''}</div>`};
+const tick=()=>{clearInterval(Z.T);Z.T=setInterval(()=>{if(S.view!=='quiz'||Z.m!=='play'||Z.a!=null)return clearInterval(Z.T);Z.tl--;const e=$('#qzt');if(e)e.textContent='⏱ '+Z.tl;if(Z.tl<=0){Z.a=-1;clearInterval(Z.T);play()}},1000)};
+const fin=()=>{clearInterval(Z.T);const d=getD(),key=day()+'|'+Z.k,first=d.done[key]==null,p=Z.pts;let note='Practice round · points count once per day';if(first){d.done[key]=Z.ok;d.tot+=p;d.hist.unshift({k:Z.k,s:Z.ok,p,d:day()});d.hist=d.hist.slice(0,30);setD(d);qzPush();note='+'+p+' 💎 added to your score'}Z.m='res';
+ const m=Z.ok>=9?'Genius! 🔥':Z.ok>=7?'Great job! 🎉':Z.ok>=5?'Good effort 👍':'Keep learning 📚';app.innerHTML=`<div class="body qzpl" style="--c:${QB[Z.k].c}"><div class="qzrs"><div style="font-size:60px">${QB[Z.k].e}</div><h2>${Z.ok}/10</h2><p>${m}</p><span class="pt">${note}</span><button class="qzk w" data-a="qzplay" data-k="${Z.k}">Practice again</button><button class="qzk" data-a="qzhome">View leaderboard</button></div></div>`};
+V.quiz=()=>{Z.m=lsg('nk_quiz_seen',0)?'home':'splash';Z.m==='home'?home():splash()};
+Object.assign(ACT,{qzstart(){lss('nk_quiz_seen',1);Z.m='home';home()},qzhome(){clearInterval(Z.T);Z.m='home';home();if(arguments[0]&&0){}setTimeout(()=>{const e=$('#qzlt');e&&e.scrollIntoView({behavior:'smooth'})},120)},
+ qzplay(d){Z.k=d.k;Z.qs=daily(d.k);Z.i=0;Z.ok=0;Z.pts=0;Z.a=null;Z.tl=15;Z.m='play';play();tick()},
+ qzpick(d){if(Z.a!=null)return;const q=Z.qs[Z.i];Z.a=+d.i;if(Z.a===q.a){Z.ok++;Z.pts+=10+Math.min(5,Math.floor(Z.tl/3))}clearInterval(Z.T);play()},
+ qznext(){if(Z.i>=9)return fin();Z.i++;Z.a=null;Z.tl=15;play();tick()},
+ qzfav(d){const x=getD();x.fav[d.k]=!x.fav[d.k];setD(x);const b=document.querySelector('.qzf[data-k="'+d.k+'"]');b&&b.classList.toggle('on',!!x.fav[d.k])},
+ qzgo(d){const e=d.k==='rank'?$('#qzlt'):$('#qzb');e&&(d.k==='rank'?e.scrollIntoView({behavior:'smooth'}):e.scrollTo({top:0,behavior:'smooth'}));qzLoad()}});
+}
 </script><style id="nb-fix">.body.nbp{order:0!important}.nbp.body+.nav,.nbp.body~.nav{order:1}
 .qc{margin:14px 0 6px;border-radius:26px;padding:16px 12px 14px;background-size:cover;background-position:center;box-shadow:0 6px 18px #0002;overflow:hidden}
 .qc>b{display:block;font:600 26px 'Dancing Script','Segoe Print',cursive;color:#14503a}
