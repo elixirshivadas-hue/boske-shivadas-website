@@ -2749,7 +2749,7 @@ setInterval(()=>{if(S.view==='eucio'&&S.ow2==='home'){const el=document.getEleme
 
 /* ---------- stories: tall rounded cards ---------- */
 const owSt2=()=>{const g={};S.sts.forEach(s=>(g[s.by]=g[s.by]||[]).push(s));const v=lsg('nk_sv',{}),mine=g[S.me.uid],mi=mine&&mine[mine.length-1].img;
- return`<div class="owscs"><div class="owsc add" data-a="stadd"><div class="owsb2" ${mi?`style="background-image:url('${E(mi)}')"`:''}></div><span class="owsp">${oi('plus',22,2.6)}</span><small>Your story</small></div>${Object.entries(g).map(([u,l])=>{const x=S.U[u]||{name:'?'},seen=l.every(s=>v[s.id]),im=l[l.length-1].img||'';return`<div class="owsc${seen?' v':''}" data-a="stopen" data-u="${u}"><div class="owsb2" style="background-image:url('${E(im)}')"></div><span class="owsr">${av(x,32)}</span><small>${E(u===S.me.uid?'You':(x.name||'').split(' ')[0])}</small></div>`}).join('')}</div>`};
+ return`<div class="owscs"><div class="owsc add" data-a="stadd"><span class="oxsa">${av(S.me,56)}<i>${oi('plus',14,3)}</i></span><small>Your story</small></div>${Object.entries(g).map(([u,l])=>{const x=S.U[u]||{name:'?'},seen=l.every(s=>v[s.id]),im=l[l.length-1].img||'';return`<div class="owsc${seen?' v':''}" data-a="stopen" data-u="${u}"><div class="owsb2" style="background-image:url('${E(im)}')"></div><span class="owsr">${av(x,32)}</span><small>${E(u===S.me.uid?'You':(x.name||'').split(' ')[0])}</small></div>`}).join('')}</div>`};
 
 /* ---------- feed post: glass overlays on the photo ---------- */
 const owPost2=p=>{if(p.rp&&!p.text){const w=S.U[p.by]||{name:'Member'},og=S.posts.find(x=>x.id===p.rp)||{id:p.rp,by:p.rpby,text:p.rpt,at:p.at,likes:[],cc:0};return`<div class="owrp">${oi('rp',14)} ${E(p.by===S.me.uid?'You':w.name)} reposted</div>`+owPost2(og)}
@@ -2823,15 +2823,15 @@ const owQRm=text=>{const data=[...new TextEncoder().encode(text)],TOT=[0,26,44,7
 const owQRsvg=(t,c)=>{const M=owQRm(t);if(!M)return'';const n=M.length,q=3;let p='';M.forEach((r,y)=>r.forEach((d,x)=>{if(d)p+=`M${x+q} ${y+q}h1v1h-1z`}));return`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${n+2*q} ${n+2*q}" shape-rendering="crispEdges"><rect width="100%" height="100%" fill="#fff"/><path d="${p}" fill="${c||'#000'}"/></svg>`};
 const owDur=s=>{s=Math.round(s||0);return Math.floor(s/60)+':'+String(s%60).padStart(2,'0')};
 const owXActs=(p,det)=>{const lk=(p.likes||[]).includes(S.me.uid),rpn=S.posts.filter(x=>x.rp===p.id).length,mrp=S.posts.some(x=>x.rp===p.id&&x.by===S.me.uid&&!x.text),c=(n)=>det?'':`<i>${owN(n)}</i>`;
- return`<div class="xr${det?' det':''}"><button data-a="eopen" data-id="${p.id}" aria-label="Reply">${oi('cmt',19)}${c(p.cc||0)}</button><button class="${mrp?'rp':''}" data-a="eurp" data-id="${p.id}" aria-label="Repost">${oi('rp',19)}${c(rpn)}</button><button class="${lk?'on':''}" data-a="eulike" data-id="${p.id}" aria-label="Like">${oi('heart',19)}${c((p.likes||[]).length)}</button><button class="${S.sv.has(p.id)?'mk on':'mk'}" data-a="eusave" data-id="${p.id}" aria-label="Bookmark">${oi('mark',19)}</button><button data-a="eushare" data-id="${p.id}" aria-label="Share">${oi('share',19)}</button></div>`};
-const owXPost=(p,det)=>{if(p.rp&&!p.text){const w=S.U[p.by]||{name:'Member'},og=S.posts.find(x=>x.id===p.rp)||{id:p.rp,by:p.rpby,text:p.rpt,at:p.at,likes:[],cc:0};return`<div class="xrp">${oi('rp',14)} ${E(p.by===S.me.uid?'You':w.name)} reposted</div>`+owXPost(og,det)}
+ return`<div class="oxr${det?' det':''}"><button data-a="eopen" data-id="${p.id}" aria-label="Reply">${oi('cmt',19)}${c(p.cc||0)}</button><button class="${mrp?'rp':''}" data-a="eurp" data-id="${p.id}" aria-label="Repost">${oi('rp',19)}${c(rpn)}</button><button class="${lk?'on':''}" data-a="eulike" data-id="${p.id}" aria-label="Like">${oi('heart',19)}${c((p.likes||[]).length)}</button><button class="${S.sv.has(p.id)?'mk on':'mk'}" data-a="eusave" data-id="${p.id}" aria-label="Bookmark">${oi('mark',19)}</button><button data-a="eushare" data-id="${p.id}" aria-label="Share">${oi('share',19)}</button></div>`};
+const owXPost=(p,det)=>{if(p.rp&&!p.text){const w=S.U[p.by]||{name:'Member'},og=S.posts.find(x=>x.id===p.rp)||{id:p.rp,by:p.rpby,text:p.rpt,at:p.at,likes:[],cc:0};return`<div class="oxrp">${oi('rp',14)} ${E(p.by===S.me.uid?'You':w.name)} reposted</div>`+owXPost(og,det)}
  const u=S.U[p.by]||{name:'Member'},mine=p.by===S.me.uid,fl=S.fol.has(p.by),lu=p.link?safeUrl(p.link):'',
- media=p.vid?`<div class="xm vd" data-a="owplay" data-id="${p.id}"><img src="${E(p.img||'')}" alt=""><span class="xpl">${oi('vid',26)}</span><em>${owDur(p.vid.d)}</em></div>`:p.img?`<div class="xm" data-a="eopen" data-id="${p.id}"><img src="${E(p.img)}" alt="" loading="lazy"></div>`:'',
+ media=p.vid?`<div class="oxm vd" data-a="owplay" data-id="${p.id}"><img src="${E(p.img||'')}" alt=""><span class="oxpl">${oi('vid',26)}</span><em>${owDur(p.vid.d)}</em></div>`:p.img?`<div class="oxm" data-a="eopen" data-id="${p.id}"><img src="${E(p.img)}" alt="" loading="lazy"></div>`:'',
  lk=lu?`<a class="elk" href="${E(lu)}" target="_blank" rel="noopener noreferrer">${oi('globe',16)}<span>${E(new URL(lu).host)}</span></a>`:'',
- more=`<button class="xmo" data-a="eumore" data-id="${p.id}" aria-label="More">${oi('more',18)}</button>`;
+ more=`<button class="oxmo" data-a="eumore" data-id="${p.id}" aria-label="More">${oi('more',18)}</button>`;
  if(det){let t='';try{const d=new Date(p.at);t=d.toLocaleTimeString('en-IN',{hour:'numeric',minute:'2-digit'})+' · '+d.toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})}catch(e){}
-  return`<article class="xp xd"><div class="xdh"><div class="xa" data-a="upg" data-id="${p.by}">${av(u,46)}</div><div class="xdn" data-a="upg" data-id="${p.by}"><b>${E(u.name)}${owTick(u)}</b><small>${u.uname?'@'+E(u.uname):'Openworld member'}</small></div>${mine?'':`<button class="xfo ${fl?'on':''}" data-a="${fl?'eunf':'eufo'}" data-id="${p.by}">${fl?'Following':'Follow'}</button>`}${more}</div>${p.text?`<div class="xt big">${rich(p.text)}</div>`:''}${media}${lk}<div class="xdt">${t}</div><div class="xds"><span><b>${(p.likes||[]).length}</b> Likes</span><span><b>${S.posts.filter(x=>x.rp===p.id).length}</b> Reposts</span><span><b>${p.cc||0}</b> Replies</span></div>${owXActs(p,1)}</article>`}
- return`<article class="xp"><div class="xa" data-a="upg" data-id="${p.by}">${av(u,44)}</div><div class="xb"><div class="xh"><b data-a="upg" data-id="${p.by}">${E(u.name)}</b>${owTick(u)}<span class="xm2">${u.uname?'@'+E(u.uname)+' · ':''}${ago(p.at)}</span><span class="xsp"></span>${more}</div>${p.text?`<div class="xt" data-a="eopen" data-id="${p.id}">${rich(p.text)}</div>`:''}${media}${lk}${owXActs(p)}</div></article>`};
+  return`<article class="oxp oxd"><div class="oxdh"><div class="oxa" data-a="upg" data-id="${p.by}">${av(u,46)}</div><div class="oxdn" data-a="upg" data-id="${p.by}"><b>${E(u.name)}${owTick(u)}</b><small>${u.uname?'@'+E(u.uname):'Openworld member'}</small></div>${mine?'':`<button class="oxfo ${fl?'on':''}" data-a="${fl?'eunf':'eufo'}" data-id="${p.by}">${fl?'Following':'Follow'}</button>`}${more}</div>${p.text?`<div class="oxt big">${rich(p.text)}</div>`:''}${media}${lk}<div class="oxdt">${t}</div><div class="oxds"><span><b>${(p.likes||[]).length}</b> Likes</span><span><b>${S.posts.filter(x=>x.rp===p.id).length}</b> Reposts</span><span><b>${p.cc||0}</b> Replies</span></div>${owXActs(p,1)}</article>`}
+ return`<article class="oxp"><div class="oxa" data-a="upg" data-id="${p.by}">${av(u,44)}</div><div class="oxb"><div class="oxh"><b data-a="upg" data-id="${p.by}">${E(u.name)}</b>${owTick(u)}<span class="oxm2">${u.uname?'@'+E(u.uname)+' · ':''}${ago(p.at)}</span><span class="xsp"></span>${more}</div>${p.text?`<div class="oxt" data-a="eopen" data-id="${p.id}">${rich(p.text)}</div>`:''}${media}${lk}${owXActs(p)}</div></article>`};
 eupH=function(p){return owXPost(p,true)};
 
 /* ---------- shell: X header + X bottom bar + blue + ---------- */
@@ -2842,7 +2842,7 @@ owShell=function(){let k=S.ow2||'home';if(k==='reels')k=S.ow2='home';
  B=(on,ic,l,a,x='')=>`<button class="${on?'on':''}" ${a} aria-label="${l}">${oi(ic,26,on?2.5:1.8)}${x}</button>`;
  app.innerHTML=`<div class="ow2 xw${dark?' owd':''}"><div class="owtop xtop">${top}</div><div class="owbody" id="owb"><div id="eb"></div></div><button class="xfab" data-a="owdial" aria-label="Create">${oi('plus',26,2.2)}</button><nav class="xbar">${B(k==='home','home','Home','data-a="owt" data-k="home"')}${B(k==='explore','search','Search','data-a="owt" data-k="explore"')}${B(k==='spaces','spaces','Spaces','data-a="owt" data-k="spaces"')}${B(false,'bell','Notifications','data-a="go" data-v="ownot"',nt?`<em>${nt}</em>`:'')}${B(false,'msg','Messages','data-a="tab" data-v="chats"',un?`<em>${un}</em>`:'')}</nav></div>`};
 
-const owXLive=()=>{const R=(S.rooms||[]).filter(r=>!r.ended&&r.live);if(!R.length)return'';const r=R[0],u=S.U[r.by]||{name:'Host'};return`<div class="xlive" ${R.length>1?'data-a="owt" data-k="spaces"':`data-a="owjoin" data-id="${r.id}"`}><span class="xla">${av(u,38)}</span><span class="xlt">+${(r.mem||[]).length+(R.length-1)} · ${E(r.title)}</span><span class="xlb">LIVE <i></i></span></div>`};
+ const owXLive=()=>{const R=(S.rooms||[]).filter(r=>!r.ended&&r.live);if(!R.length)return'';return`<div class="oxlh"><b>Live now</b><span class="oxln">${R.length}</span></div><div class="oxls">${R.map(r=>{const u=S.U[r.by]||{name:'Host'};return`<div class="oxlc" data-a="owjoin" data-id="${r.id}"><span class="oxlb"><i></i>LIVE</span><b>${E(r.title)}</b><span class="oxlh2">${av(u,26)}<small>${E(u.name)} · ${(r.mem||[]).length} listening</small></span><em>Join</em></div>`}).join('')}</div>`};
 setInterval(()=>{if(S.view==='eucio'&&S.ow2==='home'){const el=document.getElementById('owxlive');if(el){const h=owXLive();if(el.__h!==h){el.__h=h;el.innerHTML=h}}}},2500);
 
 owHome=function(el){const q=(S.eq||'').toLowerCase().replace(/^#/,''),a=S.posts.filter(p=>!S.blk.has(p.by)&&(S.ef==='All'||!S.ef||p.tag===S.ef)&&(S.eu!=='follow'||S.fol.has(p.by)||p.by===S.me.uid)&&(!q||(p.text||'').toLowerCase().includes(q)||(p.tag||'').toLowerCase().includes(q))),wf=whoFollow(),ch=spAll().find(s=>!s.starter&&!(s.members||[]).includes(S.me.uid))||spAll()[0];
@@ -2869,13 +2869,13 @@ const owVidPrep=f=>new Promise((res,rej)=>{const v=document.createElement('video
 const owB64=b=>new Promise(r=>{const f=new FileReader();f.onload=()=>r(String(f.result).split(',')[1]);f.readAsDataURL(b)});
 ACT.owvid=function(){const i=document.createElement('input');i.type='file';i.accept='video/*';i.onchange=async()=>{const f=i.files[0];if(!f)return;
  toast('Preparing video…','Keep the screen on · up to 30 seconds');try{const r=await owVidPrep(f);if(r.blob.size>3.3e6)throw new Error('Video is too heavy. Try a shorter clip (under 30 s).');S.pv=r;S.pp=r.poster;S.nsp='';S.qt='';toast('Video ready ✓',owDur(r.dur)+' · '+Math.round(r.blob.size/1024)+' KB');nav('newpost')}catch(e){S.pv=null;toast('Video not added',e.message||'')}};i.click()};
-{const _nv=V.newpost;V.newpost=function(){_nv.apply(this,arguments);if(S.pv){const v=document.getElementById('ppv');if(v){v.hidden=false;v.innerHTML=`<div class="xm vd" style="margin:0"><img src="${S.pv.poster}" alt=""><span class="xpl">${oi('vid',26)}</span><em>${owDur(S.pv.dur)}</em></div>`;v.removeAttribute('data-a')}}}}
+{const _nv=V.newpost;V.newpost=function(){_nv.apply(this,arguments);if(S.pv){const v=document.getElementById('ppv');if(v){v.hidden=false;v.innerHTML=`<div class="oxm vd" style="margin:0"><img src="${S.pv.poster}" alt=""><span class="oxpl">${oi('vid',26)}</span><em>${owDur(S.pv.dur)}</em></div>`;v.removeAttribute('data-a')}}}}
 {const _np=ACT.newpost;ACT.newpost=async function(d){if(!S.pv)return _np.call(this,d);const pv=S.pv,t=(d.text||'').trim().slice(0,600),btn=document.querySelector('#npf .btn,.owpf2 .btn');btn&&(btn.disabled=true);
  try{toast('Uploading video…');const tag=d.tag||'Food',n=Math.ceil(pv.blob.size/540000),ref=await F.addDoc(F.collection(db,'posts'),{by:S.me.uid,text:t,img:pv.poster,tag,space:'',likes:[],cc:0,vid:{n,m:pv.mime,d:pv.dur},at:F.serverTimestamp()});
   try{for(let i=0;i<n;i++)await F.setDoc(F.doc(db,'posts',ref.id,'vc',String(i)),{i,d:await owB64(pv.blob.slice(i*540000,(i+1)*540000))})}catch(e){await F.deleteDoc(F.doc(db,'posts',ref.id)).catch(()=>{});throw e}
   S.pv=null;S.pp='';toast('Posted ✓');history.back()}catch(e){btn&&(btn.disabled=false);toast('Video not posted',e.code==='permission-denied'?'Add the video rules (posts/vc) in Firestore':(e.message||''))}}}
 const owVC={};
-ACT.owplay=async function(d){const els=[...document.querySelectorAll('.xm.vd[data-id="'+d.id+'"]')],p=S.posts.find(x=>x.id===d.id);if(!els.length||!p||!p.vid)return;els.forEach(e=>{e.removeAttribute('data-a');e.classList.add('ld')});
+ACT.owplay=async function(d){const els=[...document.querySelectorAll('.oxm.vd[data-id="'+d.id+'"]')],p=S.posts.find(x=>x.id===d.id);if(!els.length||!p||!p.vid)return;els.forEach(e=>{e.removeAttribute('data-a');e.classList.add('ld')});
  try{if(!owVC[d.id]){const s=await F.getDocs(F.query(F.collection(db,'posts',d.id,'vc'),F.orderBy('i','asc'))),a=s.docs.map(x=>Uint8Array.from(atob(x.data().d),c=>c.charCodeAt(0)));if(!a.length)throw 0;owVC[d.id]=URL.createObjectURL(new Blob(a,{type:p.vid.m||'video/webm'}))}
   els.forEach(e=>{e.classList.remove('ld');e.innerHTML=`<video src="${owVC[d.id]}" controls autoplay playsinline loop poster="${E(p.img||'')}"></video>`})}catch(e){els.forEach(x=>{x.classList.remove('ld');x.setAttribute('data-a','owplay')});toast('Video not available','Check the Firestore video rules')}};
 
@@ -2899,6 +2899,12 @@ const owQx=()=>{const o=document.querySelector('.owqrp');if(o){o.classList.remov
 Object.assign(ACT,{owqx:owQx,async owqs(){const o=document.querySelector('.owqrp');if(!o)return;try{if(navigator.share)await navigator.share({title:'Openworld',url:o.dataset.url});else{await navigator.clipboard.writeText(o.dataset.url);toast('Link copied ✓')}}catch(e){}},async owqcp(){const o=document.querySelector('.owqrp');try{await navigator.clipboard.writeText(o.dataset.url);toast('Link copied ✓')}catch(e){toast('Could not copy')}},
  owqd(){const o=document.querySelector('.owqrp'),s=o&&o.querySelector('.owqk svg');if(!s)return;const im=new Image();im.onload=()=>{const c=document.createElement('canvas');c.width=c.height=900;const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,900,900);x.imageSmoothingEnabled=false;x.drawImage(im,0,0,900,900);const a=document.createElement('a');a.download='openworld-'+o.dataset.n.replace(/\W/g,'')+'.png';a.href=c.toDataURL('image/png');a.click();toast('Saved ✓')};im.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(s.outerHTML)}});
 {const _up=V.upage;V.upage=async function(a){await _up.call(this,a);const b=document.querySelector('.owbr [data-a=upcopy]');if(b){b.setAttribute('data-a','owqr');b.textContent='Share profile'}}}
+/* ---- Mindate-style big profile preview ---- */
+{const _upg=ACT.upg;ACT.upg=function(d){const id=d.id;if(!S.U||id===S.me.uid||!S.U[id])return _upg.call(this,d);sheet();
+ const u=S.U[id],fl=S.fol.has(id),bg=u.cover||u.photo||'',tg=(u.interests||[]).slice(0,6),o=document.createElement('div');o.className='oxpv';
+ o.innerHTML=`<div class="oxpb" style="${bg?`background-image:url('${E(bg)}')`:''}"></div><button class="oxpx" data-a="oxpvx" aria-label="Close">\u2715</button><div class="oxpi"><h2>${E(u.name)}${owTick(u)}</h2><small>${u.uname?'@'+E(u.uname):''}${u.loc?' \u00b7 \ud83d\udccd '+E(u.loc):''}</small>${u.about?`<p>${E(String(u.about).slice(0,160))}</p>`:''}<div class="oxpt">${tg.map(t=>`<span>${E(t)}</span>`).join('')}</div><div class="oxpa"><button class="oxpf${fl?' on':''}" data-a="oxpvf" data-id="${id}">${fl?'Following \u2713':'Follow'}</button><button class="oxpg" data-a="oxpvp" data-id="${id}">View profile</button></div></div>`;
+ document.getElementById('app').appendChild(o)};
+ Object.assign(ACT,{oxpvx(){const e=document.querySelector('.oxpv');e&&e.remove()},oxpvp(d){ACT.oxpvx();nav('upage',{id:d.id})},oxpvf(d){const f=S.fol.has(d.id);(f?ACT.eunf:ACT.eufo).call(ACT,d);setTimeout(()=>{const b=document.querySelector('.oxpf');if(b){const n=S.fol.has(d.id);b.textContent=n?'Following \u2713':'Follow';b.classList.toggle('on',n)}},700)}})}
 </script><style id="nb-fix">.body.nbp{order:0!important}.nbp.body+.nav,.nbp.body~.nav{order:1}
 .qc{margin:14px 0 6px;border-radius:26px;padding:16px 12px 14px;background-size:cover;background-position:center;box-shadow:0 6px 18px #0002;overflow:hidden}
 .qc>b{display:block;font:600 26px 'Dancing Script','Segoe Print',cursive;color:#14503a}
@@ -4907,20 +4913,20 @@ html.night{--xb:#000;--xt:#e7e9ea;--xm:#71767b;--xl:#2f3336;--xs:#16181c}
 .xlive{display:flex;align-items:center;gap:10px;margin:12px 16px 10px;padding:5px 18px 5px 5px;border-radius:999px;background:#f4d7dc;cursor:pointer}html.night .xlive{background:#3a0a10}
 .xla .av{border:2px solid #e5232d}.xlt{flex:1;font-size:17px;font-weight:500;color:var(--ot);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.xlb{display:flex;align-items:center;gap:6px;color:#f4212e;font-weight:800;font-size:16px}.xlb i{width:9px;height:9px;border-radius:50%;background:#f4212e;animation:owp 1.2s infinite}
 /* post row */
-.xp{display:grid;grid-template-columns:48px 1fr;gap:0 10px;padding:12px 16px 4px;border-bottom:1px solid var(--ol);color:var(--ot)}
-.xa{cursor:pointer}.xa .av{border:0}.xb{min-width:0}
-.xh{display:flex;align-items:center;gap:4px;min-width:0;font-size:15px;line-height:20px}.xh b{font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:46%;cursor:pointer}.xm2{color:var(--om);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
-.xmo{border:0;background:none;color:var(--om);width:30px;height:30px;display:grid;place-items:center;flex:none;margin-right:-6px}
-.xt{font-size:17px;line-height:1.3;white-space:pre-wrap;word-break:break-word;margin:1px 0 8px;cursor:pointer}.xt.big{font-size:21px;line-height:1.35;margin:14px 0 10px;cursor:default}.xt .eut{color:var(--xa);text-decoration:none}
-.xm{position:relative;border-radius:18px;overflow:hidden;border:1px solid var(--ol);margin:6px 0 8px;background:#000;cursor:pointer}.xm img,.xm video{display:block;width:100%;max-height:560px;object-fit:cover}.xm video{background:#000;object-fit:contain}
-.xm.vd .xpl{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:64px;height:64px;border-radius:50%;display:grid;place-items:center;color:#fff;background:#0009;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}.xm.vd em{position:absolute;left:10px;bottom:10px;font-style:normal;background:#000b;color:#fff;font-size:12.5px;font-weight:600;padding:2px 8px;border-radius:6px}.xm.ld{opacity:.6}.xm.ld .xpl{animation:owp 1s infinite}
-.xr{display:flex;justify-content:space-between;margin:0 -8px 0 -8px;max-width:420px}.xr button{display:flex;align-items:center;gap:6px;border:0;background:none;color:var(--om);padding:8px;min-width:44px;font-size:13px;border-radius:999px}.xr i{font-style:normal;min-width:12px}
-.xr button:nth-child(1):active{color:var(--xa)}.xr button.rp,.xr button:nth-child(2):active{color:#00ba7c}.xr button.on{color:#f91880}.xr button.on svg{fill:#f91880}.xr button.mk.on{color:var(--xa)}.xr button.mk.on svg{fill:var(--xa)}
-.xrp{display:flex;align-items:center;gap:8px;padding:8px 16px 0 54px;color:var(--om);font-size:13px;font-weight:700}
-.xp.xd{display:block;padding:12px 16px 0}.xdh{display:flex;align-items:center;gap:10px}.xdn{flex:1;min-width:0;cursor:pointer}.xdn b{display:flex;align-items:center;gap:4px;font-size:16px;font-weight:800}.xdn small{color:var(--om);font-size:14px}
-.xfo{border:0;border-radius:999px;background:var(--ot);color:var(--ob);font-weight:700;font-size:14px;padding:8px 16px}.xfo.on{background:transparent;color:var(--ot);box-shadow:inset 0 0 0 1px var(--ol)}
-.xdt{color:var(--om);font-size:15px;padding:12px 0;border-bottom:1px solid var(--ol)}.xds{display:flex;gap:18px;padding:13px 0;border-bottom:1px solid var(--ol);color:var(--om);font-size:15px}.xds b{color:var(--ot)}
-.xr.det{max-width:none;margin:0;justify-content:space-around;padding:4px 0;border-bottom:1px solid var(--ol)}.xr.det button{padding:12px}
+.oxp{display:grid;grid-template-columns:48px 1fr;gap:0 10px;padding:12px 16px 4px;border-bottom:1px solid var(--ol);color:var(--ot)}
+.oxa{cursor:pointer}.oxa .av{border:0}.oxb{min-width:0}
+.oxh{display:flex;align-items:center;gap:4px;min-width:0;font-size:15px;line-height:20px}.oxh b{font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:46%;cursor:pointer}.oxm2{color:var(--om);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.oxmo{border:0;background:none;color:var(--om);width:30px;height:30px;display:grid;place-items:center;flex:none;margin-right:-6px}
+.oxt{font-size:17px;line-height:1.3;white-space:pre-wrap;word-break:break-word;margin:1px 0 8px;cursor:pointer}.oxt.big{font-size:21px;line-height:1.35;margin:14px 0 10px;cursor:default}.oxt .eut{color:var(--xa);text-decoration:none}
+.oxm{position:relative;border-radius:18px;overflow:hidden;border:1px solid var(--ol);margin:6px 0 8px;background:#000;cursor:pointer}.oxm img,.oxm video{display:block;width:100%;max-height:560px;object-fit:cover}.oxm video{background:#000;object-fit:contain}
+.oxm.vd .oxpl{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:64px;height:64px;border-radius:50%;display:grid;place-items:center;color:#fff;background:#0009;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}.oxm.vd em{position:absolute;left:10px;bottom:10px;font-style:normal;background:#000b;color:#fff;font-size:12.5px;font-weight:600;padding:2px 8px;border-radius:6px}.oxm.ld{opacity:.6}.oxm.ld .oxpl{animation:owp 1s infinite}
+.oxr{display:flex;justify-content:space-between;margin:0 -8px 0 -8px;max-width:420px}.oxr button{display:flex;align-items:center;gap:6px;border:0;background:none;color:var(--om);padding:8px;min-width:44px;font-size:13px;border-radius:999px}.oxr i{font-style:normal;min-width:12px}
+.oxr button:nth-child(1):active{color:var(--xa)}.oxr button.rp,.oxr button:nth-child(2):active{color:#00ba7c}.oxr button.on{color:#f91880}.oxr button.on svg{fill:#f91880}.oxr button.mk.on{color:var(--xa)}.oxr button.mk.on svg{fill:var(--xa)}
+.oxrp{display:flex;align-items:center;gap:8px;padding:8px 16px 0 54px;color:var(--om);font-size:13px;font-weight:700}
+.oxp.oxd{display:block;padding:12px 16px 0}.oxdh{display:flex;align-items:center;gap:10px}.oxdn{flex:1;min-width:0;cursor:pointer}.oxdn b{display:flex;align-items:center;gap:4px;font-size:16px;font-weight:800}.oxdn small{color:var(--om);font-size:14px}
+.oxfo{border:0;border-radius:999px;background:var(--ot);color:var(--ob);font-weight:700;font-size:14px;padding:8px 16px}.oxfo.on{background:transparent;color:var(--ot);box-shadow:inset 0 0 0 1px var(--ol)}
+.oxdt{color:var(--om);font-size:15px;padding:12px 0;border-bottom:1px solid var(--ol)}.oxds{display:flex;gap:18px;padding:13px 0;border-bottom:1px solid var(--ol);color:var(--om);font-size:15px}.oxds b{color:var(--ot)}
+.oxr.det{max-width:none;margin:0;justify-content:space-around;padding:4px 0;border-bottom:1px solid var(--ol)}.oxr.det button{padding:12px}
 .owsg{background:transparent;margin:0;border-radius:0;box-shadow:none;border-bottom:1px solid var(--ol);padding:12px 16px}.owsg>b{font-size:20px;font-weight:800;color:var(--ot)}
 .owscs{padding:12px 14px 12px;border-bottom:1px solid var(--ol)}.owsc{border-radius:18px;width:88px;height:128px;box-shadow:none}
 /* bottom bar + fab */
@@ -4956,6 +4962,38 @@ html.night{--xb:#000;--xt:#e7e9ea;--xm:#71767b;--xl:#2f3336;--xs:#16181c}
 .owqh{width:100%;display:flex;align-items:center;justify-content:space-between;padding:10px 12px}.owqh .owib{color:#0c1a13}.owqt .owgt{color:#0c1a13}
 .owqc{margin-top:34px;width:78%;background:#fff;border-radius:28px;padding:24px 22px 18px;box-shadow:0 16px 40px #0b3a2a2e;text-align:center;animation:nk8pop .5s cubic-bezier(.2,1.3,.4,1) both}.owqk svg{display:block;width:100%;height:auto;border-radius:6px}.owqc b{display:block;margin-top:12px;font-size:21px;color:#0a5a40;letter-spacing:.02em}
 .owqa{margin-top:16px;width:78%;background:#fff;border-radius:28px;padding:18px 10px 14px;display:flex;justify-content:space-around;box-shadow:0 10px 30px #0b3a2a22}.owqa div{display:flex;flex-direction:column;align-items:center;gap:8px;font-size:13.5px;text-align:center;cursor:pointer;width:30%}.owqa i{width:58px;height:58px;border-radius:50%;border:1px solid #dfe6e1;display:grid;place-items:center}
+</style>
+<style id="ow-crowdly">
+.oxp{display:grid;grid-template-columns:44px 1fr;gap:0 10px;padding:14px 16px 4px;border-bottom:1px solid var(--ol);background:var(--ob);color:var(--ot);text-align:left}
+.oxh b{color:var(--ot);font-weight:700}.oxh{font-size:14.5px}.oxm2{font-size:13px}
+.oxt{font-size:15.5px;line-height:1.45;margin:3px 0 10px;color:var(--ot);text-align:left;background:none;border:0;padding:0}
+.oxm{border-radius:14px;background:var(--oc,#f7f9f9);margin:4px 0 8px}
+.oxr button{color:var(--om)}.oxr svg{opacity:.85}
+.oxlh{display:flex;align-items:center;gap:8px;padding:12px 16px 4px}.oxlh b{font-size:16px;font-weight:800;color:var(--ot)}.oxln{background:#f4212e;color:#fff;border-radius:8px;font-size:11px;font-weight:700;padding:1px 7px}
+.oxls{display:flex;gap:10px;overflow-x:auto;padding:6px 16px 12px;scrollbar-width:none;border-bottom:1px solid var(--ol)}.oxls::-webkit-scrollbar{display:none}
+.oxlc{flex:0 0 184px;border-radius:18px;padding:12px;background:linear-gradient(160deg,#1d4a3c,#0d1f1a);color:#fff;display:flex;flex-direction:column;gap:8px;cursor:pointer}
+.oxlb{align-self:flex-start;background:#f4212e;border-radius:6px;font-size:10.5px;font-weight:800;padding:2px 7px;display:flex;align-items:center;gap:4px}.oxlb i{width:6px;height:6px;border-radius:50%;background:#fff;animation:owp 1.2s infinite}
+.oxlc>b{font-size:14.5px;line-height:1.25;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.oxlh2{display:flex;align-items:center;gap:6px}.oxlh2 small{font-size:11.5px;opacity:.85;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.oxlc em{font-style:normal;align-self:flex-start;background:#1d9bf0;border-radius:999px;padding:6px 18px;font-size:12.5px;font-weight:700}
+.oxpv{position:absolute;inset:0;z-index:70;display:flex;flex-direction:column;justify-content:flex-end;background:#0b1a14;overflow:hidden}
+.oxpb{position:absolute;inset:0;background-size:cover;background-position:center;background-color:#2f7a52}.oxpb:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,#0005,#0000 30%,#000d 100%)}
+.oxpx{position:absolute;top:calc(12px + env(safe-area-inset-top));left:12px;width:40px;height:40px;border-radius:50%;border:0;background:#0008;color:#fff;font-size:18px;z-index:2}
+.oxpi{position:relative;z-index:2;color:#fff;padding:20px 20px calc(24px + env(safe-area-inset-bottom))}
+.oxpi h2{font-size:34px;font-weight:700;display:flex;align-items:center;gap:6px;line-height:1.1}.oxpi small{display:block;opacity:.88;font-size:14px;margin-top:4px}
+.oxpi p{margin:10px 0;font-size:14.5px;line-height:1.45}
+.oxpt{display:flex;flex-wrap:wrap;gap:6px}.oxpt span{background:#ffffff33;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border-radius:999px;padding:5px 12px;font-size:13px}
+.oxpa{display:flex;gap:10px;margin-top:16px}.oxpa button{flex:1;height:50px;border-radius:999px;border:0;font-weight:700;font-size:16px}.oxpf{background:#1d9bf0;color:#fff}.oxpf.on{background:#ffffff33}.oxpg{background:#fff;color:#111}
+
+.ow2 .owscs{gap:10px;padding:12px 16px 14px}
+.ow2 .owsc{width:96px;height:150px;border-radius:22px}
+.ow2 .owsr{position:absolute;left:8px;top:8px;z-index:2;border:2px solid #1d9bf0;border-radius:50%;padding:1px;background:#fff;display:grid}
+.ow2 .owsc.v .owsr{border-color:#cfd9de}
+.ow2 .owsc.add{background:var(--ob);box-shadow:inset 0 0 0 1px var(--ol);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px}
+.ow2 .owsc.add:after{display:none}
+.ow2 .owsc.add small{position:static;color:var(--ot);text-shadow:none;font-size:12.5px;font-weight:700;text-align:center;overflow:visible}
+.oxsa{position:relative;display:grid}.oxsa .av{border:0}
+.oxsa i{position:absolute;right:-4px;bottom:-2px;width:22px;height:22px;border-radius:50%;background:#1d9bf0;color:#fff;border:2px solid var(--ob);display:grid;place-items:center}
 </style>
 
 
