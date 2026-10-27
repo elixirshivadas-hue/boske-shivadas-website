@@ -2720,6 +2720,86 @@ function nkMenuIcons(){document.querySelectorAll('.sh').forEach(sh=>{const pop=!
  sh.querySelectorAll('.si').forEach(it=>{if(it.dataset.ni)return;it.dataset.ni='1';const t=(it.querySelector('b')||it).textContent.trim(),m=NKMI.find(x=>x[0].test(t)),k=m?m[1]:'dots',sp=it.querySelector('span');if(!sp)return;
   const ic=IP[k]||NKP[k];if(ic)sp.innerHTML=nkI(ic,22);if(/delete|clear|leave|block|report/i.test(t))it.classList.add('nkdg')})})}
 {let t;new MutationObserver(()=>{cancelAnimationFrame(t);t=requestAnimationFrame(nkMenuIcons)}).observe(document.body,{childList:true,subtree:true})}
+
+/* ===================== OPENWORLD v11 — full redesign (stories cards · glass feed · clips · + dial · top profile sheet · brand) ===================== */
+const owLogo=(sz=1)=>`<span class="owlg2 s${sz}"><svg class="owgl" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="18.5" fill="none" stroke="currentColor" stroke-width="3.2"/><ellipse cx="24" cy="24" rx="7.6" ry="18.5" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M6 24h36M9.5 14.5h29M9.5 33.5h29" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/><circle cx="40" cy="8.5" r="4.4" fill="#f0c878"/></svg><span class="owgt"><i>open</i><b>world</b></span></span>`;
+
+/* welcome: transparent glass name over a full, slowly moving photo */
+const owWelcome2=()=>{app.innerHTML=`<div class="owwl2"><div class="owwbg" style="background-image:url(${OWIMG})"></div><div class="owwtp">${owLogo(2)}<p>One planet. Infinite perspectives.</p></div><div class="owwbt"><div class="owwpl"><span>Explore</span><span>Connect</span><span>Share</span></div><button class="owbt gl" data-a="owstart">Get Started</button><button class="owlk" data-a="back">Not now</button></div></div>`};
+{const _ve=V.eucio;V.eucio=function(){if(!localStorage.getItem('nk4_ow_w'))return owWelcome2();return _ve.apply(this,arguments)}}
+
+/* ---------- shell ---------- */
+owShell=function(){const k=S.ow2||'home',dark=k==='spaces'||k==='reels',nt=owNtCount();
+ const back=`<button class="owib" data-a="back" aria-label="Back">${oi('back')}</button>`,
+ bell=`<button class="owib" data-a="go" data-v="ownot" aria-label="Notifications">${oi('bell')}${nt?'<i class="owdt"></i>':''}</button>`,
+ srch=`<button class="owib" data-a="owsx" aria-label="Search">${oi('search')}</button>`,
+ avb=`<span class="owav" data-a="owprof" aria-label="Profile">${av(S.me,36)}</span>`,
+ top={home:`${back}${owLogo(1)}<span class="sp"></span>${srch}${bell}${avb}`,
+ explore:`${back}<div class="owtt"><b>Explore</b><small>People, channels and topics</small></div><span class="sp"></span>${bell}${avb}`,
+ reels:`<button class="owib" data-a="owt" data-k="home" aria-label="Back">${oi('back')}</button><div class="owrt">${[['for','For You'],['fol','Following']].map(c=>`<button class="${S.rl===c[0]?'on':''}" data-a="owrl" data-k="${c[0]}">${c[1]}</button>`).join('')}</div>${srch}`,
+ spaces:`${back}<div class="owtt"><b>Spaces</b><small>Live conversations. Real people.</small></div><span class="sp"></span>${srch}<button class="owib" data-a="owrnew" aria-label="Start a space">${oi('plus')}</button>`}[k]||'',
+ N=(i,ic,l,on)=>`<button class="${on?'on':''}" data-a="owt" data-k="${i}" aria-label="${l}">${oi(ic,24)}</button>`;
+ app.innerHTML=`<div class="ow2${dark?' owd':''}${k==='reels'?' owrv':''}"><div class="owtop">${top}</div><div class="owbody" id="owb"><div id="eb"></div></div><nav class="ownav">${N('home','home','Home',k==='home'||k==='explore')}${N('reels','reels','Clips',k==='reels')}<button class="owpl2" data-a="owdial" aria-label="Create">${oi('plus',26,2.4)}</button>${N('spaces','spaces','Spaces',k==='spaces')}<button data-a="owprof" aria-label="Profile">${oi('user',24)}</button></nav></div>`};
+
+/* ---------- live spaces strip (shows only when a space is live) ---------- */
+const owLiveHTML=()=>{const R=(S.rooms||[]).filter(r=>!r.ended&&r.live);if(!R.length)return'';
+ const ids=[...new Set(R.flatMap(r=>[r.by,...(r.mem||[])]))].slice(0,12);
+ return`<section class="owlvs"><div class="owlh"><b>Live Spaces</b><small>${R.length} live now</small><a data-a="owt" data-k="spaces">See all</a></div><div class="owlrow">${ids.map(id=>{const x=S.U[id]||{name:'?'};return`<div class="owla" data-a="upg" data-id="${id}"><span>${av(x,52)}<i></i></span><small>${E((x.name||'').split(' ')[0])}</small></div>`}).join('')}</div><div class="owlcs">${R.map(r=>{const u=S.U[r.by]||{name:'Host'};return`<div class="owlcd" data-a="owjoin" data-id="${r.id}"><div class="owlct"><span class="owlbb"><i></i>LIVE</span><small>${oi('users',13)} ${(r.mem||[]).length}</small></div><h4>${E(r.title)}</h4><div class="owlcf">${av(u,30)}<span>${E(u.name)}<small>${E(r.topic||'General')}</small></span><button class="owjn">Join</button></div></div>`}).join('')}</div></section>`};
+setInterval(()=>{if(S.view==='eucio'&&S.ow2==='home'){const el=document.getElementById('owlive');if(el){const h=owLiveHTML();if(el.__h!==h){el.__h=h;el.innerHTML=h}}}},2500);
+
+/* ---------- stories: tall rounded cards ---------- */
+const owSt2=()=>{const g={};S.sts.forEach(s=>(g[s.by]=g[s.by]||[]).push(s));const v=lsg('nk_sv',{}),mine=g[S.me.uid],mi=mine&&mine[mine.length-1].img;
+ return`<div class="owscs"><div class="owsc add" data-a="stadd"><div class="owsb2" ${mi?`style="background-image:url('${E(mi)}')"`:''}></div><span class="owsp">${oi('plus',22,2.6)}</span><small>Your story</small></div>${Object.entries(g).map(([u,l])=>{const x=S.U[u]||{name:'?'},seen=l.every(s=>v[s.id]),im=l[l.length-1].img||'';return`<div class="owsc${seen?' v':''}" data-a="stopen" data-u="${u}"><div class="owsb2" style="background-image:url('${E(im)}')"></div><span class="owsr">${av(x,32)}</span><small>${E(u===S.me.uid?'You':(x.name||'').split(' ')[0])}</small></div>`}).join('')}</div>`};
+
+/* ---------- feed post: glass overlays on the photo ---------- */
+const owPost2=p=>{if(p.rp&&!p.text){const w=S.U[p.by]||{name:'Member'},og=S.posts.find(x=>x.id===p.rp)||{id:p.rp,by:p.rpby,text:p.rpt,at:p.at,likes:[],cc:0};return`<div class="owrp">${oi('rp',14)} ${E(p.by===S.me.uid?'You':w.name)} reposted</div>`+owPost2(og)}
+ const u=S.U[p.by]||{name:'Member'},lk=(p.likes||[]).includes(S.me.uid),rpn=S.posts.filter(x=>x.rp===p.id).length,mrp=S.posts.some(x=>x.rp===p.id&&x.by===S.me.uid&&!x.text),lu=p.link?safeUrl(p.link):'',im=!!p.img;
+ const who=`<div class="ovu${im?' glass':''}" data-a="upg" data-id="${p.by}">${av(u,34)}<div><b>${E(u.name)}${owTick(u)}</b><small>${u.uname?'@'+E(u.uname)+' · ':''}${ago(p.at)}${p.space?' · '+E(spName(p.space)):''}</small></div></div>`,
+ more=`<button class="ovm${im?' glass':''}" data-a="eumore" data-id="${p.id}" aria-label="More">${oi('more',20)}</button>`,
+ acts=`<div class="ovr"><button class="${lk?'on':''}" data-a="eulike" data-id="${p.id}" aria-label="Like">${oi('heart',21)}<i>${owN((p.likes||[]).length)}</i></button><button data-a="eopen" data-id="${p.id}" aria-label="Comments">${oi('cmt',21)}<i>${owN(p.cc||0)}</i></button><button class="${mrp?'rp':''}" data-a="eurp" data-id="${p.id}" aria-label="Repost">${oi('rp',21)}<i>${owN(rpn)}</i></button><button data-a="eushare" data-id="${p.id}" aria-label="Share">${oi('share',20)}</button><button class="mk ${S.sv.has(p.id)?'on':''}" data-a="eusave" data-id="${p.id}" aria-label="Save">${oi('mark',21)}</button></div>`,
+ lk2=lu?`<a class="elk" href="${E(lu)}" target="_blank" rel="noopener noreferrer">${oi('globe',16)}<span>${E(new URL(lu).host)}</span></a>`:'';
+ if(im)return`<article class="ovc img"><div class="ovi" data-a="eopen" data-id="${p.id}"><img src="${E(p.img)}" alt="" loading="lazy"></div>${who}${more}<div class="ova glass">${p.text?`<p data-a="eopen" data-id="${p.id}">${rich(p.text)}</p>`:`<p class="tg">${E(p.tag||'General')}</p>`}${lk2}${acts}</div></article>`;
+ return`<article class="ovc txt t-${E((p.tag||'General').replace(/\W/g,''))}"><div class="ovh">${who}${more}</div>${p.text?`<p class="ovt" data-a="eopen" data-id="${p.id}">${rich(p.text)}</p>`:''}${lk2}<span class="ovtg">${E(p.tag||'General')}</span>${acts}</article>`};
+
+owHome=function(el){const q=(S.eq||'').toLowerCase().replace(/^#/,''),a=S.posts.filter(p=>!S.blk.has(p.by)&&(S.ef==='All'||!S.ef||p.tag===S.ef)&&(S.eu!=='follow'||S.fol.has(p.by)||p.by===S.me.uid)&&(!q||(p.text||'').toLowerCase().includes(q)||(p.tag||'').toLowerCase().includes(q))),wf=whoFollow(),ch=spAll().find(s=>!s.starter&&!(s.members||[]).includes(S.me.uid))||spAll()[0];
+ const body=!S.eready?'<div class="sk"></div><div class="sk"></div>':S.eerr?`<div class="emp">Could not load posts.<br><small>${E(S.eerr)}. Check Firestore rules.</small></div>`:a.map((p,i)=>owPost2(p)+(i===1&&ch?`<div class="owsg"><b>Suggested channel</b>${owChan(ch)}</div>`:'')+(i===3&&wf.length?`<div class="owsg"><b>People to follow</b>${wf.slice(0,3).map(owPpl).join('')}</div>`:'')).join('')||`<div class="emp">${S.eu==='follow'?'No posts from people you follow yet.':'No posts yet.<br><small>Tap + to share something.</small>'}</div>`;
+ const lh=owLiveHTML();
+ el.innerHTML=`<div id="owlive">${lh}</div>${owSt2()}<div class="owchips">${[['feed','All','For you'],['follow','All','Following'],...PTAGS.map(t=>['feed',t,t])].map(c=>`<button class="${(c[2]==='For you'?S.eu!=='follow'&&(!S.ef||S.ef==='All'):c[2]==='Following'?S.eu==='follow':S.ef===c[1])?'on':''}" data-a="owf" data-u="${c[0]}" data-t="${c[1]}">${c[2]}</button>`).join('')}</div>${q?`<div class="owq">Showing results for <b>${E(S.eq)}</b> <a data-a="owqx">Clear</a></div>`:''}${body}`;
+ const n=document.getElementById('owlive');if(n)n.__h=lh;owRoomsStart()};
+
+/* ---------- clips: full-screen with right rail ---------- */
+owReels=function(el){const a=S.posts.filter(p=>p.img&&!S.blk.has(p.by)&&(S.rl!=='fol'||S.fol.has(p.by)||p.by===S.me.uid)),old=document.querySelector('.owrl'),st=old?old.scrollTop:0;
+ el.innerHTML=!S.eready?'<div class="owrl"><section class="owr"><div class="sk"></div></section></div>':a.length?`<div class="owrl">${a.map(p=>{const u=S.U[p.by]||{name:'Member'},lk=(p.likes||[]).includes(S.me.uid),fl=S.fol.has(p.by)||p.by===S.me.uid;return`<section class="owr"><img src="${E(p.img)}" alt="" data-a="eopen" data-id="${p.id}"><div class="owrg"></div><div class="owrr2"><div class="owrav" data-a="upg" data-id="${p.by}">${av(u,48)}${fl?'':`<em data-a="eufo" data-id="${p.by}">+</em>`}</div><button class="${lk?'on':''}" data-a="eulike" data-id="${p.id}">${oi('heart',30)}<i>${owN((p.likes||[]).length)||'0'}</i></button><button data-a="eopen" data-id="${p.id}">${oi('cmt',29)}<i>${owN(p.cc||0)||'0'}</i></button><button class="${S.sv.has(p.id)?'on sv':''}" data-a="eusave" data-id="${p.id}">${oi('mark',28)}<i>Save</i></button><button data-a="eushare" data-id="${p.id}">${oi('share',28)}<i>Share</i></button></div><div class="owrb2"><b data-a="upg" data-id="${p.by}">@${E(u.uname||u.name||'member')}${owTick(u)}</b>${p.text?`<p>${rich(p.text.slice(0,160))}</p>`:''}<div class="owsnd">♫ original sound · ${E(u.name||'Member')} · ${ago(p.at)}</div></div></section>`}).join('')}</div>`:`<div class="owem">${oi('reels',44)}<b>No clips yet</b><p>Photo clips appear here full screen. Video clips are coming soon.</p><button class="owbt" data-a="owph">Share a photo clip</button></div>`;
+ const n=document.querySelector('.owrl');if(n&&st)n.scrollTop=st};
+
+/* ---------- + : animated pop-up menu (like the Notebook dial) ---------- */
+const OWDI=[['pen','Text post','eunew'],['img','Photo post','owph'],['cam','Story','stadd'],['reels','Photo clip','owph'],['vid','Video','owsoon','Video posts'],['spaces','Voice','owsoon','Voice posts'],['poll','Poll','owsoon','Polls'],['users','Live Space','owrnew']];
+const owDialX=()=>{const r=document.querySelector('.ow2'),d=r&&r.querySelector('.owdial');if(!d)return;r.classList.remove('dialopen');d.classList.remove('on');setTimeout(()=>d.remove(),280)};
+ACT.owdial=function(){const r=document.querySelector('.ow2');if(!r)return;if(r.querySelector('.owdial'))return owDialX();
+ const d=document.createElement('div');d.className='owdial';d.innerHTML=`<div class="owdbg" data-a="owdialx"></div><div class="owdgrid">${OWDI.map((x,i)=>`<div class="owdi" style="--i:${OWDI.length-1-i}" data-a="${x[2]}"${x[3]?` data-w="${x[3]}"`:''}><i>${oi(x[0],22)}</i><span>${x[1]}</span></div>`).join('')}</div>`;
+ r.appendChild(d);void d.offsetWidth;r.classList.add('dialopen');d.classList.add('on');try{navigator.vibrate&&navigator.vibrate(8)}catch(_){}};
+ACT.owdialx=owDialX;
+document.addEventListener('click',e=>{if(e.target.closest&&e.target.closest('.owdi'))setTimeout(owDialX,0)},true);
+
+/* ---------- profile icon: sheet opens from the top ---------- */
+const owPtx=fast=>{const o=document.querySelector('.owpt');if(!o)return;o.classList.remove('on');fast?o.remove():setTimeout(()=>o.remove(),320)};
+ACT.owptx=()=>owPtx();
+ACT.owprof=function(){owPtx(true);const u=S.me,cv=u.cover||(typeof PH!=='undefined'&&(PH.pbanner||PH.lake))||OWIMG,adm=!!admRole(),
+ T=(ic,l,g,b)=>`<div class="owpg" data-a="owgo" data-g="${g}"><i>${oi(ic,22)}${b?`<em>${b}</em>`:''}</i><span>${l}</span></div>`,
+ un=S.chats.reduce((t,c)=>t+unreadOf(c),0),nt=owNtCount(),
+ o=document.createElement('div');o.className='owpt';
+ o.innerHTML=`<div class="owptb" data-a="owptx"></div><div class="owpts"><div class="owpcv" style="background-image:url('${E(cv)}')"></div><div class="owpbd"><div class="owpav" data-a="upg" data-id="${u.uid}">${av(u,78)}</div><div class="owpnm"><b>${E(u.name||'You')}${owTick(u)}</b><small>${u.uname?'@'+E(u.uname):'Openworld member'}</small></div><button class="owib" data-a="owptx" aria-label="Close">${oi('x')}</button></div><div class="owpst" id="owpst"><div><b>·</b><small>Posts</small></div><div><b>·</b><small>Followers</small></div><div><b>·</b><small>Following</small></div></div><div class="owpbt"><button class="owbt" data-a="upg" data-id="${u.uid}">View profile</button><button class="owbt o" data-a="pdgo" data-k="edit">Edit profile</button></div><div class="owpgd">${T('msg','Messages','msg',un||'')}${T('bell','Alerts','not',nt||'')}${T('mark','Saved','saved')}${T('shield','Verify','ver')}${T('gear','Settings','rights')}${T('help','Help','rights')}${adm?T('gear','Admin','adm'):T('flag','Report','mail')}${T('book','Rules','rights')}</div><span class="owgrab"></span></div>`;
+ document.body.appendChild(o);requestAnimationFrame(()=>o.classList.add('on'));
+ const cnt=async q=>{try{return(await F.getCountFromServer(q)).data().count}catch(e){return 0}},id=u.uid;
+ Promise.all([cnt(F.query(F.collection(db,'posts'),F.where('by','==',id))),cnt(F.query(F.collection(db,'follows'),F.where('b','==',id))),cnt(F.query(F.collection(db,'follows'),F.where('a','==',id)))]).then(r=>{const el=document.getElementById('owpst');el&&(el.innerHTML=`<div data-a="upg" data-id="${id}"><b>${owN(r[0])||0}</b><small>Posts</small></div><div data-a="flv" data-k="followers" data-id="${id}"><b>${owN(r[1])||0}</b><small>Followers</small></div><div data-a="flv" data-k="following" data-id="${id}"><b>${owN(r[2])||0}</b><small>Following</small></div>`)});
+ let y0=null;o.addEventListener('touchstart',e=>{y0=e.touches[0].clientY},{passive:true});o.addEventListener('touchend',e=>{if(y0!==null&&y0-e.changedTouches[0].clientY>60)owPtx();y0=null});};
+document.addEventListener('click',e=>{const t=e.target.closest&&e.target.closest('.owpts [data-a]');if(t&&t.dataset.a!=='owptx')setTimeout(()=>owPtx(),0)},true);
+ACT.owmenu=ACT.owprof;
+{const _g=ACT.owgo;ACT.owgo=function(d){owPtx(true);return _g.call(this,d)}}
+
+/* ---------- home hero cards: live moving photo behind transparent glass ---------- */
+{let t;const kb=()=>{document.querySelectorAll('.hcs .hc').forEach(h=>{if(h.querySelector(':scope>.nkbgx'))return;const bg=h.style.backgroundImage;if(!bg)return;const i=document.createElement('i');i.className='nkbgx';i.style.backgroundImage=bg;h.insertBefore(i,h.firstChild)})};
+ new MutationObserver(()=>{clearTimeout(t);t=setTimeout(kb,60)}).observe(app,{childList:true,subtree:true});kb()}
 </script><style id="nb-fix">.body.nbp{order:0!important}.nbp.body+.nav,.nbp.body~.nav{order:1}
 .qc{margin:14px 0 6px;border-radius:26px;padding:16px 12px 14px;background-size:cover;background-position:center;box-shadow:0 6px 18px #0002;overflow:hidden}
 .qc>b{display:block;font:600 26px 'Dancing Script','Segoe Print',cursive;color:#14503a}
@@ -4599,6 +4679,112 @@ html body #app .mas.mq3{display:grid!important;grid-template-columns:repeat(3,mi
 #app .inp .ib.dk svg{width:22px;height:22px;display:block}
 #app .inp .snd svg{display:block}
 </style>
+<style id="nk-v11css">
+/* ===== v11: Openworld redesign · home hero/footers ===== */
+/* --- home footer poster: no rounded top / black strip, image melts into the page --- */
+html body #app .nkend{border-radius:0!important;margin-top:0!important;box-shadow:none!important}
+.nkend .nkpw:before{content:"";position:absolute;left:0;right:0;top:0;height:42%;z-index:1;pointer-events:none;background:linear-gradient(180deg,var(--cr,#f6f2e9) 0,color-mix(in srgb,var(--cr,#f6f2e9) 70%,transparent) 28%,transparent 100%)}
+/* --- home hero cards: transparent glass title, full moving picture --- */
+html body #app .hcs .hc{overflow:hidden;position:relative;isolation:isolate}
+html body #app .hcs .hc:before{background:linear-gradient(180deg,#0000 0,#0000 62%,#0b1a1440 100%)!important}
+.hcs .hc .nkbgx{position:absolute;inset:-7%;z-index:-1;background-size:cover;background-position:center 30%;animation:nkkb 18s ease-in-out infinite alternate;will-change:transform;pointer-events:none}
+@keyframes nkkb{from{transform:scale(1) translate3d(0,0,0)}to{transform:scale(1.14) translate3d(-2.5%,-1.5%,0)}}
+html body #app .hcs .hct{background:rgba(255,255,255,.1)!important;-webkit-backdrop-filter:blur(7px) saturate(1.3)!important;backdrop-filter:blur(7px) saturate(1.3)!important;box-shadow:inset 0 0 0 1px #ffffff3a,0 10px 30px #0b1a1426!important;text-shadow:0 1px 10px #0009}
+/* --- tokens --- */
+.ow2{--ob:#f3f6f1;--oc:#fff;--ot:#0c1a13;--om:#66766c;--ol:#e1e8e0;--oa:#1f9d6e;--og:#f0c878;font-family:Poppins,Inter,system-ui,sans-serif}
+.ow2.owd{--ob:#07140e;--oc:#ffffff14;--ot:#fff;--om:#a9c4b6;--ol:#ffffff22;background:radial-gradient(120% 55% at 50% 0,#12402f,#07140e 72%)}
+html.night .ow2:not(.owd){--ob:#08110d;--oc:#121b16;--ot:#eef6f1;--om:#92a89b;--ol:#1f2c25}
+.owtop{background:transparent!important;padding:calc(8px + env(safe-area-inset-top)) 10px 6px;box-shadow:none}
+.ow2:not(.owd) .owtop{background:var(--ob)!important}
+.owbt{background:linear-gradient(135deg,#2bbd8a,#12664a);box-shadow:0 8px 18px #1f9d6e44}.owbt.o{background:var(--oc);box-shadow:inset 0 0 0 1px var(--ol)}
+.owbt.gl{background:#ffffff26;-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);box-shadow:inset 0 0 0 1px #ffffff55;color:#fff}
+.owfb{border-color:var(--oa);background:var(--oa)}.owfb.on{background:transparent;color:var(--oa)}
+.owchips button.on,.owtb button.on,.owpb2{background:var(--oa);border-color:var(--oa)}
+.owtr i,.owce,.owci,.owvc i{background:#e3f3ea;color:var(--oa)}
+.owpv.st{box-shadow:0 0 0 3px var(--oa)}.owlk{color:#cfe4d8}
+/* --- brand wordmark --- */
+.owlg2{display:inline-flex;align-items:center;gap:7px;color:var(--oa)}.owgl{width:28px;height:28px;flex:none;animation:owspin 28s linear infinite;transform-origin:50% 50%}
+.owgt{display:inline-flex;align-items:baseline;font-family:Poppins,system-ui,sans-serif;letter-spacing:-.03em;line-height:1;color:var(--ot)}.owgt i{font-style:normal;font-weight:300}.owgt b{font-weight:700;background:linear-gradient(100deg,#1f9d6e,#0d6b4b 60%,#c79a3a);-webkit-background-clip:text;background-clip:text;color:transparent}
+.owlg2.s1 .owgt{font-size:21px}.owlg2.s2{flex-direction:column;gap:14px}.owlg2.s2 .owgl{width:74px;height:74px;color:#ffffffd0}.owlg2.s2 .owgt{font-size:48px;color:transparent;-webkit-text-fill-color:transparent;-webkit-text-stroke:1.2px #ffffffd9;text-shadow:0 4px 30px #0000004d}.owlg2.s2 .owgt i,.owlg2.s2 .owgt b{background:none;-webkit-text-fill-color:#ffffff1f;color:transparent;-webkit-text-stroke:1.2px #ffffffe0}
+@keyframes owspin{to{transform:rotate(360deg)}}
+.owd .owgt{color:#fff}
+/* --- welcome --- */
+.owwl2{position:fixed;inset:0;z-index:70;max-width:540px;margin:0 auto;overflow:hidden;display:flex;flex-direction:column;justify-content:space-between;align-items:center;text-align:center;color:#fff;padding:calc(90px + env(safe-area-inset-top)) 26px calc(30px + env(safe-area-inset-bottom));background:#07140e}
+.owwbg{position:absolute;inset:-8%;background:center/cover;animation:nkkb 22s ease-in-out infinite alternate;z-index:0}
+.owwl2:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,#0000 0,#0000 52%,#06140e99 100%);z-index:0}
+.owwtp,.owwbt{position:relative;z-index:1}.owwtp p{margin:12px 0 0;font-size:15px;letter-spacing:.04em;color:#fffffff0;text-shadow:0 2px 14px #0008}
+.owwbt{width:100%;display:flex;flex-direction:column;align-items:center;gap:12px}.owwbt .owbt{width:100%}.owwpl{display:flex;gap:8px}.owwpl span{padding:6px 14px;border-radius:999px;font-size:12px;letter-spacing:.08em;background:#ffffff22;-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);box-shadow:inset 0 0 0 1px #ffffff40}
+/* --- live spaces strip (left-aligned, scrolls sideways) --- */
+.owlvs{padding:2px 0 6px}.owlh{display:flex;align-items:baseline;gap:8px;margin:0 16px 8px}.owlh b{font-size:17px}.owlh small{color:var(--om);font-size:12px;flex:1}.owlh a{color:var(--oa);font-size:13px;font-weight:600}
+.owlrow,.owlcs,.owscs{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x proximity;scrollbar-width:none;padding:0 14px 6px}.owlrow::-webkit-scrollbar,.owlcs::-webkit-scrollbar,.owscs::-webkit-scrollbar{display:none}
+.owla{flex:none;display:flex;flex-direction:column;align-items:center;gap:5px;width:58px;scroll-snap-align:start}.owla span{position:relative;border-radius:19px;padding:2px;background:linear-gradient(135deg,#2bd48f,#f0c878)}.owla .av{border-radius:17px;border:2px solid var(--ob);object-fit:cover}.owla i{position:absolute;right:-2px;bottom:-2px;width:14px;height:14px;border-radius:50%;background:#22d17b;border:2.5px solid var(--ob)}.owla small{font-size:11px;color:var(--om);max-width:58px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.owlcd{flex:none;width:236px;scroll-snap-align:start;border-radius:26px;padding:14px;color:#fff;background:linear-gradient(150deg,#1d7a57,#0b3326 80%);box-shadow:0 14px 28px #0b3a2a40,inset 0 0 0 1px #ffffff22;display:flex;flex-direction:column;gap:10px;cursor:pointer}
+.owlct{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:#d7efe3}.owlct small{display:flex;gap:4px;align-items:center}
+.owlbb{display:inline-flex;align-items:center;gap:6px;background:#ff6b3d;color:#fff;font-weight:700;font-size:11px;letter-spacing:.05em;padding:4px 10px;border-radius:999px}.owlbb i{width:6px;height:6px;border-radius:50%;background:#fff;animation:owp 1.2s infinite}
+.owlcd h4{margin:0;font-size:19px;line-height:1.2;font-weight:700;min-height:46px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}.owlcf{display:flex;align-items:center;gap:9px}.owlcf>span{flex:1;font-size:13px;font-weight:600;min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}.owlcf small{display:block;font-weight:400;color:#b8d8c8;font-size:11px}.owjn{border:0;border-radius:999px;background:#fff;color:#0d4a34;font-weight:700;font-size:12.5px;padding:7px 16px}
+/* --- story cards --- */
+.owscs{padding:4px 14px 12px}.owsc{flex:none;position:relative;width:92px;height:134px;border-radius:24px;overflow:hidden;scroll-snap-align:start;cursor:pointer;background:#cfe0d6;box-shadow:0 8px 18px #0b3a2a26}
+.owsb2{position:absolute;inset:0;background:linear-gradient(160deg,#2bbd8a,#0e5a40) center/cover}.owsc:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,#0000 45%,#06140e99)}
+.owsr{position:absolute;left:8px;top:8px;z-index:2;border-radius:50%;padding:2px;background:linear-gradient(135deg,#2bd48f,#f0c878)}.owsc.v .owsr{background:#ffffffaa}.owsr .av{border:2px solid #fff}
+.owsc small{position:absolute;left:10px;right:8px;bottom:9px;z-index:2;color:#fff;font-size:12px;font-weight:600;text-shadow:0 1px 6px #0009;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.owsc.add .owsp{position:absolute;left:50%;top:44%;transform:translate(-50%,-50%);z-index:2;width:40px;height:40px;border-radius:50%;display:grid;place-items:center;color:#fff;background:#ffffff33;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);box-shadow:inset 0 0 0 1px #ffffff66}
+/* --- feed post (pic 4 style) --- */
+.glass{background:rgba(255,255,255,.2);-webkit-backdrop-filter:blur(14px) saturate(1.5);backdrop-filter:blur(14px) saturate(1.5);box-shadow:inset 0 0 0 1px #ffffff40;color:#fff}
+.ovc{position:relative;margin:0 12px 16px;border-radius:32px;overflow:hidden;background:var(--oc);box-shadow:0 14px 34px #0b2a1c1c;animation:nkUp .45s both}
+.ovc.img{aspect-ratio:4/5;max-height:580px;background:#16251d}.ovi{position:absolute;inset:0;cursor:pointer}.ovi img{display:block;width:100%;height:100%;object-fit:cover}
+.ovc.img:after{content:"";position:absolute;left:0;right:0;bottom:0;height:58%;background:linear-gradient(180deg,#0000,#06140e80);pointer-events:none}
+.ovu{display:flex;align-items:center;gap:9px;cursor:pointer;min-width:0}.ovc.img .ovu{position:absolute;left:12px;top:12px;z-index:2;padding:6px 16px 6px 6px;border-radius:999px;max-width:70%}
+.ovu b{display:flex;align-items:center;gap:4px;font-size:14px;font-weight:600}.ovu small{display:block;font-size:11px;opacity:.8;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ovu .av{border:2px solid #ffffff90}
+.ovm{width:38px;height:38px;border-radius:50%;border:0;display:grid;place-items:center;color:inherit;background:none;flex:none}.ovc.img .ovm{position:absolute;right:12px;top:12px;z-index:2;color:#fff}
+.ova{position:absolute;left:10px;right:10px;bottom:10px;z-index:2;border-radius:26px;padding:12px 14px 6px}.ova p{margin:0 0 6px;font-size:14.5px;line-height:1.45;word-break:break-word;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}.ova p.tg{opacity:.85;font-size:12.5px}
+.ova .elk{color:#fff}.ovr{display:flex;align-items:center;gap:2px;margin:0 -8px}.ovr button{display:flex;align-items:center;gap:6px;border:0;background:none;color:inherit;padding:8px 10px;border-radius:14px;font-size:13px}.ovr i{font-style:normal}.ovr .mk{margin-left:auto}
+.ovr button.on{color:#ff5470}.ovr button.on svg{fill:#ff5470}.ovr button.rp{color:#2bd48f}.ovr .mk.on{color:var(--og)}.ovr .mk.on svg{fill:var(--og)}
+.ovc.txt{padding:14px 16px 6px;background:linear-gradient(160deg,#fff,#f1f6f1)}.ovh{display:flex;align-items:center;justify-content:space-between}.ovt{margin:12px 2px 8px;font-size:19px;line-height:1.45;font-weight:500;white-space:pre-wrap;word-break:break-word;cursor:pointer}
+.ovtg{display:inline-block;font-size:11.5px;color:var(--oa);background:#1f9d6e1a;padding:3px 11px;border-radius:999px;margin:0 0 4px}.ovc.txt .ovr{color:var(--om)}.ovc.txt .ovr .mk.on{color:var(--oa)}.ovc.txt .ovr .mk.on svg{fill:var(--oa)}
+.ovc.txt.t-Food{background:linear-gradient(160deg,#fff4df,#ffe1b8)}.ovc.txt.t-Nature{background:linear-gradient(160deg,#e9f8ee,#bfe6cc)}.ovc.txt.t-Health{background:linear-gradient(160deg,#eaf4ff,#c6defa)}.ovc.txt.t-Travel{background:linear-gradient(160deg,#f6ecff,#dcc8f5)}
+html.night .ovc.txt{background:#121b16}html.night .ovc.txt.t-Food,html.night .ovc.txt.t-Nature,html.night .ovc.txt.t-Health,html.night .ovc.txt.t-Travel{background:#16221b}
+.owsg{border-radius:26px}.owc{border-radius:28px}
+/* --- clips --- */
+.owrv .owtop{background:transparent!important;position:absolute;left:0;right:0;z-index:6}.owrv .owib{color:#fff;filter:drop-shadow(0 1px 5px #0008)}
+.owrv .owrt{flex:1;justify-content:center;gap:22px}.owrv .owrt button{color:#ffffffb0;font-size:16.5px;font-weight:600;text-shadow:0 1px 8px #0009;border-bottom:2.5px solid transparent;padding:6px 2px}.owrv .owrt button.on{color:#fff;border-color:#fff}
+.owrg{background:linear-gradient(180deg,#0000 55%,#06140eb0)!important}
+.owrr2{position:absolute;right:10px;bottom:118px;display:flex;flex-direction:column;gap:14px;align-items:center;z-index:2}.owrr2 button{border:0;background:none;color:#fff;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:12px;font-weight:600;filter:drop-shadow(0 2px 6px #0009)}.owrr2 i{font-style:normal}.owrr2 button.on svg{fill:#ff3b5c;color:#ff3b5c}.owrr2 button.sv.on svg{fill:var(--og);color:var(--og)}
+.owrav{position:relative;margin-bottom:8px}.owrav .av{border:2px solid #fff}.owrav em{position:absolute;left:50%;bottom:-9px;transform:translateX(-50%);width:20px;height:20px;border-radius:50%;background:#ff2d55;color:#fff;font-style:normal;font-size:15px;line-height:19px;text-align:center;font-weight:700}
+.owrb2{position:absolute;left:14px;right:84px;bottom:112px;color:#fff;text-shadow:0 1px 8px #0009;z-index:2}.owrb2>b{display:flex;align-items:center;gap:4px;font-size:15.5px;margin-bottom:6px}.owrb2 p{margin:0 0 8px;font-size:14px;line-height:1.4}.owsnd{font-size:12.5px;opacity:.92;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* --- spaces / explore / notifications refresh --- */
+.owlv{background:linear-gradient(150deg,#1d7a57,#0b3326 80%);box-shadow:inset 0 0 0 1px #ffffff22,0 14px 30px #0b3a2a55;border-radius:28px}.owjb{color:#0d4a34}.owlb,.owlbb{background:#ff6b3d}
+.owsb{height:48px;border-radius:999px;background:var(--oc);box-shadow:0 6px 16px #0b3a2a12,inset 0 0 0 1px var(--ol)}
+.owbody>#eb>.owtr,.owbody>#eb>.owch,.owbody>#eb>.owntf,.owntf{border-radius:22px;box-shadow:0 6px 16px #0b3a2a0d}
+.owd .owch,.owd .owup{background:#ffffff14;box-shadow:inset 0 0 0 1px #ffffff1a}
+.owmsgs .owmg span{color:#e4f4ec}
+/* --- profile page: cover melts into the card (no hard dark edge) --- */
+.owcv{position:relative}.owcv:after{content:"";position:absolute;left:0;right:0;bottom:0;height:46%;background:linear-gradient(180deg,#0000,var(--oc));pointer-events:none}.owcv>*{position:relative;z-index:1}
+.owpc{border-radius:0;margin-top:-30px;background:transparent}.owpv{box-shadow:0 8px 22px #0b3a2a33}
+/* --- + pop-up dial --- */
+.owdial{position:absolute;inset:0;z-index:4}
+.owdbg{position:absolute;inset:0;background:#06140e66;-webkit-backdrop-filter:blur(7px);backdrop-filter:blur(7px);opacity:0;transition:opacity .25s}.owdial.on .owdbg{opacity:1}
+.owdgrid{position:absolute;left:50%;bottom:calc(104px + env(safe-area-inset-bottom));transform:translateX(-50%);width:min(90%,372px);display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.owdi{display:flex;align-items:center;gap:10px;height:56px;padding:0 16px 0 8px;border-radius:30px;background:#fffdf8;color:#0f4a36;font-weight:600;font-size:14.5px;box-shadow:0 8px 20px #0b3d2e38;cursor:pointer;opacity:0;transform:translateY(46px) scale(.45);transform-origin:50% 100%;transition:opacity .18s,transform .26s cubic-bezier(.2,1,.4,1);transition-delay:calc(var(--i)*22ms)}
+.owdi i{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(145deg,#2bbd8a,#12664a);color:#fff;flex:none}.owdi:nth-child(even) i{background:linear-gradient(145deg,#f0c878,#c79a3a)}
+.owdial.on .owdi{opacity:1;transform:none;transition:opacity .25s,transform .45s cubic-bezier(.2,1.35,.4,1);transition-delay:calc(var(--i)*48ms)}.owdi:active{transform:scale(.95)!important}
+html.night .owdi{background:#17231d;color:#cfe8d9}
+.ow2 .owpl2 svg{transition:transform .4s cubic-bezier(.3,1.5,.4,1)}.ow2.dialopen .owpl2 svg{transform:rotate(135deg)}.ow2 .ownav{z-index:6}
+/* --- profile sheet from the top --- */
+.owpt{position:fixed;inset:0;z-index:90;max-width:540px;margin:0 auto;pointer-events:none}.owpt.on{pointer-events:auto}
+.owptb{position:absolute;inset:0;background:#06140e00;transition:background .3s,-webkit-backdrop-filter .3s;transition:background .3s,backdrop-filter .3s}.owpt.on .owptb{background:#06140e73;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.owpts{position:absolute;left:0;right:0;top:0;background:#fffdf8;color:#0c1a13;border-radius:0 0 34px 34px;padding:0 16px 16px;transform:translateY(-104%);transition:transform .42s cubic-bezier(.2,1.05,.3,1);box-shadow:0 20px 50px #0b1a1455;overflow:hidden;max-height:92vh;overflow-y:auto}.owpt.on .owpts{transform:none}
+html.night .owpts{background:#111a15;color:#eef6f1}
+.owpcv{height:calc(120px + env(safe-area-inset-top));margin:0 -16px;background:#2a5 center/cover;position:relative}.owpcv:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,#0000 30%,#fffdf8)}html.night .owpcv:after{background:linear-gradient(180deg,#0000 30%,#111a15)}
+.owpbd{display:flex;align-items:flex-end;gap:12px;margin-top:-40px;position:relative}.owpav{border-radius:50%;padding:3px;background:linear-gradient(135deg,#2bd48f,#f0c878);cursor:pointer}.owpav .av{border:3px solid #fffdf8}html.night .owpav .av{border-color:#111a15}
+.owpnm{flex:1;min-width:0;padding-bottom:4px}.owpnm b{display:flex;align-items:center;gap:5px;font-size:19px}.owpnm small{color:#66766c;font-size:13px}.owpbd .owib{color:inherit;align-self:flex-start;margin-top:30px}
+.owpst{display:flex;gap:26px;margin:14px 2px}.owpst div{cursor:pointer}.owpst b{display:block;font-size:17px}.owpst small{color:#66766c;font-size:12px}
+.owpbt{display:flex;gap:10px}.owpbt .owbt{flex:1;padding:12px}.owpbt .owbt.o{color:#0c1a13}html.night .owpbt .owbt.o{color:#eef6f1}
+.owpgd{display:grid;grid-template-columns:repeat(4,1fr);gap:10px 6px;margin-top:16px}.owpg{display:flex;flex-direction:column;align-items:center;gap:6px;font-size:11.5px;cursor:pointer;animation:nk8pop .45s cubic-bezier(.2,1.3,.4,1) both}
+.owpg i{position:relative;width:54px;height:54px;border-radius:20px;display:grid;place-items:center;background:#e6f4ec;color:#12664a}.owpg:nth-child(3n) i{background:#fbf0d6;color:#9a6f14}.owpg em{position:absolute;right:-3px;top:-3px;font-style:normal;background:#ef4444;color:#fff;font-size:10px;font-weight:700;border-radius:999px;padding:2px 6px}
+.owgrab{display:block;width:44px;height:5px;border-radius:3px;background:#cfd8d2;margin:16px auto 0}
+@media (prefers-reduced-motion:reduce){.hcs .hc .nkbgx,.owwbg,.owgl{animation:none!important}.owdi,.owpts{transition-duration:.01s!important}}
+</style>
+
 <script id="nk-v10js">
 (function(){
  var busy=0;
