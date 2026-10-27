@@ -5126,24 +5126,59 @@ html.night .oxgq input{background:#2a2a2d;color:#fff}
 <style id="nk-tg-bar">
 /* header: only VYBE */
 .xtop .oxbrand .owgt i{display:none!important}
-/* chat input bar: Telegram style  [GIF] Message [clip] (o) */
-#app .inp [data-a=emo],#app .inp [data-a=sendcam]{display:none!important}
-#oxem .oxet button[data-k=emoji]{display:none!important}
-#app .inp{grid-template-columns:auto minmax(0,1fr) 44px 50px!important;column-gap:0!important;align-items:end!important;padding:6px 8px max(8px,env(safe-area-inset-bottom))!important;background:transparent!important;box-shadow:none!important}
-#app .inp:before{grid-column:1/4!important;border-radius:26px!important;box-shadow:0 1px 2px #0b3d2e26!important}
-#app .inp textarea{grid-column:2!important;padding:13px 4px 13px 16px!important;font-size:16px!important}
-html.gifok #app .inp textarea{padding-left:2px!important}
-#app .inp [data-a=attach]{grid-column:3!important;width:44px!important;height:46px!important;color:#7d8a83!important}
-#app .inp #mic,#app .inp #sb{grid-column:4!important;width:46px!important;height:46px!important;margin-left:6px!important;justify-self:end}
-#app .inp .oxgif{display:none!important;grid-column:1!important;width:46px!important;height:46px!important;padding:0!important;border:0!important;border-radius:0!important;opacity:1!important;font-size:0!important;color:#7d8a83!important;align-self:end;--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect x='2.5' y='5' width='19' height='14' rx='4.5' fill='none' stroke='black' stroke-width='1.8'/%3E%3Ctext x='12' y='15' font-size='7.6' font-weight='700' text-anchor='middle' font-family='Arial,sans-serif' fill='black'%3EGIF%3C/text%3E%3C/svg%3E")}
-html.gifok #app .inp .oxgif{display:grid!important}
+/* ===== chat bar: WhatsApp layout  [emoji] Message [clip] [camera] (mic) ===== */
+#app .inp{grid-template-columns:46px minmax(0,1fr) 44px 44px 60px!important;column-gap:0!important;align-items:center!important;padding:6px 8px max(8px,env(safe-area-inset-bottom))!important;background:transparent!important;box-shadow:none!important;border:0!important;animation:nkBarUp .35s cubic-bezier(.2,.9,.3,1) both}
+#app .inp:before{display:none!important}
+#app .inp [data-a=emo]{display:grid!important;grid-column:1!important;width:46px!important}
+#app .inp textarea{grid-column:2!important;padding:12px 4px!important;font-size:19px!important;color:#111!important;background:transparent!important}
+#app .inp textarea::placeholder{color:#4d5256;opacity:1}
+#app .inp [data-a=attach]{grid-column:3!important;width:44px!important}
+#app .inp [data-a=sendcam]{display:grid!important;grid-column:4!important;width:44px!important}
+#app .inp .ib.dk{height:46px!important;color:#454a4e!important}
+#app .inp .ib.dk::before{width:27px!important;height:27px!important}
+#app .inp .ib.dk:active{transform:scale(.82)!important;transition:transform .1s}
+#app .inp .oxgif{display:none!important}
+#app .inp #mic,#app .inp #sb{grid-column:5!important;width:54px!important;height:54px!important;margin:0 0 0 4px!important;justify-self:end;background:#009de2!important;color:#fff!important;box-shadow:0 2px 6px #00000040!important;animation:nkPopIn .22s cubic-bezier(.2,1.4,.4,1) both;transition:transform .12s}
+#app .inp #mic:active,#app .inp #sb:active{transform:scale(.9)}
+#app .inp #mic.rec{background:#e5392b!important}
+#app .inp #mic::before,#app .inp #sb::before{width:26px!important;height:26px!important}
+/* keyboard icon while panel is open */
+#app:has(#oxem) .inp [data-a=emo]{--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect x='2.5' y='6' width='19' height='12' rx='2.5' fill='none' stroke='black' stroke-width='1.8'/%3E%3Cpath d='M6.5 10h.01M10 10h.01M14 10h.01M17.5 10h.01M7.5 14.2h9' stroke='black' stroke-width='1.9' stroke-linecap='round'/%3E%3C/svg%3E")}
+/* ===== emoji / GIF panel ===== */
+#oxem{height:300px!important;background:#fff!important;border-top:0!important;animation:nkPanelUp .24s cubic-bezier(.2,.9,.3,1) both}
+#oxem:before{content:"";display:block;width:60px;height:5px;border-radius:3px;background:#555;opacity:.75;margin:10px auto 2px;flex:none}
+#oxem .oxet{justify-content:center!important;padding:8px 10px!important}
+#oxem .oxet .x{display:none!important}
+#oxem .oxet{gap:0!important}
+#oxem .oxet button[data-k]{opacity:1!important;background:none!important;color:#555!important;border:1.5px solid #c3c7c9;height:46px;width:130px;border-radius:0!important;padding:0!important;font-size:15px;font-weight:800;letter-spacing:.06em;display:grid;place-items:center;transition:background .2s}
+#oxem .oxet button[data-k=emoji]{border-radius:999px 0 0 999px!important;font-size:0!important;border-right:0}
+#oxem .oxet button[data-k=gif]{border-radius:0 999px 999px 0!important}
+html:not(.gifok) #oxem .oxet button[data-k=gif]{display:none!important}
+html:not(.gifok) #oxem .oxet button[data-k=emoji]{border-radius:999px!important;border-right:1.5px solid #c3c7c9}
+#oxem .oxet button[data-k=emoji]:before{content:"";width:28px;height:28px;background:#222;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cg fill='none' stroke='black' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M8 14s1.5 2 4 2 4-2 4-2M9 9.5h.01M15 9.5h.01'/%3E%3C/g%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cg fill='none' stroke='black' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M8 14s1.5 2 4 2 4-2 4-2M9 9.5h.01M15 9.5h.01'/%3E%3C/g%3E%3C/svg%3E") center/contain no-repeat}
+#oxem .oxet button.on{background:#e9ebec!important;color:#222!important}
+.oxeb>*{animation:nkFade .22s both}
+.oxeb{display:flex!important;flex-direction:column}
+.oxeb .oxeg{order:1}.oxeb .oxcs{order:2;border-bottom:0!important;border-top:1px solid #0000000f;padding:6px 8px!important;justify-content:space-between}
+.oxcs button{opacity:.6!important;transition:transform .15s,background .2s}.oxcs button.on{background:#e9ebec!important;border-radius:50%!important;opacity:1!important}.oxcs button:active{transform:scale(.85)}
+.oxeg span{transition:transform .12s}
+.oxgg img{animation:nkFade .3s both}
+html.night #oxem{background:#1c1c1e!important}html.night #oxem .oxet button[data-k]{color:#ddd!important;border-color:#555}html.night #oxem .oxet button.on{background:#333!important}html.night #oxem .oxet button[data-k=emoji]:before{background:#eee}
+html.night #app .inp textarea{color:#eee!important}html.night #app .inp .ib.dk{color:#cfd3d5!important}
+@keyframes nkBarUp{from{transform:translateY(24px);opacity:0}to{transform:none;opacity:1}}
+@keyframes nkPanelUp{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
+@keyframes nkPopIn{from{transform:scale(.5);opacity:0}to{transform:none;opacity:1}}
+@keyframes nkFade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 </style>
 <script id="nk-gifprobe">
-/* show GIF button only when GIF service is reachable */
+/* GIF tab shows only when the GIF service is reachable */
 (function(){var de=document.documentElement;function set(v){de.classList.toggle('gifok',!!v)}
 function probe(){if(!navigator.onLine){set(0);return}var c=new AbortController(),t=setTimeout(function(){c.abort()},5000);
 fetch('https://api.giphy.com/v1/gifs/trending?api_key=dc6zaTOxFJmzC&limit=1&rating=g',{signal:c.signal}).then(function(r){return r.json()}).then(function(j){clearTimeout(t);set(j&&j.data&&j.data.length)}).catch(function(){set(0)})}
-probe();addEventListener('online',probe);addEventListener('offline',function(){set(0)});setInterval(probe,60000)})();
+probe();addEventListener('online',probe);addEventListener('offline',function(){set(0)});setInterval(probe,60000);
+/* keyboard icon closes the panel */
+document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('#app .inp [data-a=emo]'),p=document.getElementById('oxem');
+if(b&&p){e.preventDefault();e.stopImmediatePropagation();p.remove();var t=document.querySelector('#app form.inp textarea');t&&t.focus()}},true)})();
 </script>
 <script id="nk-v10js">
 (function(){
