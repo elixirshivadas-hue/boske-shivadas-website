@@ -5123,6 +5123,28 @@ html.night .oxgq input{background:#2a2a2d;color:#fff}
 </style>
 
 
+<style id="nk-tg-bar">
+/* header: only VYBE */
+.xtop .oxbrand .owgt i{display:none!important}
+/* chat input bar: Telegram style  [GIF] Message [clip] (o) */
+#app .inp [data-a=emo],#app .inp [data-a=sendcam]{display:none!important}
+#oxem .oxet button[data-k=emoji]{display:none!important}
+#app .inp{grid-template-columns:auto minmax(0,1fr) 44px 50px!important;column-gap:0!important;align-items:end!important;padding:6px 8px max(8px,env(safe-area-inset-bottom))!important;background:transparent!important;box-shadow:none!important}
+#app .inp:before{grid-column:1/4!important;border-radius:26px!important;box-shadow:0 1px 2px #0b3d2e26!important}
+#app .inp textarea{grid-column:2!important;padding:13px 4px 13px 16px!important;font-size:16px!important}
+html.gifok #app .inp textarea{padding-left:2px!important}
+#app .inp [data-a=attach]{grid-column:3!important;width:44px!important;height:46px!important;color:#7d8a83!important}
+#app .inp #mic,#app .inp #sb{grid-column:4!important;width:46px!important;height:46px!important;margin-left:6px!important;justify-self:end}
+#app .inp .oxgif{display:none!important;grid-column:1!important;width:46px!important;height:46px!important;padding:0!important;border:0!important;border-radius:0!important;opacity:1!important;font-size:0!important;color:#7d8a83!important;align-self:end;--ic:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect x='2.5' y='5' width='19' height='14' rx='4.5' fill='none' stroke='black' stroke-width='1.8'/%3E%3Ctext x='12' y='15' font-size='7.6' font-weight='700' text-anchor='middle' font-family='Arial,sans-serif' fill='black'%3EGIF%3C/text%3E%3C/svg%3E")}
+html.gifok #app .inp .oxgif{display:grid!important}
+</style>
+<script id="nk-gifprobe">
+/* show GIF button only when GIF service is reachable */
+(function(){var de=document.documentElement;function set(v){de.classList.toggle('gifok',!!v)}
+function probe(){if(!navigator.onLine){set(0);return}var c=new AbortController(),t=setTimeout(function(){c.abort()},5000);
+fetch('https://api.giphy.com/v1/gifs/trending?api_key=dc6zaTOxFJmzC&limit=1&rating=g',{signal:c.signal}).then(function(r){return r.json()}).then(function(j){clearTimeout(t);set(j&&j.data&&j.data.length)}).catch(function(){set(0)})}
+probe();addEventListener('online',probe);addEventListener('offline',function(){set(0)});setInterval(probe,60000)})();
+</script>
 <script id="nk-v10js">
 (function(){
  var busy=0;
