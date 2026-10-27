@@ -2513,7 +2513,7 @@ V.upage=async function({id}){const mine=id===S.me.uid;S.upt='grid';app.innerHTML
  S.upp=[];S.unM=F.onSnapshot(F.query(F.collection(db,'posts'),F.where('by','==',id)),async s=>{S.upp=s.docs.map(snap).sort((a,b)=>b.at-a.at);const m=new Map(S.posts.map(p=>[p.id,p]));S.upp.forEach(p=>m.set(p.id,p));S.posts=[...m.values()];const c=$('#uc0');c&&(c.textContent=S.upp.length);upDraw()},()=>upDraw());if(!S.eready&&mine)euLoad()};
 upDraw=function(){const el=$('#up');if(!el||S.view!=='upage')return;const id=S.vp.id,t=S.upt||'grid',own=S.upp||[];if(S.blk.has(id)){el.innerHTML='<div class="emp">You blocked this account.</div>';return}
  const tile=p=>p.img?`<div class="owg" data-a="eopen" data-id="${p.id}"><img src="${E(p.img)}" alt="" loading="lazy"></div>`:`<div class="owg tx" data-a="eopen" data-id="${p.id}"><p>${E((p.text||p.link||'').slice(0,90))}</p></div>`,grid=a=>a.length?`<div class="owgr">${a.map(tile).join('')}</div>`:'<div class="emp">Nothing here yet.</div>';
- el.innerHTML=t==='grid'?grid(own.filter(p=>!(p.rp&&!p.text))):t==='text'?(own.filter(p=>p.text).map(owPost).join('')||'<div class="emp">No text posts yet.</div>'):t==='rp'?(own.filter(p=>p.rp).map(owPost).join('')||'<div class="emp">No reposts yet.</div>'):t==='sp'?(spAll().filter(s=>(s.members||[]).includes(id)).map(owChan).join('')||'<div class="emp">No spaces joined yet.</div>'):grid(S.posts.filter(p=>S.sv.has(p.id)))};
+ el.innerHTML=t==='grid'?grid(own.filter(p=>!(p.rp&&!p.text))):t==='text'?(own.filter(p=>p.text).map(p=>owXPost(p)).join('')||'<div class="emp">No text posts yet.</div>'):t==='rp'?(own.filter(p=>p.rp).map(p=>owXPost(p)).join('')||'<div class="emp">No reposts yet.</div>'):t==='sp'?(spAll().filter(s=>(s.members||[]).includes(id)).map(owChan).join('')||'<div class="emp">No spaces joined yet.</div>'):grid(S.posts.filter(p=>S.sv.has(p.id)))};
 /* ---------- side menu ---------- */
 function owMenu(){const un=S.chats.reduce((t,c)=>t+unreadOf(c),0),nt=owNtCount(),I=(ic,l,a,d,b)=>`<div class="owmi" data-a="owgo" data-g="${a}" ${d||''}><i>${oi(ic,22)}</i><span>${l}</span>${b?`<em>${b}</em>`:''}</div>`;
  const o=document.createElement('div');o.className='owdr';o.innerHTML=`<div class="owdp"><div class="owdh"><span class="owl">OPEN WORLD</span><button class="owib" data-a="owmx" aria-label="Close">${oi('x')}</button></div>${I('home','Home','home')}${I('search','Explore','explore')}${I('reels','Reels','reels')}${I('spaces','Spaces','spaces')}${I('msg','Messages','msg','',un||'')}${I('bell','Notifications','not','',nt||'')}${I('mark','Saved','saved')}${I('shield','Verification','ver')}${admRole()?I('gear','Admin Center','adm'):''}${I('gear','Settings & Privacy','rights')}${I('help','Help & Support','rights')}${I('book','Community Guidelines','rights')}${I('flag','Report a Problem','mail')}<div class="owdf">One world.<br>Countless stories.</div></div>`;document.body.appendChild(o);requestAnimationFrame(()=>o.classList.add('on'))}
@@ -2838,9 +2838,9 @@ eupH=function(p){return owXPost(p,true)};
 owShell=function(){let k=S.ow2||'home';if(k==='reels')k=S.ow2='home';
  const nt=owNtCount(),un=S.chats.reduce((t,c)=>t+unreadOf(c),0),dark=k==='spaces',
  avb=`<button class="xav" data-a="owprof" aria-label="Menu">${av(S.me,32)}</button>`,
- top={home:`${avb}<span class="xlg">${owLogo(1)}</span><span class="xsp"></span><span class="xav ph"></span>`,explore:`${avb}<div class="xtt"><b>Search</b></div><span class="xsp"></span>`,spaces:`${avb}<div class="xtt"><b>Spaces</b></div><span class="xsp"></span><button class="owib" data-a="owrnew" aria-label="Start a space">${oi('plus')}</button>`}[k]||'',
+ top={home:`<span class="oxbrand">${owLogo(1)}</span>${avb}`,explore:`<div class="xtt"><b>Search</b></div><span class="xsp"></span>${avb}`,spaces:`<div class="xtt"><b>Spaces</b></div><span class="xsp"></span><button class="owib" data-a="owrnew" aria-label="Start a space">${oi('plus')}</button>${avb}`}[k]||'',
  B=(on,ic,l,a,x='')=>`<button class="${on?'on':''}" ${a} aria-label="${l}">${oi(ic,26,on?2.5:1.8)}${x}</button>`;
- app.innerHTML=`<div class="ow2 xw${dark?' owd':''}"><div class="owtop xtop">${top}</div><div class="owbody" id="owb"><div id="eb"></div></div><button class="xfab" data-a="owdial" aria-label="Create">${oi('plus',26,2.2)}</button><nav class="xbar">${B(k==='home','home','Home','data-a="owt" data-k="home"')}${B(k==='explore','search','Search','data-a="owt" data-k="explore"')}${B(k==='spaces','spaces','Spaces','data-a="owt" data-k="spaces"')}${B(false,'bell','Notifications','data-a="go" data-v="ownot"',nt?`<em>${nt}</em>`:'')}${B(false,'msg','Messages','data-a="tab" data-v="chats"',un?`<em>${un}</em>`:'')}</nav></div>`};
+ app.innerHTML=`<div class="ow2 xw${dark?' owd':''}"><div class="owtop xtop">${top}</div><div class="owbody" id="owb"><div id="eb"></div></div><button class="xfab" data-a="eunew" aria-label="Post">${oi('plus',26,2.2)}</button><nav class="xbar">${B(k==='home','home','Home','data-a="owt" data-k="home"')}${B(k==='explore','search','Search','data-a="owt" data-k="explore"')}${B(k==='spaces','spaces','Spaces','data-a="owt" data-k="spaces"')}${B(false,'bell','Notifications','data-a="go" data-v="ownot"',nt?`<em>${nt}</em>`:'')}${B(false,'msg','Messages','data-a="tab" data-v="chats"',un?`<em>${un}</em>`:'')}</nav></div>`};
 
  const owXLive=()=>{const R=(S.rooms||[]).filter(r=>!r.ended&&r.live);if(!R.length)return'';return`<div class="oxlh"><b>Live now</b><span class="oxln">${R.length}</span></div><div class="oxls">${R.map(r=>{const u=S.U[r.by]||{name:'Host'};return`<div class="oxlc" data-a="owjoin" data-id="${r.id}"><span class="oxlb"><i></i>LIVE</span><b>${E(r.title)}</b><span class="oxlh2">${av(u,26)}<small>${E(u.name)} · ${(r.mem||[]).length} listening</small></span><em>Join</em></div>`}).join('')}</div>`};
 setInterval(()=>{if(S.view==='eucio'&&S.ow2==='home'){const el=document.getElementById('owxlive');if(el){const h=owXLive();if(el.__h!==h){el.__h=h;el.innerHTML=h}}}},2500);
@@ -2849,7 +2849,7 @@ owHome=function(el){const q=(S.eq||'').toLowerCase().replace(/^#/,''),a=S.posts.
  const fy=S.eu!=='follow'&&(!S.ef||S.ef==='All'),fg=S.eu==='follow',
  body=!S.eready?'<div class="sk"></div><div class="sk"></div>':S.eerr?`<div class="emp">Could not load posts.<br><small>${E(S.eerr)}. Check Firestore rules.</small></div>`:a.map((p,i)=>owXPost(p)+(i===1&&ch?`<div class="owsg">${owChan(ch)}</div>`:'')+(i===3&&wf.length?`<div class="owsg"><b>Who to follow</b>${wf.slice(0,3).map(owPpl).join('')}</div>`:'')).join('')||`<div class="emp">${fg?'No posts from people you follow yet.':'No posts yet.<br><small>Tap + to share something.</small>'}</div>`,
  tab=(on,t,l,u)=>`<button class="${on?'on':''}" data-a="owf" data-u="${u}" data-t="${t}"><span>${l}</span></button>`,lh=owXLive();
- el.innerHTML=`<div class="xtabs">${tab(fy,'All','For you','feed')}${tab(fg,'All','Following','follow')}${PTAGS.map(t=>tab(S.ef===t&&!fg,t,t,'feed')).join('')}</div><div id="owxlive">${lh}</div>${owSt2()}${q?`<div class="owq">Showing results for <b>${E(S.eq)}</b> <a data-a="owqx">Clear</a></div>`:''}${body}`;
+ el.innerHTML=`<div class="xtabs">${tab(fy,'All','For you','feed')}${tab(fg,'All','Following','follow')}${PTAGS.map(t=>tab(S.ef===t&&!fg,t,t,'feed')).join('')}</div><div class="oxcmp" data-a="eunew">${av(S.me,36)}<span>What\u2019s on your mind?</span></div><div id="owxlive">${lh}</div>${owSt2()}${q?`<div class="owq">Showing results for <b>${E(S.eq)}</b> <a data-a="owqx">Clear</a></div>`:''}${body}`;
  const n=document.getElementById('owxlive');if(n)n.__h=lh;owRoomsStart()};
 
 /* ---------- + menu (no clips; video is real now) ---------- */
@@ -4994,6 +4994,15 @@ html.night{--xb:#000;--xt:#e7e9ea;--xm:#71767b;--xl:#2f3336;--xs:#16181c}
 .ow2 .owsc.add small{position:static;color:var(--ot);text-shadow:none;font-size:12.5px;font-weight:700;text-align:center;overflow:visible}
 .oxsa{position:relative;display:grid}.oxsa .av{border:0}
 .oxsa i{position:absolute;right:-4px;bottom:-2px;width:22px;height:22px;border-radius:50%;background:#1d9bf0;color:#fff;border:2px solid var(--ob);display:grid;place-items:center}
+
+.xtop{justify-content:flex-start}.oxbrand{flex:1;display:flex;align-items:center}
+.xtop .oxbrand .owlg2.s1 .owgt{font-size:26px;font-weight:800;letter-spacing:-.02em}.xtop .oxbrand .owgt i,.xtop .oxbrand .owgt b{font-weight:800}.xtop .oxbrand .owgl{width:28px;height:28px}
+.xtop .xtt{flex:0 1 auto}.xtop .xav{width:36px;height:36px}
+.oxcmp{display:flex;align-items:center;gap:12px;padding:10px 16px;border-bottom:1px solid var(--ol);cursor:pointer}.oxcmp span{flex:1;background:var(--oc,#f7f9f9);color:var(--om);border-radius:999px;padding:11px 16px;font-size:15px}
+.ow2.owpf .owcv{height:360px!important;background-size:cover!important;background-position:center!important}
+.ow2.owpf .owcv:after{inset:0!important;height:auto!important;background:linear-gradient(180deg,#0006 0,#0000 26%,#0000 48%,#000c 100%)!important}
+.ow2.owpf .owcv>.owpr{position:absolute!important;bottom:36px!important}
+.ow2.owpf .owpc{margin-top:-28px;position:relative;z-index:2;background:var(--ob);border-radius:28px 28px 0 0}
 </style>
 
 
