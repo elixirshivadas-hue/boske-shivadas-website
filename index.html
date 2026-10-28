@@ -1879,7 +1879,7 @@ V.newpost=function(){const tp=S.npt||'text',qp=S.qt&&S.posts.find(x=>x.id===S.qt
 /* ---------- Home: equal cards, small quote tab on top, owner-editable card ---------- */
 const OWQ=['Small choices. Big impact.','Learn something new, every single day.','Curiosity is the first step to a better world.','Eat well. Read more. Explore everything.','Every page, every plate, every place has a story.','Kind words travel further than loud ones.'];
 {const _vh=V.home;V.home=function(){_vh();const m=$('.mas');if(!m)return;const un=S.chats.reduce((t,c)=>t+unreadOf(c),0),q=OWQ[new Date().getDate()%OWQ.length];
- const L=[['Chat','Talk privately & safely','chat','tab','chats',BI.cafe,un||''],['Food & Health','Learn • Eat • Live Better','leaf','go','facts',BI.food,''],['Explore World','Places • Cultures • Wildlife','compass','tab','explore',PH.nf_travel,''],['NIJØK VYBE','Explore • Share • Discuss','post','go','eucio',PH.nf_vybe,''],['Books','Read • Discover • Discuss','books','tab','books',PH.nf_book,''],['Notebook','Notes • Lists • Ideas','notes','tab','notes',NKQC,''],['Shop','NIJØK Premium Shop','bag','shop','',BI.biz,'']];
+ const L=[['Chat','Talk privately & safely','chat','tab','chats',BI.cafe,un||''],['Food & Health','Learn • Eat • Live Better','leaf','go','facts',BI.food,''],['Explore World','Places • Cultures • Wildlife','compass','tab','explore',PH.nf_travel,''],['NIJØK VYBE','Explore • Share • Discuss','post','go','eucio',PH.nf_vybe,''],['Books','Read • Discover • Discuss','books','tab','books',PH.nf_book,''],['Notebook','Notes • Lists • Ideas','notes','tab','notes',NKQC,''],['Quiz','Play • Learn • Win','quiz','go','quiz',QZB,''],['Shop','NIJØK Premium Shop','bag','shop','',BI.biz,'']];
  const C=(x,i)=>`<div class="mc mq" data-sk="hc_${i}" style="background:#1c6b4b url(${x[5]}) center/cover" data-a="${x[3]}"${x[4]?` data-v="${x[4]}"`:''}><span class="mci">${SV(IC[x[2]]||IC.leaf)}</span>${x[6]?`<span class="bdg mcb">${x[6]}</span>`:''}${cardEd('hc_'+i)}<div class="mct"><b data-skt="hc_${i}">${x[0]}</b><small data-sks="hc_${i}">${x[1]}</small></div><em>→</em></div>`;
  m.className='mas mq2';m.innerHTML=`<div class="mqt"><i>❝</i><div><b>${q}</b><small>NIJØK</small></div></div>`+L.map(C).join('')}}
 /* ---------- rights, guidelines & settings ---------- */
@@ -5521,7 +5521,7 @@ if(b&&p){e.preventDefault();e.stopImmediatePropagation();p.remove();var t=docume
   var other=[].slice.call(m.children).filter(function(c){return !c.classList.contains('pscol')&&!c.classList.contains('mc')&&!c.classList.contains('mqt')});
   m.className='mas mq3';m.innerHTML='';
   cs.forEach(function(c){c.style.height='';c.classList.remove('wide');m.appendChild(c)});
-  if(cs.length%3===1)cs[cs.length-1].classList.add('wide');
+  if(cs.length%3===1)cs[cs.length-1].classList.add('wide');else if(cs.length%3===2){cs[cs.length-1].classList.add('wide');cs[cs.length-2].classList.add('wide')}
   other.forEach(function(o){m.appendChild(o)});
  }
  function fixComposer(){
