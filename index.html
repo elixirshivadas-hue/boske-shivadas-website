@@ -3635,7 +3635,7 @@ const wfKeep=()=>{const n=S.wfN||(S.wfN={ph:[],kind:'story'});['dest','title','t
 const wfPhDraw=()=>{const e=$('#wf_ph');if(!e)return;const p=S.wfN.ph;e.innerHTML=p.map((u,i)=>`<div class="t" style="background-image:url('${u}')"><button data-a="wfphx" data-i="${i}" aria-label="Remove">×</button></div>`).join('')+(p.length<3?'<div class="a" data-a="wfphadd" role="button">+</div>':'')};
 V.wfnew=()=>{const n=S.wfN||(S.wfN={ph:[],kind:'story'}),k=n.kind,v=x=>E(n[x]||''),opt=(a,x)=>a.map(o=>`<option ${n[x]===o?'selected':''}>${o}</option>`).join('');
  app.innerHTML=`<div class="wdv">${wdHdr('Share with travellers')}<div class="wdchips2" style="margin-top:6px">${Object.keys(WFK).map(x=>`<button class="${x===k?'on':''}" data-a="wfkind" data-k="${x}">${WFK[x]}</button>`).join('')}</div><div class="wdfl">
- <label for="wf_dest">Place *</label><select id="wf_dest">${WDX.d.map(d=>`<option value="${d.id}" ${(n.dest||S.wfPre)===d.id?'selected':''}>${E(d.n)} · ${E(d.pl)}</option>`).join('')}<option value="other" ${n.dest==='other'?'selected':''}>Other place in India</option></select>
+ <label for="wf_dest">Place *</label><select id="wf_dest">${WDX.d.map(d=>`<option value="${d.id}" ${(n.dest||S.wfPre)===d.id?'selected':''}>${E(d.n)} · ${E(d.pl)}</option>`).join('')}<option value="other" ${n.dest==='other'?'selected':''}>Other place in India</option></select><div style="display:flex;align-items:center;gap:10px;margin-top:8px"><button class="wfsm" type="button" data-a="wfloc">Pin my location</button><small id="wf_ls" style="color:#6f776b">${n.lat?"Pinned near you (about 1 km)":"Map uses the place you chose"}</small></div>
  <label for="wf_title">${k==='ask'?'Your question *':'Title *'}</label><input id="wf_title" maxlength="80" placeholder="${{story:'e.g. 6 days of Ladakh on a budget',ride:'e.g. Manali to Leh in 3 days',tip:'e.g. Rohtang road open, one-way traffic',ask:'e.g. Is a permit needed for Nubra?',buddy:'e.g. Looking for riders to Spiti in May'}[k]}" value="${v('title')}">
  ${k==='ride'?`<label>Route</label><div style="display:flex;gap:8px"><input id="wf_from" maxlength="40" placeholder="From" value="${v('from')}"><input id="wf_to" maxlength="40" placeholder="To" value="${v('to')}"></div><div style="display:flex;gap:8px"><input id="wf_km" type="number" inputmode="numeric" placeholder="Distance (km)" value="${v('km')}"><input id="wf_days" type="number" inputmode="numeric" placeholder="Days" value="${v('days')}"></div><input id="wf_bike" maxlength="40" placeholder="Bike / vehicle" value="${v('bike')}"><label>Road condition</label><select id="wf_road">${opt(['Good','Average','Rough'],'road')}</select><input id="wf_fuel" maxlength="100" placeholder="Fuel stops, mechanics, network gaps" value="${v('fuel')}">`:''}
  ${k==='tip'?`<label>Type</label><select id="wf_sev">${opt(['Info','Caution','Road closed','Permit / rules'],'sev')}</select>`:''}
@@ -3674,6 +3674,7 @@ Object.assign(ACT,{
   if(!$('#wf_ok').checked)return toast('Please tick the confirmation');if(Date.now()-(S.wfLast||0)<30000)return toast('Please wait a few seconds');
   const d={uid:S.me.uid,by:S.me.name||'',kind:k,dest:n.dest||S.wfPre||'other',title,text,ph:n.ph,lk:[],jn:[],ts:Date.now()};
   try{const mp=await wfProf(S.me.uid);if(mp&&mp.role)d.role=mp.role}catch(e){}
+  if(typeof n.lat==='number'&&typeof n.lng==='number'){d.lat=n.lat;d.lng=n.lng}
   if(k==='ride'){d.from=n.from.trim().slice(0,40);d.to=n.to.trim().slice(0,40);d.km=Math.max(0,Math.min(5000,+n.km||0));d.days=Math.max(0,Math.min(60,+n.days||0));d.bike=(n.bike||'').trim().slice(0,40);d.road=n.road||'Good';d.fuel=(n.fuel||'').trim().slice(0,100)}
   if(k==='tip')d.sev=n.sev||'Info';if(k==='buddy')d.when=n.when;
   try{const c=await F.getDocs(F.query(F.collection(db,'wd_feed'),F.where('uid','==',S.me.uid),F.limit(21)));if(c.docs.length>=20)return toast('Limit reached','Delete an old post first');
@@ -3795,6 +3796,51 @@ setInterval(()=>{const on=!!S.me&&['wd','wffeed','wdd','wfview','wfuser'].includ
 Object.assign(ACT,{
  wfft(){wfFab().classList.toggle('open')},wffx(){const f=$('#wfFab');f&&f.classList.remove('open')},
  wffk(d){ACT.wffx();if(d.k==='status')return ACT.wfsadd();S.wfN={ph:[],kind:d.k};S.wfPre=(S.view==='wdd'&&S.vp&&S.vp.id)||'';nav('wfnew')}
+});
+
+/* ---- Travellers Step 2: map with photo pins (Leaflet + OpenStreetMap) ---- */
+{const st=document.createElement('style');st.id='wf-css4';st.textContent=`
+.wfmw{position:relative;height:calc(100dvh - 72px - env(safe-area-inset-top))}#wfmc{position:absolute;inset:0;z-index:1}
+.wfmk{position:absolute;top:10px;left:0;right:0;z-index:500;display:flex;gap:8px;overflow-x:auto;padding:0 12px;scrollbar-width:none}.wfmk::-webkit-scrollbar{display:none}
+.wfmk button{flex:none;background:rgba(255,255,255,.95);border-radius:999px;padding:8px 14px;font:600 12.5px Inter,sans-serif;color:#26331f;box-shadow:0 4px 14px rgba(0,0,0,.14)}.wfmk button.on{background:#14210f;color:#fff}
+.wfmb{position:absolute;left:12px;right:12px;bottom:16px;z-index:500;display:flex;gap:10px;align-items:center}
+.wfmj{flex:1;display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.97);border-radius:999px;padding:0 16px;height:50px;box-shadow:0 8px 24px rgba(0,0,0,.18);color:#e0443e}
+.wfmj select{flex:1;border:0;background:none;font:600 14.5px Inter,sans-serif;color:#14210f;outline:0;appearance:none;-webkit-appearance:none}
+.wfmg{width:50px;height:50px;border-radius:50%;background:rgba(255,255,255,.97);box-shadow:0 8px 24px rgba(0,0,0,.18);display:grid;place-items:center;color:#14664a}
+.wfms{position:absolute;left:0;right:0;bottom:0;z-index:600;max-height:55%;overflow:auto;background:#fff;border-radius:26px 26px 0 0;padding:14px 14px 22px;box-shadow:0 -10px 30px rgba(0,0,0,.2)}
+.wfms .hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;font:700 15px Inter,sans-serif;color:#14210f}.wfms .hd button{font-size:26px;padding:0 8px}.wfms .wfi{margin-bottom:10px}
+.wfpin{position:relative;width:54px;height:54px;border-radius:18px;background:#fff;padding:3px;box-shadow:0 6px 16px rgba(0,0,0,.3)}
+.wfpin:after{content:'';position:absolute;left:50%;bottom:-7px;width:12px;height:12px;background:#fff;transform:translateX(-50%) rotate(45deg);border-radius:2px}
+.wfpin .im{position:relative;z-index:1;width:100%;height:100%;border-radius:15px;background:#E6EFD9 center/cover no-repeat;display:grid;place-items:center;color:#fff;font:800 20px Inter,sans-serif}
+.wfpin b{position:absolute;z-index:2;top:-8px;right:-8px;min-width:22px;height:22px;border-radius:11px;background:#14210f;color:#fff;font:700 11.5px/22px Inter,sans-serif;text-align:center;padding:0 5px}
+.wfmc{display:flex;align-items:center;gap:12px;margin:12px 18px 0;padding:14px 16px;border-radius:22px;background:linear-gradient(135deg,#14664a,#25a06f);color:#fff;text-align:left;width:calc(100% - 36px)}
+.wfmc b{display:block;font:700 15px Inter,sans-serif}.wfmc small{font:400 12px Inter,sans-serif;opacity:.88}.wfmc span:last-child{margin-left:auto;font-size:22px}
+.wfsm{background:#F2F6EC;color:#26331f;border-radius:999px;padding:9px 14px;font:600 12.5px Inter,sans-serif}
+`;document.head.appendChild(st)}
+let wfLf=null;
+const wfLeaflet=()=>wfLf||(wfLf=new Promise((ok,no)=>{if(window.L)return ok(window.L);const c=document.createElement('link');c.rel='stylesheet';c.href='https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css';document.head.appendChild(c);const j=document.createElement('script');j.src='https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js';j.onload=()=>ok(window.L);j.onerror=()=>{wfLf=null;no(new Error('Map could not load'))};document.head.appendChild(j)}));
+const wfCo=p=>typeof p.lat==='number'&&typeof p.lng==='number'?[p.lat,p.lng]:((WDX.d.find(d=>d.id===p.dest)||{}).co||null);
+function wfMDraw(){const L=window.L,m=S.wfM;if(!m||!S.wfML)return;S.wfML.clearLayers();const f=S.wfMF||'All',g={};
+ (S.wfMP||[]).filter(p=>f==='All'||p.kind===f).forEach(p=>{const c=wfCo(p);if(!c)return;const k=c[0].toFixed(2)+','+c[1].toFixed(2);(g[k]=g[k]||{c,l:[]}).l.push(p)});
+ Object.values(g).forEach(({c,l})=>{const p=l[0],ph=(p.ph||[]).find(wdImgOk),n=l.length;
+  const html=`<div class="wfpin">${ph?`<div class="im" style="background-image:url('${ph}')"></div>`:`<div class="im" style="background:${WFC[p.kind]||'#555'}">${(WFK[p.kind]||'?')[0]}</div>`}${n>1?`<b>${n}</b>`:''}</div>`;
+  L.marker(c,{icon:L.divIcon({className:'',html,iconSize:[58,68],iconAnchor:[29,64]}),zIndexOffset:500}).on('click',()=>{if(l.length===1){nav('wfview',{id:l[0].id});return}const s=$('#wfms');if(!s)return;s.hidden=false;s.innerHTML=`<div class="hd"><span>${l.length} posts here</span><button data-a="wfmsx" aria-label="Close">×</button></div>${l.map(wfIt).join('')}`}).addTo(S.wfML)})}
+V.wfmap=async()=>{if(S.wfM){try{S.wfM.remove()}catch(e){}S.wfM=null}
+ app.innerHTML=`<div class="wdv" style="padding:0;overflow:hidden">${wdHdr('Traveller map')}<div class="wfmw"><div id="wfmc"></div><div class="wfmk">${['All',...Object.keys(WFK)].map(k=>`<button class="${k===(S.wfMF||'All')?'on':''}" data-a="wfmf" data-k="${k}">${k==='All'?'All':WFK[k]}</button>`).join('')}</div>
+ <div class="wfmb"><label class="wfmj"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a7 7 0 00-7 7c0 5.2 7 13 7 13s7-7.8 7-13a7 7 0 00-7-7zm0 9.5A2.5 2.5 0 119.5 9 2.5 2.5 0 0112 11.5z"/></svg><select id="wfjump" aria-label="Jump to a place"><option value="">All India</option>${WDX.d.map(d=>`<option value="${d.id}">${E(d.n)}</option>`).join('')}</select></label><button class="wfmg" data-a="wfmloc" aria-label="My location"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/></svg></button></div><div class="wfms" id="wfms" hidden></div></div></div>`;
+ let L;try{L=await wfLeaflet()}catch(e){const c=$('#wfmc');c&&(c.innerHTML='<div class="wdem">Map could not load. Check your internet connection.</div>');return}
+ if(S.view!=='wfmap')return;const m=S.wfM=L.map('wfmc',{zoomControl:false}).setView([22.6,79],5);
+ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:18,attribution:'&copy; OpenStreetMap contributors'}).addTo(m);S.wfML=L.layerGroup().addTo(m);
+ WDX.d.forEach(d=>L.circleMarker(d.co,{radius:6,color:'#fff',weight:2,fillColor:'#14664a',fillOpacity:1}).bindTooltip(d.n,{direction:'top',offset:[0,-6]}).on('click',()=>nav('wdd',{id:d.id})).addTo(m));
+ $('#wfjump').onchange=e=>{const d=WDX.d.find(x=>x.id===e.target.value);d?m.flyTo(d.co,9):m.flyTo([22.6,79],5)};setTimeout(()=>m.invalidateSize(),250);
+ try{const q=await F.getDocs(F.query(F.collection(db,'wd_feed'),F.orderBy('ts','desc'),F.limit(200)));S.wfMP=q.docs.map(snap)}catch(e){S.wfMP=[]}
+ if(S.view==='wfmap')wfMDraw()};
+const _wd3=V.wd;V.wd=function(){_wd3.apply(this,arguments);const q=$('.wds');q&&q.insertAdjacentHTML('afterend','<button class="wfmc" data-a="wfmap"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4L3 6.5v13L9 17l6 3 6-2.5v-13L15 7zM9 4v13M15 7v13"/></svg><span><b>Traveller map</b><small>See where people are posting</small></span><span>›</span></button>')};
+Object.assign(ACT,{
+ wfmap(){nav('wfmap')},wfmsx(){const s=$('#wfms');s&&(s.hidden=true)},
+ wfmf(d){S.wfMF=d.k;document.querySelectorAll('.wfmk button').forEach(b=>b.classList.toggle('on',b.dataset.k===d.k));ACT.wfmsx();wfMDraw()},
+ wfmloc(){if(!navigator.geolocation)return toast('Location is not available');navigator.geolocation.getCurrentPosition(p=>{const m=S.wfM;if(!m)return;const c=[p.coords.latitude,p.coords.longitude];m.flyTo(c,11);if(S.wfMe)S.wfMe.remove();S.wfMe=window.L.circleMarker(c,{radius:8,color:'#fff',weight:3,fillColor:'#1c6fb3',fillOpacity:1}).addTo(m)},()=>toast('Could not get your location','Allow location access in your browser settings'),{timeout:10000})},
+ wfloc(){wfKeep();if(!navigator.geolocation)return toast('Location is not available');navigator.geolocation.getCurrentPosition(p=>{S.wfN.lat=+p.coords.latitude.toFixed(2);S.wfN.lng=+p.coords.longitude.toFixed(2);const e=$('#wf_ls');e&&(e.textContent='Pinned near you (about 1 km)');toast('Location pinned','Shown only to about 1 km')},()=>toast('Could not get your location','Allow location access in your browser settings'),{timeout:10000})}
 });
 
 }
