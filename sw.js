@@ -8,7 +8,7 @@ const V = 'nijok-shell-v9';
 const RT = 'nijok-media-v2';
 const RT_MAX = 260;            // max cached images/fonts
 const NET_WAIT = 4000;        // ms to wait for network before using cache
-const SHELL = ['./', 'index.html', 'shop.html', 'manifest.json', 'nk2-180.png', 'nk2-192.png', 'nk2-512.png'];
+const SHELL = ['./', 'index.html', 'shop.html', 'manifest.json', 'icon-192.png', 'icon-512.png'];
 
 self.addEventListener('install', e => {
   e.waitUntil(
