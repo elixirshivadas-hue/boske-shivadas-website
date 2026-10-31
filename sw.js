@@ -4,7 +4,7 @@
    - Images and fonts: cache first, refreshed quietly in the background (fast).
    - Firebase, fonts CDN and other sites are never touched.
    Change V on every release to force every phone to refresh. */
-const V = 'nijok-shell-v3';
+const V = 'nijok-shell-v6';
 const RT = 'nijok-media-v2';
 const RT_MAX = 80;            // max cached images/fonts
 const NET_WAIT = 4000;        // ms to wait for network before using cache

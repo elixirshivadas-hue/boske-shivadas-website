@@ -2296,11 +2296,11 @@ Object.assign(ACT,{
 });
 
 /* ===================== NIJØK v4 redesign (appended) ===================== */
-const nkL=(k,d)=>lsg('nk4_'+k,d),nkW=(k,v)=>lss('nk4_'+k,v),nkI=(p,s=22)=>I(p,s);
+const nkL=(k,d)=>lsg('nk4_'+k,d),nkW=(k,v)=>{lss('nk4_'+k,v);nkSync(k)},nkI=(p,s=22)=>I(p,s);
 const dk=(d=new Date())=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
 const nkH=s=>[...String(s)].reduce((a,c)=>(a*31+c.charCodeAt(0))>>>0,7);
 const NKP={pin:'<path d="M9 3h6l-1 6 3 3v2H7v-2l3-3zM12 14v7"/>',arc:'<rect x="3" y="4" width="18" height="5" rx="1.2"/><path d="M5 9v10h14V9M10 13h4"/>',pal:'<path d="M12 3a9 9 0 1 0 0 18c1.6 0 2.2-1 1.6-2.1-.5-1 0-2 1.4-2h2a3 3 0 0 0 3-3c0-5.5-3.8-10.9-8-10.9z"/><circle cx="8" cy="11" r="1"/><circle cx="11.5" cy="7.5" r="1"/><circle cx="15.5" cy="10" r="1"/>',chk:'<rect x="4" y="4" width="16" height="16" rx="3.5"/><path d="m8.5 12 2.5 2.5 4.5-5"/>',lst:'<path d="M9 6h11M9 12h11M9 18h11M4 6l1 1 2-2M4 12l1 1 2-2M4 18l1 1 2-2"/>',tag:'<path d="M3 12.5V4h8.5L21 13.5 13.5 21z"/><circle cx="7.6" cy="8.6" r="1.3"/>',dots:'<circle cx="12" cy="5" r="1.4"/><circle cx="12" cy="12" r="1.4"/><circle cx="12" cy="19" r="1.4"/>',back:'<path d="M19 12H5M11 6l-6 6 6 6"/>',x:'<path d="M6 6l12 12M18 6L6 18"/>',box:'<rect x="4" y="4" width="16" height="16" rx="3.5"/>',plane:'<path d="M21 15l-8-4V5a1.5 1.5 0 0 0-3 0v6l-8 4v2l8-1.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-3.5l8 1.5z"/>',map:'<path d="M12 21s7-6.2 7-11.5A7 7 0 0 0 5 9.5C5 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/>',bolt:'<path d="M13 3L5 13.5h6L10 21l8-10.5h-6z"/>',run:'<circle cx="14" cy="5" r="2"/><path d="M8 21l3-6-3-3 3-4 4 3 3 1M11 15l3 2v4"/>',bowl:'<path d="M3 11h18a9 9 0 0 1-18 0zM8 7c0-2 2-2 2-4M13 7c0-2 2-2 2-4"/>',scale:'<rect x="4" y="4" width="16" height="16" rx="4"/><path d="M8 9a4 4 0 0 1 8 0M12 9l2-2"/>',trophy:'<path d="M8 4h8v5a4 4 0 0 1-8 0zM8 6H4v1a3 3 0 0 0 4 3M16 6h4v1a3 3 0 0 1-4 3M12 13v4M8 21h8M10 17h4"/>'};
-const nkPct=d=>Math.min(100,Math.round((Math.min(d.m/45,1)+Math.min(d.c/520,1)+Math.min(d.s/8000,1))/3*100));
+const nkG=()=>({m:45,c:520,s:8000,w:8,...nkL('goal',{})});const nkPct=d=>{const g=nkG();return Math.min(100,Math.round((Math.min(d.m/g.m,1)+Math.min(d.c/g.c,1)+Math.min(d.s/g.s,1))/3*100))};
 const nkTd=()=>{const l=nkL('fit',{}),k=dk();return{l,k,d:l[k]||{m:0,c:0,s:0}}};
 const nkAdd=o=>{const{l,k,d}=nkTd();d.m+=o.m||0;d.c+=o.c||0;d.s+=o.s||0;l[k]=d;nkW('fit',l)};
 const nkRing=(p,sz=86,w=9)=>{const r=(sz-w)/2,c=2*Math.PI*r;return`<svg class="nkrg" width="${sz}" height="${sz}" viewBox="0 0 ${sz} ${sz}"><circle cx="${sz/2}" cy="${sz/2}" r="${r}" fill="none" stroke="#2fa88a30" stroke-width="${w}"/><circle cx="${sz/2}" cy="${sz/2}" r="${r}" fill="none" stroke="#2fa88a" stroke-width="${w}" stroke-linecap="round" stroke-dasharray="${c}" stroke-dashoffset="${c*(1-p/100)}" transform="rotate(-90 ${sz/2} ${sz/2})"/><text x="50%" y="52%" text-anchor="middle" dominant-baseline="middle" font-size="${sz*.24}" font-weight="700" fill="#1f3f39">${p}%</text></svg>`};
@@ -2347,15 +2347,27 @@ document.addEventListener('input',e=>{const t=e.target,k=t.dataset&&t.dataset.nk
 document.addEventListener('change',e=>{const t=e.target,k=t.dataset&&t.dataset.nk;if(!k)return;const[a,b]=k.split(':');if(a==='tx'&&S.tx)S.tx[b]=t.value},true);
 
 /* ===================== Fit & Move ===================== */
-V.fit=()=>{const{l,k,d}=nkTd(),p=nkPct(d),nm=E((S.me.name||'').split(' ')[0]),
- days=[...Array(7)].map((_,i)=>{const t=new Date();t.setDate(t.getDate()-6+i);const key=dk(t);return{w:'SMTWTFS'[t.getDay()],m:(l[key]||{}).m||0,on:key===k}}),mx=Math.max(45,...days.map(x=>x.m)),
+V.fit=()=>{nkPull();const{l,k,d}=nkTd(),p=nkPct(d),nm=E((S.me.name||'').split(' ')[0]),
+ days=[...Array(7)].map((_,i)=>{const t=new Date();t.setDate(t.getDate()-6+i);const key=dk(t);return{w:'SMTWTFS'[t.getDay()],m:(l[key]||{}).m||0,on:key===k}}),mx=Math.max(nkG().m,...days.map(x=>x.m)),g=nkG(),wt=d.w||0,sl=d.z||0,stk=nkStreak(l),
  W=S.fw=[['Full Body Strength','45 min · 320 kcal','🏋️','#a8dccb,#4aa38a',45,320,['Goblet Squat · 4×12','Push Ups · 4×15','Bent Over Row · 4×12','Plank Hold · 3×45s']],['HIIT Burn','25 min · 300 kcal','🔥','#fbcdb5,#ee8a68',25,300,['Jumping Jacks · 40s','Burpees · 30s','Mountain Climbers · 40s','High Knees · 40s']],['Core Crusher','20 min · 180 kcal','💪','#cfe4f6,#78addb',20,180,['Crunches · 3×20','Leg Raises · 3×15','Russian Twist · 3×20','Plank · 3×40s']],['Yoga Flow','30 min · 120 kcal','🧘','#e6def8,#a08fdc',30,120,['Sun Salutation · 5 rounds','Warrior I &amp; II','Downward Dog · 1 min','Child\'s Pose · 2 min']]];
  app.innerHTML=`<div class="nkfs"><div class="nkpdh"><button class="nkbk" data-a="back" aria-label="Back">${nkI(NKP.back)}</button><div><h1>Hi, ${nm} 👋</h1><small>Ready to crush your goals?</small></div></div>
 <div class="nkcd"><b class="nkct">Today's Progress</b><div class="nkpr">${nkRing(p,112,12)}<div class="nkpv"><div><i style="background:#2fa88a"></i>Workout<b>${d.m} min</b></div><div><i style="background:#f1866a"></i>Calories<b>${d.c} kcal</b></div><div><i style="background:#7fb0dc"></i>Steps<b>${d.s}</b></div></div></div></div>
 <div class="nkcd"><b class="nkct">Weekly Activity</b><div class="nkwb">${days.map(x=>`<i class="${x.on?'on':''}"><span style="height:${Math.max(7,x.m/mx*100)}%"></span><em>${x.w}</em></i>`).join('')}</div></div>
+<div class="nkcd"><b class="nkct">Water, Sleep &amp; Goals</b><div class="nkhw"><div><span>💧 ${wt} / ${g.w} glasses</span><button class="nkhb" data-a="nkwat" data-n="-1">−</button><button class="nkhb" data-a="nkwat" data-n="1">+ Glass</button></div><div><span>😴 ${sl?sl+' h sleep':'Sleep not logged'}</span><button class="nkhb" data-a="nkslp">Log sleep</button></div><div><span>🔥 Streak: ${stk} day${stk==1?'':'s'}</span><button class="nkhb" data-a="nkgoal">Edit goals</button></div></div></div>
 <b class="nkct2">Quick Actions</b><div class="nkqa"><button data-a="nkfwk"><i>${nkI(NKP.bolt,22)}</i>Start Workout</button><button data-a="go" data-v="facts"><i>${nkI(NKP.bowl,22)}</i>Log Food</button><button data-a="nkfbody"><i>${nkI(NKP.scale,22)}</i>Body Stats</button><button data-a="nkfstep"><i>${nkI(NKP.run,22)}</i>Steps &amp; Time</button></div>
-<b class="nkct2" id="nkwk">Workouts</b><div class="nkwk" id="nkwks">${W.map((w,i)=>`<div class="nkwc" data-a="nkfw" data-i="${i}" style="background:linear-gradient(150deg,${w[3].split(',')[0]},${w[3].split(',')[1]})"><span class="nkwe">${w[2]}</span><div class="nkwt"><b>${w[0]}</b><small>${w[1]}</small></div></div>`).join('')}</div></div>`;nkPar($('#nkwks'),'.nkwc')};
+<b class="nkct2" id="nkwk">Workouts</b><div class="nkwk" id="nkwks">${W.map((w,i)=>`<div class="nkwc" data-a="nkfw" data-i="${i}" style="background:linear-gradient(150deg,${w[3].split(',')[0]},${w[3].split(',')[1]})"><span class="nkwe">${w[2]}</span><div class="nkwt"><b>${w[0]}</b><small>${w[1]}</small></div></div>`).join('')}</div><p class="nkdis">Goals are general guides, not medical advice. If you have a health condition or an injury, check with your doctor before changing your routine.</p></div>`;nkPar($('#nkwks'),'.nkwc')};
+const nkStreak=l=>{let n=0,t=new Date();const on=x=>x&&(x.m>0||x.c>0||x.s>0||x.w>0);if(!on(l[dk(t)]))t.setDate(t.getDate()-1);while(on(l[dk(t)])){n++;t.setDate(t.getDate()-1)}return n};
+let nkST;function nkSync(k){if(!['fit','goal','body'].includes(k))return;clearTimeout(nkST);nkST=setTimeout(()=>{const u=auth.currentUser;if(!u||localStorage.getItem('nk4_fituid')!==u.uid)return;F.setDoc(F.doc(db,'users',u.uid,'fit','data'),{fit:nkL('fit',{}),goal:nkL('goal',{}),body:nkL('body',{}),upd:Date.now()}).catch(()=>{})},1500)}
+async function nkPull(){const u=auth.currentUser;if(!u||S.fpull===u.uid)return;S.fpull=u.uid;try{const fo=localStorage.getItem('nk4_fituid');if(fo&&fo!==u.uid)['fit','goal','body'].forEach(x=>localStorage.removeItem('nk4_'+x));localStorage.setItem('nk4_fituid',u.uid);
+ const sn=await F.getDoc(F.doc(db,'users',u.uid,'fit','data'));if(sn.exists()){const c=sn.data(),l=nkL('fit',{}),cf=c.fit||{};for(const k in cf){const a=l[k]||{},b=cf[k];l[k]={m:Math.max(a.m||0,b.m||0),c:Math.max(a.c||0,b.c||0),s:Math.max(a.s||0,b.s||0),w:Math.max(a.w||0,b.w||0),z:b.z||a.z||0}}
+  lss('nk4_fit',l);if(c.goal&&!Object.keys(nkL('goal',{})).length)lss('nk4_goal',c.goal);if(c.body&&!Object.keys(nkL('body',{})).length)lss('nk4_body',c.body)}
+ nkSync('fit');if(S.view==='fit')V.fit()}catch(e){S.fpull=0}}
 Object.assign(ACT,{
+ nkwat(d){const{l,k,d:x}=nkTd();x.w=Math.max(0,Math.min(30,(x.w||0)+(+d.n)));l[k]=x;nkW('fit',l);V.fit()},
+ nkslp(){const x=nkTd().d;sheet(`<div class="nkws"><h3>😴 Last night's sleep</h3><input id="nkzz" type="number" step="0.5" min="0" max="24" inputmode="decimal" placeholder="Hours, e.g. 7.5" class="sinp" value="${x.z||''}"><button class="btn" data-a="nkslv">Save</button></div>`)},
+ nkslv(){const h=Math.round((+$('#nkzz').value)*2)/2;if(!(h>0&&h<=24))return toast('Enter hours between 1 and 24');const{l,k,d:x}=nkTd();x.z=h;l[k]=x;nkW('fit',l);sheet();toast('Sleep saved ✓',h+' h');V.fit()},
+ nkgoal(){const g=nkG();sheet(`<div class="nkws"><h3>🎯 Daily goals</h3><input id="ngm" type="number" inputmode="numeric" placeholder="Workout minutes" class="sinp" value="${g.m}"><input id="ngc" type="number" inputmode="numeric" placeholder="Calories to burn" class="sinp" value="${g.c}" style="margin-top:8px"><input id="ngs" type="number" inputmode="numeric" placeholder="Steps" class="sinp" value="${g.s}" style="margin-top:8px"><input id="ngw" type="number" inputmode="numeric" placeholder="Glasses of water" class="sinp" value="${g.w}" style="margin-top:8px"><button class="btn" data-a="nkgsv">Save goals</button></div>`)},
+ nkgsv(){const c=(id,lo,hi)=>Math.max(lo,Math.min(hi,Math.round(+$(id).value)||0));nkW('goal',{m:c('#ngm',5,300)||45,c:c('#ngc',50,3000)||520,s:c('#ngs',500,50000)||8000,w:c('#ngw',1,30)||8});sheet();toast('Goals saved ✓');V.fit()},
  nkfwk(){$('#nkwk')?.scrollIntoView({behavior:'smooth'})},
  nkfw(d){const w=S.fw[+d.i];S.fS=0;clearInterval(S.fT);S.fT=0;sheet(`<div class="nkws"><h3>${w[2]} ${w[0]}</h3><small>${w[1]}</small><ul>${w[6].map(x=>`<li>${x}</li>`).join('')}</ul><div class="nkt" id="nkt">00:00</div><button class="btn" data-a="nkfs" data-i="${d.i}" id="nkfsb">Start</button></div>`)},
  nkfs(d){const w=S.fw[+d.i],b=$('#nkfsb');const fin=auto=>{clearInterval(S.fT);S.fT=0;const sec=Math.round((Date.now()-(S.fT0||Date.now()))/1000);if(sec<20){toast('Too short','Work out at least 20 seconds');return}const m=Math.max(1,Math.round(sec/60)),kc=Math.round(w[5]*Math.min(1,m/w[4]));nkAdd({m,c:kc});if(!auto)sheet();toast(auto?'Workout auto-saved ✓':'Workout saved ✓',m+' min · '+kc+' kcal');if(S.view==='fit')V.fit()};
@@ -3592,6 +3604,122 @@ Object.assign(ACT,{
  async wdrep(d){try{await F.addDoc(F.collection(db,'reports'),{t:'wd_post',post:d.id,by:S.me.uid,ts:Date.now()});toast('Reported','Thank you – the team will review it')}catch(e){toast('Could not report',e.code||'')}}
 });
 
+/* ================= WANDRØ Travellers: stories, ride routes, alerts, questions, buddies (Firestore: wd_feed) ================= */
+{const st=document.createElement('style');st.id='wf-css';st.textContent=`
+.wfk{display:inline-block;font:700 10.5px Inter,sans-serif;letter-spacing:.04em;text-transform:uppercase;color:#fff;border-radius:8px;padding:3px 8px}
+.wfl{display:flex;flex-direction:column;gap:14px;padding:16px 18px 30px}.wfi{display:flex;gap:12px;background:#fff;border:1px solid #e6ecdf;border-radius:18px;padding:10px;text-align:left;width:100%}
+.wfi .im{flex:none;width:88px;height:88px;border-radius:14px;background:#E6EFD9 center/cover no-repeat}.wfi b{display:block;font:700 15px/1.3 Inter,sans-serif;color:#14210f;margin:6px 0 3px}.wfi small{font:400 12px Inter,sans-serif;color:#6f776b}
+.wfv{padding:0 18px 30px}.wfv h3{font:700 22px/1.25 Inter,sans-serif;color:#14210f;margin:10px 0 6px}.wfv .mt{font:400 12.5px Inter,sans-serif;color:#6f776b}.wfv p{font:400 15px/1.7 Inter,sans-serif;color:#26331f;margin:14px 0;white-space:pre-wrap}
+.wfv .sc{display:flex;gap:8px;overflow-x:auto;margin:12px -18px 0;padding:0 18px}.wfv .sc div{flex:none;width:78%;aspect-ratio:4/3;border-radius:16px;background:#E6EFD9 center/cover no-repeat}
+.wfx{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0}.wfx div{background:#F6FBEE;border-radius:12px;padding:10px 12px;font:400 12px Inter,sans-serif;color:#6f776b}.wfx b{display:block;font:700 14px Inter,sans-serif;color:#14210f;margin-top:2px}
+.wfw{background:#fff4e5;color:#8a4b00;border-radius:12px;padding:10px 12px;font:500 12.5px/1.5 Inter,sans-serif;margin:10px 0}
+.wfr{border-top:1px solid #e6ecdf;padding:12px 0;font:400 14px/1.55 Inter,sans-serif;color:#26331f}.wfr small{display:block;color:#6f776b;font-size:11.5px;margin-bottom:2px}.wfr button{font-size:11.5px;color:#b3261e;margin-left:8px}
+.wfin{display:flex;gap:8px;margin-top:8px}.wfin input{flex:1;border:1.5px solid #e1e8d8;border-radius:14px;padding:12px;font:400 14px Inter,sans-serif;outline:0}.wfin button{background:#A8DE6E;color:#17300f;font:700 13px Inter,sans-serif;border-radius:14px;padding:0 16px}
+`;document.head.appendChild(st)}
+const WFK={story:'Story',ride:'Ride route',tip:'Alert',ask:'Question',buddy:'Travel buddy'},WFC={story:'#2f7d32',ride:'#c4570a',tip:'#b3261e',ask:'#1c6fb3',buddy:'#7b3fa0'};
+const wfAge=t=>{const d=Math.floor((Date.now()-t)/864e5);return d<1?'today':d<30?d+'d ago':Math.floor(d/30)+'mo ago'};
+const wfTag=k=>`<span class="wfk" style="background:${WFC[k]||'#555'}">${WFK[k]||k}</span>`;
+async function wfLoad(force){if(S.wfP&&!force)return S.wfP;try{const q=await F.getDocs(F.query(F.collection(db,'wd_feed'),F.orderBy('ts','desc'),F.limit(60)));S.wfP=q.docs.map(snap);S.wfErr=''}catch(e){S.wfP=[];S.wfErr=e.code||'error'}return S.wfP}
+const wfPh=p=>wdImgOk((p.ph||[])[0])?`background-image:url('${p.ph[0]}')`:'';
+const wfPc=p=>`<div class="wdpc" data-a="wfopen" data-id="${p.id}" role="button" tabindex="0"><div class="ph" style="${wfPh(p)}"></div><span class="tp">${WFK[p.kind]||''}</span><b>${E(p.title)}</b><small>${E([wdDest(p.dest),wfAge(p.ts)].filter(Boolean).join(' · '))}</small></div>`;
+const wfIt=p=>`<button class="wfi" data-a="wfopen" data-id="${p.id}"><div class="im" style="${wfPh(p)}"></div><div>${wfTag(p.kind)} ${wfRole(p.role)}<b>${E(p.title)}</b><small>${E([wdDest(p.dest),p.by,wfAge(p.ts)].filter(Boolean).join(' · '))} · ${(p.lk||[]).length} likes</small></div></button>`;
+async function wfRow(sel,dest){const ps=(await wfLoad()).filter(p=>!dest||p.dest===dest).slice(0,8),el=$(sel);if(!el)return;
+ el.innerHTML=`<div class="wdpc add" data-a="wfnew" ${dest?`data-dest="${dest}"`:''} role="button" tabindex="0"><div class="ph">+</div><b>Share your trip</b><small>Story · Route · Alert · Question</small></div>`+ps.map(wfPc).join('')+(S.wfErr?`<div class="wdpc ld">Travellers is not enabled yet (publish the Firestore rules).</div>`:'')}
+const _wd=V.wd;V.wd=function(){_wd.apply(this,arguments);const r=$('#wdcomrow');if(!r)return;r.insertAdjacentHTML('afterend',`<div class="wdsec"><h2>Travellers</h2><button data-a="wffeed">See all</button></div><div class="wdrow" id="wfrow"><div class="wdpc ld">Loading…</div></div>`);wfRow('#wfrow',null)};
+const _wdd=V.wdd;V.wdd=function(p){_wdd.apply(this,arguments);const h=$('#wdcl');if(!h||!p)return;const a=h.previousElementSibling||h;a.insertAdjacentHTML('beforebegin',`<div class="wdh3">From travellers<small>Stories, routes, alerts, questions</small></div><div class="wdrow" id="wfdr" style="padding:0;margin:0 -18px;padding:0 18px"><div class="wdpc ld">Loading…</div></div>`);wfRow('#wfdr',p.id)};
+V.wffeed=async()=>{const f=S.wfF||'All';app.innerHTML=`<div class="wdv">${wdHdr('Travellers')}<div class="wdchips2" style="margin-top:4px">${['All','Following',...Object.keys(WFK)].map(k=>`<button class="${k===f?'on':''}" data-a="wffil" data-k="${k}">${(k==='All'||k==='Following')?k:WFK[k]}</button>`).join('')}</div><div class="wfl" id="wflist"><div class="wdem">Loading…</div></div></div>`;
+ $('.wdtop').insertAdjacentHTML('beforeend','<button class="wdpb" data-a="wfnew">+ Share</button><button class="wdpb" style="margin-left:8px;background:#F2F4EF;color:#26331f" data-a="wfmy">My profile</button>');if(!S.fol)try{await loadSoc()}catch(e){}
+ const ps=(await wfLoad(true)).filter(p=>f==='All'||(f==='Following'?!!(S.fol&&S.fol.has(p.uid)):p.kind===f)),el=$('#wflist');if(!el||S.view!=='wffeed')return;
+ el.innerHTML=ps.length?ps.map(wfIt).join(''):`<div class="wdem">${S.wfErr?'Travellers is not enabled yet: the app owner must publish the Firestore rules.':'Nothing here yet.<br>Be the first to share a story, route or alert.'}</div>`};
+const wfKeep=()=>{const n=S.wfN||(S.wfN={ph:[],kind:'story'});['dest','title','text','from','to','km','days','bike','road','fuel','sev','when'].forEach(k=>{const e=$('#wf_'+k);if(e)n[k]=e.value})};
+const wfPhDraw=()=>{const e=$('#wf_ph');if(!e)return;const p=S.wfN.ph;e.innerHTML=p.map((u,i)=>`<div class="t" style="background-image:url('${u}')"><button data-a="wfphx" data-i="${i}" aria-label="Remove">×</button></div>`).join('')+(p.length<3?'<div class="a" data-a="wfphadd" role="button">+</div>':'')};
+V.wfnew=()=>{const n=S.wfN||(S.wfN={ph:[],kind:'story'}),k=n.kind,v=x=>E(n[x]||''),opt=(a,x)=>a.map(o=>`<option ${n[x]===o?'selected':''}>${o}</option>`).join('');
+ app.innerHTML=`<div class="wdv">${wdHdr('Share with travellers')}<div class="wdchips2" style="margin-top:6px">${Object.keys(WFK).map(x=>`<button class="${x===k?'on':''}" data-a="wfkind" data-k="${x}">${WFK[x]}</button>`).join('')}</div><div class="wdfl">
+ <label for="wf_dest">Place *</label><select id="wf_dest">${WDX.d.map(d=>`<option value="${d.id}" ${(n.dest||S.wfPre)===d.id?'selected':''}>${E(d.n)} · ${E(d.pl)}</option>`).join('')}<option value="other" ${n.dest==='other'?'selected':''}>Other place in India</option></select>
+ <label for="wf_title">${k==='ask'?'Your question *':'Title *'}</label><input id="wf_title" maxlength="80" placeholder="${{story:'e.g. 6 days of Ladakh on a budget',ride:'e.g. Manali to Leh in 3 days',tip:'e.g. Rohtang road open, one-way traffic',ask:'e.g. Is a permit needed for Nubra?',buddy:'e.g. Looking for riders to Spiti in May'}[k]}" value="${v('title')}">
+ ${k==='ride'?`<label>Route</label><div style="display:flex;gap:8px"><input id="wf_from" maxlength="40" placeholder="From" value="${v('from')}"><input id="wf_to" maxlength="40" placeholder="To" value="${v('to')}"></div><div style="display:flex;gap:8px"><input id="wf_km" type="number" inputmode="numeric" placeholder="Distance (km)" value="${v('km')}"><input id="wf_days" type="number" inputmode="numeric" placeholder="Days" value="${v('days')}"></div><input id="wf_bike" maxlength="40" placeholder="Bike / vehicle" value="${v('bike')}"><label>Road condition</label><select id="wf_road">${opt(['Good','Average','Rough'],'road')}</select><input id="wf_fuel" maxlength="100" placeholder="Fuel stops, mechanics, network gaps" value="${v('fuel')}">`:''}
+ ${k==='tip'?`<label>Type</label><select id="wf_sev">${opt(['Info','Caution','Road closed','Permit / rules'],'sev')}</select>`:''}
+ ${k==='buddy'?`<label>Trip date *</label><input id="wf_when" type="date" value="${v('when')}">`:''}
+ <label for="wf_text">${k==='ask'?'Details':'Your words'} * <span style="font-weight:400">(10–1200 characters)</span></label><textarea id="wf_text" maxlength="1200" placeholder="${k==='tip'?'What did you see today? Date, place, what to expect.':'Write what you saw, spent, learned.'}">${v('text')}</textarea>
+ <label>Photos <span style="font-weight:400">(optional, up to 3, your own)</span></label><div class="wdphs" id="wf_ph"></div>
+ <label class="wdagree"><input id="wf_ok" type="checkbox"><span>These are my own words and photos. I will not share phone numbers or private details. Members can report posts; false posts are removed.</span></label>
+ <button class="wdbtn" data-a="wfsubmit" style="margin-top:16px">Post</button></div><div style="height:30px"></div></div>`;wfPhDraw()};
+V.wfview=async({id})=>{app.innerHTML=`<div class="wdv">${wdHdr('Travellers')}<div class="wdem">Loading…</div></div>`;
+ let p=(S.wfP||[]).find(x=>x.id===id);if(!p){try{p=snap(await F.getDoc(F.doc(db,'wd_feed',id)))}catch(e){}}
+ if(!p){app.innerHTML=`<div class="wdv">${wdHdr('Travellers')}<div class="wdem">This post is no longer available.</div></div>`;return}
+ let rp=[];try{const q=await F.getDocs(F.query(F.collection(db,'wd_feed',id,'rp'),F.orderBy('ts','asc'),F.limit(50)));rp=q.docs.map(snap)}catch(e){}
+ try{await loadU([p.uid])}catch(e){}if(S.view!=='wfview')return;const me=S.me||{},liked=(p.lk||[]).includes(me.uid),joined=(p.jn||[]).includes(me.uid),mine=p.uid===me.uid||S.admin,old=p.kind==='tip'&&Date.now()-p.ts>6048e5;
+ const x=(a,b)=>b?`<div>${a}<b>${E(b)}</b></div>`:'';
+ app.innerHTML=`<div class="wdv">${wdHdr(WFK[p.kind]||'Travellers')}<div class="wfv">${(p.ph||[]).filter(wdImgOk).length?`<div class="sc">${p.ph.filter(wdImgOk).map(u=>`<div style="background-image:url('${u}')"></div>`).join('')}</div>`:''}
+ <div style="margin-top:12px">${wfTag(p.kind)}</div><h3>${E(p.title)}</h3><div class="mt">${E([wdDest(p.dest),wfAge(p.ts)].join(' · '))}</div><div class="mt" style="margin-top:8px;display:flex;gap:6px;align-items:center;flex-wrap:wrap">by <button data-a="wfuser" data-id="${p.uid}" style="font:600 13px Inter,sans-serif;color:#2f5a17;text-decoration:underline">${E(p.by||'Traveller')}</button>${wfRole(p.role)}${(S.U[p.uid]||{}).ver?'<span class="wfk" style="background:#1c6fb3">Verified</span>':''}</div>
+ ${old?'<div class="wfw">This alert is more than 7 days old. Conditions may have changed. Check official sources before you travel.</div>':''}
+ ${p.kind==='ride'?`<div class="wfx">${x('Route',[p.from,p.to].filter(Boolean).join(' → '))}${x('Distance',p.km?p.km+' km':'')}${x('Days',p.days)}${x('Vehicle',p.bike)}${x('Road',p.road)}${x('Fuel / help',p.fuel)}</div>`:''}
+ ${p.kind==='tip'&&p.sev?`<div class="wfx">${x('Type',p.sev)}</div>`:''}${p.kind==='buddy'&&p.when?`<div class="wfx">${x('Trip date',p.when)}${x('Joined',(p.jn||[]).length+' people')}</div>`:''}
+ <p>${E(p.text)}</p><div class="wdpost"><div class="ac"><button data-a="wflike" data-id="${p.id}">${liked?'Liked':'Like'} · ${(p.lk||[]).length}</button>
+ ${p.kind==='buddy'||p.kind==='ride'?`<button data-a="wfjoin" data-id="${p.id}">${joined?'Joined':'I want to join'} · ${(p.jn||[]).length}</button>`:''}
+ ${p.uid!==me.uid?`<button data-a="wfdm" data-u="${p.uid}">Message ${E((p.by||'host').split(' ')[0])}</button><button class="rd" data-a="wfrep" data-id="${p.id}">Report</button>`:''}${mine?`<button class="gr" data-a="wfdel" data-id="${p.id}">Delete</button>`:''}</div></div>
+ <h3 style="font-size:17px;margin-top:22px">${p.kind==='ask'?'Answers':'Replies'} (${rp.length})</h3>${rp.map(r=>`<div class="wfr"><small>${E(r.by||'Traveller')} · ${wfAge(r.ts)}${(r.uid===me.uid||mine)?`<button data-a="wfrpdel" data-id="${p.id}" data-r="${r.id}">Delete</button>`:''}</small>${E(r.text)}</div>`).join('')||'<div class="wdem" style="padding:10px 0">No replies yet.</div>'}
+ <div class="wfin"><input id="wf_rp" maxlength="500" placeholder="${p.kind==='ask'?'Share what you know…':'Write a reply…'}"><button data-a="wfreply" data-id="${p.id}">Send</button></div></div></div>`};
+const wfUpd=async(id,f)=>{await F.updateDoc(F.doc(db,'wd_feed',id),f);S.wfP=null;V.wfview({id})};
+Object.assign(ACT,{
+ wffeed(){nav('wffeed')},wffil(d){S.wfF=d.k;V.wffeed()},
+ wfnew(d){if(!S.me)return;S.wfN=null;S.wfPre=d&&d.dest||'';nav('wfnew')},
+ wfkind(d){wfKeep();S.wfN.kind=d.k;V.wfnew()},
+ wfopen(d){nav('wfview',{id:d.id})},
+ wfphadd(){wfKeep();if(S.wfN.ph.length>=3)return toast('Maximum 3 photos');pickImg(async f=>{try{let u=await shrink(f,720,.65);if(u.length>240000)u=await shrink(f,560,.5);if(u.length>240000)return toast('Photo too large','Try a smaller photo');S.wfN.ph.push(u);wfPhDraw()}catch(e){toast('Could not read photo')}})},
+ wfphx(d){wfKeep();S.wfN.ph.splice(+d.i,1);wfPhDraw()},
+ async wfsubmit(){wfKeep();const n=S.wfN,k=n.kind,title=(n.title||'').trim(),text=(n.text||'').trim();
+  if(title.length<3)return toast('Write a title');if(text.length<10)return toast('Write at least 10 characters');if(n.ph.length&&!n.ph.every(wdImgOk))return toast('Check the photos');
+  if(k==='buddy'&&!/^\d{4}-\d{2}-\d{2}$/.test(n.when||''))return toast('Choose the trip date');if(k==='ride'&&(!(n.from||'').trim()||!(n.to||'').trim()))return toast('Enter where the route starts and ends');
+  if(!$('#wf_ok').checked)return toast('Please tick the confirmation');if(Date.now()-(S.wfLast||0)<30000)return toast('Please wait a few seconds');
+  const d={uid:S.me.uid,by:S.me.name||'',kind:k,dest:n.dest||S.wfPre||'other',title,text,ph:n.ph,lk:[],jn:[],ts:Date.now()};
+  try{const mp=await wfProf(S.me.uid);if(mp&&mp.role)d.role=mp.role}catch(e){}
+  if(k==='ride'){d.from=n.from.trim().slice(0,40);d.to=n.to.trim().slice(0,40);d.km=Math.max(0,Math.min(5000,+n.km||0));d.days=Math.max(0,Math.min(60,+n.days||0));d.bike=(n.bike||'').trim().slice(0,40);d.road=n.road||'Good';d.fuel=(n.fuel||'').trim().slice(0,100)}
+  if(k==='tip')d.sev=n.sev||'Info';if(k==='buddy')d.when=n.when;
+  try{const c=await F.getDocs(F.query(F.collection(db,'wd_feed'),F.where('uid','==',S.me.uid),F.limit(21)));if(c.docs.length>=20)return toast('Limit reached','Delete an old post first');
+   await F.addDoc(F.collection(db,'wd_feed'),d);S.wfLast=Date.now();S.wfP=null;S.wfN=null;toast('Posted','Visible to travellers');ACT.back()}
+  catch(e){toast('Could not post',e.code==='permission-denied'?'Publish the Firestore rules for wd_feed':(e.code||''))}},
+ async wflike(d){const p=(S.wfP||[]).find(x=>x.id===d.id),has=p?(p.lk||[]).includes(S.me.uid):false;try{await wfUpd(d.id,{lk:has?F.arrayRemove(S.me.uid):F.arrayUnion(S.me.uid)})}catch(e){toast('Could not update',e.code||'')}},
+ async wfjoin(d){const p=(S.wfP||[]).find(x=>x.id===d.id),has=p?(p.jn||[]).includes(S.me.uid):false;try{await wfUpd(d.id,{jn:has?F.arrayRemove(S.me.uid):F.arrayUnion(S.me.uid)});toast(has?'Removed':'Added','The host can see your interest')}catch(e){toast('Could not update',e.code||'')}},
+ async wfdm(d){try{const u=S.U[d.u]||snap(await F.getDoc(F.doc(db,'users',d.u)));if(!u||!u.pub)return toast('This person must open the new NIJOK once first');startDM(u)}catch(e){toast('Could not open chat')}},
+ async wfrep(d){try{await F.addDoc(F.collection(db,'reports'),{t:'wd_feed',post:d.id,by:S.me.uid,ts:Date.now()});toast('Reported','Thank you, the team will review it')}catch(e){toast('Could not report',e.code||'')}},
+ async wfdel(d){if(!confirm('Delete this post?'))return;try{await F.deleteDoc(F.doc(db,'wd_feed',d.id));S.wfP=null;toast('Deleted');ACT.back()}catch(e){toast('Could not delete',e.code||'')}},
+ async wfreply(d){const t=($('#wf_rp').value||'').trim();if(!t)return;if(Date.now()-(S.wfRl||0)<5000)return toast('Please wait a few seconds');try{await F.addDoc(F.collection(db,'wd_feed',d.id,'rp'),{uid:S.me.uid,by:S.me.name||'',text:t.slice(0,500),ts:Date.now()});S.wfRl=Date.now();V.wfview({id:d.id})}catch(e){toast('Could not reply',e.code||'')}},
+ async wfrpdel(d){try{await F.deleteDoc(F.doc(db,'wd_feed',d.id,'rp',d.r));V.wfview({id:d.id})}catch(e){toast('Could not delete',e.code||'')}}
+});
+
+/* ---- Travellers Phase 3: profiles, roles, follow, verified tick ---- */
+const WFR=['Biker','Blogger','Local','Traveller'],WFRC={Biker:'#c4570a',Blogger:'#7b3fa0',Local:'#2f7d32',Traveller:'#1c6fb3'};
+const wfRole=r=>r?`<span class="wfk" style="background:${WFRC[r]||'#555'}">${E(r)}</span>`:'';
+const wfLnk=/^https:\/\/(www\.)?(instagram\.com|youtube\.com|youtu\.be)\//;
+async function wfProf(uid,force){S.wfPr=S.wfPr||{};if(S.wfPr[uid]!==undefined&&!force)return S.wfPr[uid];try{S.wfPr[uid]=snap(await F.getDoc(F.doc(db,'wd_prof',uid)))}catch(e){S.wfPr[uid]=null}return S.wfPr[uid]}
+V.wfprof=async()=>{app.innerHTML=`<div class="wdv">${wdHdr('My traveller profile')}<div class="wdem">Loading…</div></div>`;const p=(await wfProf(S.me.uid,true))||{};if(S.view!=='wfprof')return;
+ app.innerHTML=`<div class="wdv">${wdHdr('My traveller profile')}<div class="wdfl"><label for="wp_role">I am a *</label><select id="wp_role">${WFR.map(r=>`<option ${p.role===r?'selected':''}>${r}</option>`).join('')}</select>
+ <label for="wp_city">Home city</label><input id="wp_city" maxlength="40" placeholder="e.g. Hyderabad" value="${E(p.city||'')}">
+ <label for="wp_bio">About you <span style="font-weight:400">(max 160 characters)</span></label><textarea id="wp_bio" maxlength="160" placeholder="e.g. Weekend rider, 12 Himalayan trips, love slow travel">${E(p.bio||'')}</textarea>
+ <label for="wp_ig">Instagram link (optional, https://instagram.com/…)</label><input id="wp_ig" type="url" maxlength="150" placeholder="https://instagram.com/yourname" value="${E(p.ig||'')}">
+ <label for="wp_yt">YouTube link (optional, https://youtube.com/…)</label><input id="wp_yt" type="url" maxlength="150" placeholder="https://youtube.com/@yourchannel" value="${E(p.yt||'')}">
+ <p style="font:400 12px/1.5 Inter,sans-serif;color:#6f776b;margin-top:8px">Verified tick is given by the NIJØK team after you apply for Verification in your profile. Roles are your own description.</p>
+ <button class="wdbtn" data-a="wfpsave" style="margin-top:14px">Save profile</button></div><div style="height:30px"></div></div>`};
+V.wfuser=async({id})=>{app.innerHTML=`<div class="wdv">${wdHdr('Traveller')}<div class="wdem">Loading…</div></div>`;
+ try{await loadU([id])}catch(e){}const u=S.U[id]||{name:'Traveller'},p=(await wfProf(id,true))||{};
+ let ps=[];try{const q=await F.getDocs(F.query(F.collection(db,'wd_feed'),F.where('uid','==',id),F.limit(30)));ps=q.docs.map(snap).sort((a,b)=>b.ts-a.ts)}catch(e){}
+ const cnt=async q=>(await F.getCountFromServer(q)).data().count;let fr=0,fg=0;try{[fr,fg]=await Promise.all([cnt(F.query(F.collection(db,'follows'),F.where('b','==',id))),cnt(F.query(F.collection(db,'follows'),F.where('a','==',id)))])}catch(e){}
+ if(S.view!=='wfuser')return;const me=S.me||{},mine=id===me.uid,fl=S.fol&&S.fol.has(id),lk=ps.reduce((a,x)=>a+(x.lk||[]).length,0);
+ app.innerHTML=`<div class="wdv">${wdHdr('Traveller')}<div class="wfv"><div style="display:flex;gap:14px;align-items:center;margin-top:6px">${av(u,64)}<div><h3 style="margin:0">${E(u.name||p.by||'Traveller')}</h3><div style="margin-top:6px;display:flex;gap:6px;flex-wrap:wrap">${wfRole(p.role)}${u.ver?'<span class="wfk" style="background:#1c6fb3">Verified</span>':''}</div></div></div>
+ ${p.city?`<div class="mt" style="margin-top:10px">Home: ${E(p.city)}</div>`:''}${p.bio?`<p style="margin:10px 0">${E(p.bio)}</p>`:''}
+ <div class="wfx"><div>Posts<b>${ps.length}</b></div><div>Likes received<b>${lk}</b></div><div>Followers<b>${fr}</b></div><div>Following<b>${fg}</b></div></div>
+ <div class="wdpost"><div class="ac">${mine?`<button data-a="wfmy">Edit traveller profile</button>`:`<button data-a="${fl?'wfunf':'wffol'}" data-id="${id}">${fl?'Following':'Follow'}</button><button data-a="wfdm" data-u="${id}">Message</button>`}
+ ${wdHttps(p.ig)&&wfLnk.test(p.ig)?`<a href="${E(p.ig)}" target="_blank" rel="noopener noreferrer">Instagram</a>`:''}${wdHttps(p.yt)&&wfLnk.test(p.yt)?`<a href="${E(p.yt)}" target="_blank" rel="noopener noreferrer">YouTube</a>`:''}<button class="gr" data-a="wfupg" data-id="${id}">Full profile</button></div></div>
+ <h3 style="font-size:17px;margin-top:20px">Posts</h3><div class="wfl" style="padding:8px 0">${ps.map(wfIt).join('')||'<div class="wdem">No posts yet.</div>'}</div></div></div>`};
+Object.assign(ACT,{
+ wfmy(){nav('wfprof')},wfuser(d){nav('wfuser',{id:d.id})},wfupg(d){nav('upage',{id:d.id})},
+ async wfpsave(){const g=i=>($('#wp_'+i).value||'').trim(),ig=g('ig'),yt=g('yt');if(ig&&!(wdHttps(ig)&&wfLnk.test(ig)))return toast('Instagram link must start with https://instagram.com/');if(yt&&!(wdHttps(yt)&&wfLnk.test(yt)))return toast('YouTube link must start with https://youtube.com/');
+  const d={uid:S.me.uid,by:S.me.name||'',role:g('role')||'Traveller',bio:g('bio').slice(0,160),city:g('city').slice(0,40),ig,yt,ts:Date.now()};
+  try{await F.setDoc(F.doc(db,'wd_prof',S.me.uid),d);S.wfPr=S.wfPr||{};S.wfPr[S.me.uid]={id:S.me.uid,...d};toast('Profile saved');ACT.back()}catch(e){toast('Could not save',e.code==='permission-denied'?'Publish the Firestore rules for wd_prof':(e.code||''))}},
+ async wffol(d){try{S.fol=S.fol||new Set();await F.setDoc(F.doc(db,'follows',S.me.uid+'_'+d.id),{a:S.me.uid,b:d.id,at:Date.now()});S.fol.add(d.id);toast('Following');V.wfuser({id:d.id})}catch(e){toast('Could not follow',e.code||'')}},
+ async wfunf(d){try{await F.deleteDoc(F.doc(db,'follows',S.me.uid+'_'+d.id));S.fol&&S.fol.delete(d.id);V.wfuser({id:d.id})}catch(e){toast('Could not unfollow',e.code||'')}}
+});
 }
 
 /* ===== NIJØK STUDY (inside Quiz) — start ===== */
@@ -5156,6 +5284,7 @@ html.night #app .msgs .b.ot{background:#1e2a24;color:#e8efe9}html.night #app .in
 .nkcd{background:#ffffffa8;border-radius:26px;padding:16px;margin-bottom:14px;box-shadow:0 10px 24px #1f3f391a;-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);animation:nkUp .5s both}
 .nkct{display:block;font-size:15px;color:#1f3f39;margin-bottom:10px}.nkct2{display:block;margin:6px 4px 10px;color:#1f3f39;font-size:16px}
 .nkpr{display:flex;align-items:center;gap:18px}.nkpv{flex:1;display:grid;gap:9px}.nkpv div{display:flex;align-items:center;gap:8px;font-size:13px;color:#587a72}.nkpv i{width:9px;height:9px;border-radius:50%}.nkpv b{margin-left:auto;color:#1f3f39}
+.nkhw>div{display:flex;align-items:center;gap:8px;padding:10px 0;border-bottom:1px solid rgba(128,128,128,.2);font-size:14px}.nkhw>div:last-child{border:0}.nkhw span{flex:1}.nkhb{border:0;border-radius:10px;padding:8px 13px;background:#2fa88a;color:#fff;font:inherit;font-size:12.5px;cursor:pointer}.nkdis{font-size:11px;opacity:.65;margin:14px 4px 4px;line-height:1.5}
 .nkwb{display:flex;align-items:flex-end;gap:10px;height:110px}.nkwb i{flex:1;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:6px}.nkwb span{width:100%;border-radius:8px;background:#2fa88a33;min-height:7px}.nkwb i.on span{background:#2fa88a}.nkwb em{font-style:normal;font-size:11px;color:#6d8a83}
 .nkqa{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}.nkqa button{display:flex;align-items:center;gap:10px;padding:14px;border:0;border-radius:20px;background:#ffffffc0;color:#1f3f39;font-size:13.5px;text-align:left;box-shadow:0 6px 14px #1f3f3914}.nkqa i{width:38px;height:38px;border-radius:12px;background:#d8f0e7;display:grid;place-items:center;color:#2a8a72;flex:none}
 .nkwk{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;padding:4px 20px 14px;margin:0 -16px;scrollbar-width:none}.nkwk::-webkit-scrollbar{display:none}
