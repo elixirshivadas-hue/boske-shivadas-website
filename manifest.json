@@ -2,18 +2,25 @@
   "name": "NIJØK",
   "short_name": "NIJØK",
   "description": "Chat, groups, notes, community and food knowledge. Learn, adopt, grow.",
+  "id": "./",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
+  "display_override": [
+    "standalone",
+    "minimal-ui"
+  ],
   "orientation": "portrait",
+  "dir": "ltr",
+  "lang": "en",
   "background_color": "#0b2b20",
   "theme_color": "#0f4a36",
-  "lang": "en",
   "categories": [
     "social",
     "lifestyle",
     "food"
   ],
+  "prefer_related_applications": false,
   "icons": [
     {
       "src": "nk2-192.png",
@@ -39,6 +46,5 @@
       "type": "image/png",
       "purpose": "maskable"
     }
-  ],
-  "id": "./"
+  ]
 }
