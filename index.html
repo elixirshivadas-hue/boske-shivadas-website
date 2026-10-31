@@ -3720,6 +3720,54 @@ Object.assign(ACT,{
  async wffol(d){try{S.fol=S.fol||new Set();await F.setDoc(F.doc(db,'follows',S.me.uid+'_'+d.id),{a:S.me.uid,b:d.id,at:Date.now()});S.fol.add(d.id);toast('Following');V.wfuser({id:d.id})}catch(e){toast('Could not follow',e.code||'')}},
  async wfunf(d){try{await F.deleteDoc(F.doc(db,'follows',S.me.uid+'_'+d.id));S.fol&&S.fol.delete(d.id);V.wfuser({id:d.id})}catch(e){toast('Could not unfollow',e.code||'')}}
 });
+/* ---- Travellers Step 1: new look (stories, rounded feed cards, floating bar) ---- */
+{const st=document.createElement('style');st.id='wf-css2';st.textContent=`
+.wfsr{display:flex;gap:10px;overflow-x:auto;padding:6px 18px 10px;scrollbar-width:none}.wfsr::-webkit-scrollbar{display:none}
+.wfst{flex:none;width:80px;height:112px;border-radius:24px;background:#E6EFD9 center/cover no-repeat;position:relative;overflow:hidden;box-shadow:0 4px 14px rgba(30,60,20,.12)}
+.wfst .wa{position:absolute;top:6px;left:6px;border:2px solid #fff;border-radius:50%;overflow:hidden;display:flex}.wfst small{position:absolute;left:0;right:0;bottom:0;padding:16px 6px 6px;background:linear-gradient(transparent,rgba(0,0,0,.55));color:#fff;font:600 10.5px Inter,sans-serif;text-align:center;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.wfst.add{background:#fff;border:1px solid #e3eadb;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:#26331f;font:600 11px Inter,sans-serif}.wfst.add i{width:34px;height:34px;border-radius:50%;background:#A8DE6E;color:#17300f;display:grid;place-items:center;font:700 20px Inter,sans-serif;font-style:normal}
+.wfb{background:#fff;border:1px solid #e9eee3;border-radius:26px;padding:12px;box-shadow:0 6px 22px rgba(30,60,20,.06)}.wfb .hd{display:flex;gap:10px;align-items:center}.wfb .hd>button{display:flex;gap:10px;align-items:center;text-align:left;min-width:0}
+.wfb .hd b{font:700 14px Inter,sans-serif;color:#14210f}.wfb .hd small{display:block;font:400 11.5px Inter,sans-serif;color:#6f776b}
+.wfb .ph{display:flex;gap:8px;overflow-x:auto;scroll-snap-type:x mandatory;margin:10px 0;scrollbar-width:none}.wfb .ph::-webkit-scrollbar{display:none}.wfb .ph div{flex:none;width:100%;aspect-ratio:4/3.4;border-radius:22px;background:#E6EFD9 center/cover no-repeat;scroll-snap-align:start}.wfb .ph.m div{width:78%}
+.wfb h4{font:700 16px/1.3 Inter,sans-serif;color:#14210f;margin:8px 2px 4px}.wfb p{font:400 13.5px/1.55 Inter,sans-serif;color:#4a5546;margin:0 2px 10px}
+.wfa{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.wfa button{background:#F2F6EC;border-radius:999px;padding:8px 14px;font:600 12.5px Inter,sans-serif;color:#26331f}.wfa button.on{background:#A8DE6E;color:#17300f}
+.wfbar{position:sticky;bottom:12px;z-index:30;margin:14px auto 0;width:max-content;max-width:94%;display:flex;gap:4px;align-items:center;background:rgba(255,255,255,.94);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid #e3eadb;border-radius:999px;padding:6px;box-shadow:0 10px 30px rgba(20,40,10,.18)}
+.wfbar button{border-radius:999px;padding:11px 16px;font:600 13px Inter,sans-serif;color:#4a5546}.wfbar button.on{background:#14210f;color:#fff}.wfbar button.pl{background:#A8DE6E;color:#17300f;width:46px;height:46px;padding:0;font:700 24px Inter,sans-serif}
+#wfsv{position:fixed;inset:0;z-index:500;background:#000;display:flex;flex-direction:column}#wfsv .im{flex:1;background:#000 center/contain no-repeat;position:relative}#wfsv .bars{display:flex;gap:4px;padding:10px 12px 0}#wfsv .bars i{flex:1;height:3px;border-radius:3px;background:rgba(255,255,255,.35)}#wfsv .bars i.d{background:#fff}
+#wfsv .tp{position:absolute;top:22px;left:0;right:0;display:flex;align-items:center;gap:10px;padding:0 14px;color:#fff;font:600 14px Inter,sans-serif;z-index:3}#wfsv .tp small{font-weight:400;opacity:.8}#wfsv .tp button{margin-left:auto;color:#fff;font:400 30px/1 Inter,sans-serif;padding:4px 8px}
+#wfsv .z{position:absolute;top:60px;bottom:90px;width:40%;z-index:2}#wfsv .cap{position:absolute;left:0;right:0;bottom:0;padding:40px 18px calc(24px + env(safe-area-inset-bottom));background:linear-gradient(transparent,rgba(0,0,0,.7));color:#fff;font:400 15px/1.5 Inter,sans-serif;z-index:3}#wfsv .cap button{display:block;margin-top:10px;color:#ffb4a9;font:600 12.5px Inter,sans-serif}
+`;document.head.appendChild(st)}
+const wfBar=a=>`<div class="wfbar"><button class="${a==='wd'?'on':''}" data-a="wfgo" data-v="wd">Explore</button><button class="${a==='wffeed'?'on':''}" data-a="wfgo" data-v="wffeed">Travellers</button><button class="pl" data-a="wfnew" aria-label="Share">+</button><button data-a="wfmy">Profile</button></div>`;
+async function wfStLoad(force){if(S.wfSt&&!force&&Date.now()-(S.wfStT||0)<60000)return S.wfSt;try{const q=await F.getDocs(F.query(F.collection(db,'wd_stories'),F.where('exp','>',Date.now()),F.orderBy('exp','desc'),F.limit(60)));S.wfSt=q.docs.map(snap)}catch(e){S.wfSt=[]}S.wfStT=Date.now();return S.wfSt}
+async function wfStRow(sel){const el=$(sel);if(!el)return;const all=await wfStLoad(),g={};all.forEach(x=>(g[x.uid]=g[x.uid]||[]).push(x));const ids=Object.keys(g).sort((a,b)=>Math.max(...g[b].map(x=>x.ts))-Math.max(...g[a].map(x=>x.ts)));
+ try{await loadU(ids)}catch(e){}const el2=$(sel);if(!el2)return;
+ el2.innerHTML=`<button class="wfst add" data-a="wfsadd"><i>+</i>Add story</button>`+ids.map(u=>{const l=g[u].sort((a,b)=>a.ts-b.ts),last=l[l.length-1],us=S.U[u]||{name:last.by};return `<button class="wfst" data-a="wfsopen" data-u="${u}" style="${wdImgOk(last.img)?`background-image:url('${last.img}')`:''}"><span class="wa">${av(us,26)}</span><small>${E((us.name||last.by||'').split(' ')[0])}</small></button>`}).join('')}
+function wfSDraw(){let v=$('#wfsv');const o=S.wfSV;if(!o){v&&v.remove();clearTimeout(S.wfSTm);return}
+ if(!v){v=document.createElement('div');v.id='wfsv';document.body.appendChild(v)}const s=o.g[o.i],me=S.me||{},mine=s.uid===me.uid||S.admin;
+ v.innerHTML=`<div class="bars">${o.g.map((x,i)=>`<i class="${i<=o.i?'d':''}"></i>`).join('')}</div><div class="im" style="background-image:url('${E(s.img)}')"><div class="tp">${av(S.U[s.uid]||{name:s.by},34)}<span>${E(s.by||'Traveller')} <small>${wfAge(s.ts)}</small></span><button data-a="wfsx" aria-label="Close">×</button></div><div class="z" style="left:0" data-a="wfspv"></div><div class="z" style="right:0" data-a="wfsnx"></div><div class="cap">${E(s.cap||'')}${mine?`<button data-a="wfsdel" data-id="${s.id}">Delete story</button>`:''}</div></div>`;
+ clearTimeout(S.wfSTm);S.wfSTm=setTimeout(()=>ACT.wfsnx(),5500)}
+async function wfDraw(){const f=S.wfF||'All',el=$('#wflist');if(!el)return;const ps=(S.wfP||[]).filter(p=>f==='All'||(f==='Following'?!!(S.fol&&S.fol.has(p.uid)):p.kind===f));
+ try{await loadU([...new Set(ps.map(p=>p.uid))])}catch(e){}const e2=$('#wflist');if(!e2)return;
+ e2.innerHTML=ps.length?ps.map(p=>{const u=S.U[p.uid]||{name:p.by},ph=(p.ph||[]).filter(wdImgOk),liked=(p.lk||[]).includes((S.me||{}).uid);
+  return `<article class="wfb"><div class="hd"><button data-a="wfuser" data-id="${p.uid}">${av(u,40)}<span><b>${E(u.name||p.by||'Traveller')}</b>${u.ver?' <span class="wfk" style="background:#1c6fb3">Verified</span>':''}<small>${E([wfAge(p.ts),wdDest(p.dest)].filter(Boolean).join(' · '))}</small></span></button><span style="margin-left:auto;display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end">${wfTag(p.kind)}${wfRole(p.role)}</span></div>
+  ${ph.length?`<div class="ph ${ph.length>1?'m':''}">${ph.map(x=>`<div data-a="wfopen" data-id="${p.id}" style="background-image:url('${x}')"></div>`).join('')}</div>`:''}
+  <h4>${E(p.title)}</h4><p>${E((p.text||'').slice(0,140))}${(p.text||'').length>140?'…':''}</p><div class="wfa"><button class="${liked?'on':''}" data-a="wflk" data-id="${p.id}">${liked?'Liked':'Like'} · ${(p.lk||[]).length}</button><button data-a="wfopen" data-id="${p.id}">${p.kind==='ask'?'Answer':'Open'}</button>${p.kind==='buddy'||p.kind==='ride'?`<button data-a="wfopen" data-id="${p.id}">Join · ${(p.jn||[]).length}</button>`:''}</div></article>`}).join(''):`<div class="wdem">${S.wfErr?'Travellers is not enabled yet: the app owner must publish the Firestore rules.':'Nothing here yet.<br>Be the first to share a story, route or alert.'}</div>`}
+V.wffeed=async()=>{const f=S.wfF||'All';app.innerHTML=`<div class="wdv">${wdHdr('Travellers')}<div class="wfsr" id="wfsr"></div><div class="wdchips2">${['All','Following',...Object.keys(WFK)].map(k=>`<button class="${k===f?'on':''}" data-a="wffil" data-k="${k}">${(k==='All'||k==='Following')?k:WFK[k]}</button>`).join('')}</div><div class="wfl" id="wflist"><div class="wdem">Loading…</div></div>${wfBar('wffeed')}</div>`;
+ wfStRow('#wfsr');if(!S.fol)try{await loadSoc()}catch(e){}await wfLoad(true);if(S.view==='wffeed')wfDraw()};
+const _wd2=V.wd;V.wd=function(){_wd2.apply(this,arguments);const h=$('.wdh'),v=$('#wdv');if(!h||!v)return;h.insertAdjacentHTML('afterend','<div class="wfsr" id="wfsr2"></div>');v.insertAdjacentHTML('beforeend',wfBar('wd'));wfStRow('#wfsr2')};
+Object.assign(ACT,{
+ wfgo(d){nav(d.v)},wffil(d){S.wfF=d.k;V.wffeed()},
+ wfsopen(d){const g=(S.wfSt||[]).filter(x=>x.uid===d.u).sort((a,b)=>a.ts-b.ts);if(!g.length)return;S.wfSV={g,i:0};wfSDraw()},
+ wfsx(){S.wfSV=null;wfSDraw()},
+ wfsnx(){const o=S.wfSV;if(!o)return;if(o.i>=o.g.length-1){ACT.wfsx();return}o.i++;wfSDraw()},
+ wfspv(){const o=S.wfSV;if(!o)return;o.i=Math.max(0,o.i-1);wfSDraw()},
+ async wfsdel(d){if(!confirm('Delete this story?'))return;try{await F.deleteDoc(F.doc(db,'wd_stories',d.id));S.wfSt=null;ACT.wfsx();toast('Story deleted');wfStRow($('#wfsr')?'#wfsr':'#wfsr2')}catch(e){toast('Could not delete',e.code||'')}},
+ wfsadd(){const me=S.me;if(!me)return;if((S.wfSt||[]).filter(x=>x.uid===me.uid).length>=5)return toast('Limit reached','You can have 5 stories at a time');
+  pickImg(async f=>{try{let u=await shrink(f,720,.65);if(u.length>240000)u=await shrink(f,560,.5);if(u.length>240000)return toast('Photo too large','Try a smaller photo');const cap=(prompt('Caption (optional, up to 80 characters)')||'').trim().slice(0,80),ts=Date.now();
+   await F.addDoc(F.collection(db,'wd_stories'),{uid:me.uid,by:me.name||'',img:u,cap,ts,exp:ts+864e5});S.wfSt=null;toast('Story added','Visible for 24 hours');wfStRow($('#wfsr')?'#wfsr':'#wfsr2')}catch(e){toast('Could not add story',e.code==='permission-denied'?'Publish the Firestore rules for wd_stories':(e.code||''))}})},
+ async wflk(d){const p=(S.wfP||[]).find(x=>x.id===d.id),uid=S.me.uid;if(!p)return;const has=(p.lk||[]).includes(uid);try{await F.updateDoc(F.doc(db,'wd_feed',d.id),{lk:has?F.arrayRemove(uid):F.arrayUnion(uid)});p.lk=has?p.lk.filter(x=>x!==uid):[...(p.lk||[]),uid];wfDraw()}catch(e){toast('Could not update',e.code||'')}}
+});
+
 }
 
 /* ===== NIJØK STUDY (inside Quiz) — start ===== */
