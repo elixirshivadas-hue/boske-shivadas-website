@@ -3960,21 +3960,366 @@ Object.assign(ACT,{
 });
 setTimeout(()=>{const _xs=ACT.xs;if(_xs)ACT.xs=function(){if(S.view==='explore'){const q=(($('#xq')||{}).value||'').trim();if(q)return nav('usearch',{q})}return _xs.apply(this,arguments)}},0);
 const _wd5=V.wd;V.wd=function(){_wd5.apply(this,arguments);const q=$('#wdq');if(!q)return;q.readOnly=true;q.placeholder='Search places, stories, rides, people…';q.setAttribute('aria-label','Search everything');q.onclick=q.onfocus=()=>nav('usearch',{q:''})};
-/* ===== NK-CPROF: Telegram-style chat profile (Posts / Media / Saved / Links) ===== */
+/* ===== NK-QUIZ-300: 300 more questions (duplicates skipped) ===== */
+{const B={world:`
+Capital of Italy?|Rome|Milan|Venice|Naples
+Capital of Spain?|Madrid|Barcelona|Seville|Valencia
+Capital of Russia?|Moscow|St Petersburg|Kazan|Sochi
+Capital of China?|Beijing|Shanghai|Hong Kong|Guangzhou
+Capital of Turkey?|Ankara|Istanbul|Izmir|Antalya
+Capital of Argentina?|Buenos Aires|Santiago|Lima|Montevideo
+Capital of Kenya?|Nairobi|Mombasa|Kampala|Dodoma
+Capital of Thailand?|Bangkok|Phuket|Chiang Mai|Hanoi
+Capital of Nepal?|Kathmandu|Pokhara|Lalitpur|Biratnagar
+Capital of Bangladesh?|Dhaka|Chittagong|Sylhet|Khulna
+Capital of Pakistan?|Islamabad|Karachi|Lahore|Rawalpindi
+Capital of Iran?|Tehran|Isfahan|Tabriz|Shiraz
+Capital of Saudi Arabia?|Riyadh|Jeddah|Mecca|Dammam
+Capital of Greece?|Athens|Thessaloniki|Sparta|Patras
+Capital of Portugal?|Lisbon|Porto|Faro|Coimbra
+Capital of Switzerland?|Bern|Zurich|Geneva|Basel
+Capital of Mexico?|Mexico City|Guadalajara|Cancún|Monterrey
+Capital of Vietnam?|Hanoi|Ho Chi Minh City|Da Nang|Hue
+Capital of South Korea?|Seoul|Busan|Incheon|Daegu
+Currency of Russia?|Ruble|Rupee|Zloty|Lira
+Currency of China?|Yuan|Yen|Won|Dong
+Currency of Switzerland?|Swiss franc|Euro|Krone|Pound
+Currency of South Korea?|Won|Yen|Yuan|Baht
+Currency of Thailand?|Baht|Ringgit|Dong|Rupiah
+Currency of Saudi Arabia?|Riyal|Dinar|Dirham|Rupee
+Who painted "The Starry Night"?|Vincent van Gogh|Claude Monet|Pablo Picasso|Salvador Dalí
+Who painted "Guernica"?|Pablo Picasso|Salvador Dalí|Henri Matisse|Joan Miró
+Who wrote "1984"?|George Orwell|Aldous Huxley|Ray Bradbury|H. G. Wells
+Who wrote "Harry Potter"?|J. K. Rowling|J. R. R. Tolkien|Roald Dahl|C. S. Lewis
+Which explorer reached the Americas in 1492?|Christopher Columbus|Vasco da Gama|Ferdinand Magellan|James Cook
+First President of the USA?|George Washington|Abraham Lincoln|Thomas Jefferson|John Adams
+British Prime Minister for most of World War II?|Winston Churchill|Neville Chamberlain|Clement Attlee|Margaret Thatcher
+The French Revolution began in?|1789|1776|1804|1815
+The Titanic sank in?|1912|1905|1920|1898
+The Berlin Wall fell in?|1989|1961|1991|1975
+World War I began in?|1914|1905|1920|1939
+The Colosseum is in which country?|Italy|Greece|Spain|Turkey
+Machu Picchu is in?|Peru|Chile|Bolivia|Mexico
+The Pyramids of Giza are in?|Egypt|Sudan|Libya|Jordan
+The Sydney Opera House is in?|Australia|New Zealand|Canada|UK
+The Burj Khalifa is in?|Dubai|Abu Dhabi|Doha|Riyadh
+Big Ben is in?|London|Paris|Dublin|Edinburgh
+Which country is famous for tulips?|Netherlands|Belgium|Denmark|Norway
+Language spoken in Brazil?|Portuguese|Spanish|English|French
+Official language of Egypt?|Arabic|Persian|Turkish|Hebrew
+Official language of Iran?|Persian|Arabic|Urdu|Turkish
+Which Spanish festival has a tomato fight?|La Tomatina|Oktoberfest|Carnival|Running of the Bulls
+Largest country in South America?|Brazil|Argentina|Peru|Colombia
+Which continent has the most countries?|Africa|Asia|Europe|South America
+Most populous country in Africa?|Nigeria|Egypt|Ethiopia|South Africa
+How many rings are in the Olympic logo?|5|4|6|7
+The 2024 Summer Olympics were held in?|Paris|Tokyo|Los Angeles|London
+Who won the 2022 FIFA World Cup?|Argentina|France|Brazil|Croatia
+Wimbledon is associated with which sport?|Tennis|Cricket|Golf|Football
+Which country has won the most FIFA World Cups?|Brazil|Germany|Italy|Argentina
+How many players are on the field for one football team?|11|10|12|9
+`,india:`
+Capital of Tamil Nadu?|Chennai|Madurai|Coimbatore|Trichy
+Capital of Kerala?|Thiruvananthapuram|Kochi|Kozhikode|Thrissur
+Capital of West Bengal?|Kolkata|Howrah|Siliguri|Durgapur
+Capital of Gujarat?|Gandhinagar|Ahmedabad|Surat|Vadodara
+Capital of Rajasthan?|Jaipur|Jodhpur|Udaipur|Kota
+Capital of Uttar Pradesh?|Lucknow|Kanpur|Varanasi|Agra
+Capital of Bihar?|Patna|Gaya|Ranchi|Bhagalpur
+Capital of Madhya Pradesh?|Bhopal|Indore|Gwalior|Jabalpur
+Capital of Assam?|Dispur|Guwahati|Silchar|Jorhat
+Capital of Goa?|Panaji|Margao|Vasco|Mapusa
+Capital of Himachal Pradesh?|Shimla|Manali|Dharamshala|Solan
+Capital of Chhattisgarh?|Raipur|Bilaspur|Bhilai|Durg
+Capital of Jharkhand?|Ranchi|Jamshedpur|Dhanbad|Bokaro
+Capital of Nagaland?|Kohima|Dimapur|Mokokchung|Wokha
+Capital of Sikkim?|Gangtok|Namchi|Pelling|Mangan
+Capital of Meghalaya?|Shillong|Tura|Jowai|Nongpoh
+First President of India?|Dr Rajendra Prasad|S. Radhakrishnan|Zakir Husain|V. V. Giri
+First woman President of India?|Pratibha Patil|Droupadi Murmu|Indira Gandhi|Sarojini Naidu
+Chairman of the Constitution Drafting Committee?|B. R. Ambedkar|Jawaharlal Nehru|Sardar Patel|Rajendra Prasad
+Who is known as the Iron Man of India?|Sardar Vallabhbhai Patel|Subhas Chandra Bose|Bhagat Singh|Lal Bahadur Shastri
+Who gave the slogan "Jai Jawan Jai Kisan"?|Lal Bahadur Shastri|Jawaharlal Nehru|Indira Gandhi|Atal Bihari Vajpayee
+Who founded the Maurya Empire?|Chandragupta Maurya|Ashoka|Bindusara|Chanakya
+The Battle of Plassey was fought in?|1757|1857|1764|1739
+The Jallianwala Bagh massacre happened in?|1919|1905|1930|1942
+The Quit India Movement began in?|1942|1930|1920|1947
+The Dandi March was led by?|Mahatma Gandhi|Subhas Bose|Jawaharlal Nehru|Sardar Patel
+Who built the Red Fort in Delhi?|Shah Jahan|Akbar|Humayun|Aurangzeb
+Who began building the Qutub Minar?|Qutb ud-Din Aibak|Akbar|Shah Jahan|Alauddin Khilji
+Hawa Mahal is in?|Jaipur|Jodhpur|Udaipur|Jaisalmer
+The Golden Temple is in?|Amritsar|Ludhiana|Patiala|Chandigarh
+The Konark Sun Temple is in?|Odisha|Tamil Nadu|Karnataka|Gujarat
+Meenakshi Temple is in?|Madurai|Chennai|Thanjavur|Rameswaram
+Hampi is in which state?|Karnataka|Tamil Nadu|Telangana|Andhra Pradesh
+Ajanta and Ellora caves are in?|Maharashtra|Madhya Pradesh|Gujarat|Karnataka
+The Statue of Unity is in?|Gujarat|Maharashtra|Rajasthan|Madhya Pradesh
+Kaziranga National Park is famous for?|One-horned rhino|Tiger|Asiatic lion|Elephant
+Gir forest is famous for?|Asiatic lion|Bengal tiger|Snow leopard|Red panda
+Jim Corbett National Park is in?|Uttarakhand|Himachal Pradesh|Rajasthan|Assam
+Most populous state of India?|Uttar Pradesh|Maharashtra|Bihar|West Bengal
+Smallest Indian state by area?|Goa|Sikkim|Tripura|Manipur
+Which river is called the Dakshina Ganga?|Godavari|Krishna|Kaveri|Narmada
+Hirakud Dam is built on which river?|Mahanadi|Godavari|Krishna|Tungabhadra
+Bhakra Nangal Dam is built on which river?|Sutlej|Beas|Ravi|Yamuna
+Who won India's first individual Olympic gold in 2008?|Abhinav Bindra|Neeraj Chopra|Sushil Kumar|Leander Paes
+Who won javelin gold at Tokyo 2020?|Neeraj Chopra|Sumit Antil|Devendra Jhajharia|Arshad Nadeem
+Who captained India in the 1983 Cricket World Cup win?|Kapil Dev|Sunil Gavaskar|M. S. Dhoni|Sourav Ganguly
+Who captained India in the 2011 Cricket World Cup win?|M. S. Dhoni|Virat Kohli|Rahul Dravid|Kapil Dev
+Who is called the Master Blaster?|Sachin Tendulkar|Virat Kohli|Rohit Sharma|Sourav Ganguly
+Who wrote "The Discovery of India"?|Jawaharlal Nehru|Mahatma Gandhi|Rabindranath Tagore|S. Radhakrishnan
+Who wrote "Gitanjali"?|Rabindranath Tagore|Premchand|Sarojini Naidu|Bankim Chandra
+Who wrote "Godan"?|Premchand|Harivansh Rai Bachchan|Mahadevi Verma|Jaishankar Prasad
+First Indian to win a Nobel Prize?|Rabindranath Tagore|C. V. Raman|Mother Teresa|Amartya Sen
+Most spoken native language in India?|Hindi|Bengali|Telugu|Marathi
+Kathakali is a dance form of?|Kerala|Tamil Nadu|Karnataka|Odisha
+Bharatanatyam is from?|Tamil Nadu|Kerala|Odisha|Manipur
+Kuchipudi is from?|Andhra Pradesh|Kerala|Gujarat|Assam
+Bihu is a festival of?|Assam|Bengal|Odisha|Sikkim
+Onam is a festival of?|Kerala|Karnataka|Goa|Tamil Nadu
+Pongal is mainly celebrated in?|Tamil Nadu|Punjab|Gujarat|Assam
+Bonalu is a festival of?|Telangana|Odisha|Kerala|Goa
+Ganesh Chaturthi is celebrated grandly in?|Maharashtra|Punjab|Nagaland|Kerala
+Durga Puja is celebrated grandly in?|West Bengal|Rajasthan|Gujarat|Goa
+`,geo:`
+Longest river in Asia?|Yangtze|Ganga|Mekong|Indus
+Largest river by volume of water?|Amazon|Nile|Yangtze|Congo
+Which river flows through London?|Thames|Seine|Rhine|Danube
+Which river flows through Paris?|Seine|Thames|Rhine|Loire
+Which river flows through Baghdad?|Tigris|Euphrates|Nile|Jordan
+Which river flows through Delhi?|Yamuna|Ganga|Sutlej|Narmada
+Which river flows through Hyderabad?|Musi|Godavari|Krishna|Tungabhadra
+Which river flows through Varanasi?|Ganga|Yamuna|Narmada|Kaveri
+Which river flows through Ahmedabad?|Sabarmati|Narmada|Tapi|Mahi
+The Ganga originates from?|Gangotri Glacier|Amarkantak|Mansarovar|Nanda Devi
+Longest peninsular river of India?|Godavari|Krishna|Kaveri|Mahanadi
+Chilika Lake is in?|Odisha|Andhra Pradesh|Kerala|Tamil Nadu
+Dal Lake is in?|Srinagar|Leh|Shimla|Nainital
+Which desert covers most of northern Africa?|Sahara|Kalahari|Namib|Gobi
+The Atacama Desert is in?|Chile|Peru|Argentina|Bolivia
+Coldest continent?|Antarctica|Asia|Europe|North America
+Which mountains separate Europe and Asia?|Ural Mountains|Alps|Himalayas|Andes
+The Andes are in?|South America|Africa|Asia|Europe
+The Alps are in?|Europe|Asia|Africa|North America
+The Rocky Mountains are in?|North America|Europe|Asia|Australia
+Highest mountain in North America?|Denali|Mount Logan|Mount Whitney|Pico de Orizaba
+Which strait separates India and Sri Lanka?|Palk Strait|Strait of Malacca|Bering Strait|Hormuz
+The Bering Strait separates Asia and?|North America|Africa|Europe|Australia
+Which ocean lies between Africa and Australia?|Indian Ocean|Atlantic|Pacific|Arctic
+Which sea lies between Europe and Africa?|Mediterranean Sea|Black Sea|Red Sea|Caspian Sea
+Which sea lies between India and Arabia?|Arabian Sea|Bay of Bengal|Red Sea|Andaman Sea
+Largest country in Africa by area?|Algeria|Sudan|DR Congo|Libya
+Smallest country in Asia by area?|Maldives|Singapore|Bahrain|Brunei
+Which country has the longest coastline?|Canada|Russia|Indonesia|Australia
+Which country is called the Land of Thousand Lakes?|Finland|Norway|Sweden|Canada
+Which country is called the Land of the Thunder Dragon?|Bhutan|Nepal|Tibet|Myanmar
+Which country is called the Land of White Elephants?|Thailand|Myanmar|Laos|Cambodia
+Which city is called the Eternal City?|Rome|Athens|Paris|Cairo
+Which city is called the City of Joy?|Kolkata|Mumbai|Delhi|Chennai
+Which city is called the Pink City?|Jaipur|Jodhpur|Udaipur|Jaisalmer
+Which city is called the City of Lakes in India?|Udaipur|Jaipur|Bhopal|Hyderabad
+Which city is called the Silicon Valley of India?|Bengaluru|Hyderabad|Pune|Chennai
+Which city is called the Manchester of India?|Ahmedabad|Mumbai|Kanpur|Surat
+Which city is called the Big Apple?|New York|Chicago|Los Angeles|Boston
+Which city is called the Windy City?|Chicago|New York|Boston|Seattle
+Latitude 0° is called?|Equator|Prime Meridian|Tropic of Cancer|Arctic Circle
+Which line lies near 180° longitude?|International Date Line|Equator|Prime Meridian|Tropic of Capricorn
+The Tropic of Capricorn lies in which hemisphere?|Southern|Northern|Eastern|Western
+Capital of the Maldives?|Malé|Colombo|Kandy|Dhaka
+Indian Standard Time is offset from UTC by?|+5:30|+5:00|+6:00|+4:30
+Through which state does the Tropic of Cancer NOT pass?|Telangana|Rajasthan|Gujarat|West Bengal
+Which is the largest Indian state by area after Rajasthan?|Madhya Pradesh|Maharashtra|Uttar Pradesh|Gujarat
+Which Indian state is the largest producer of tea?|Assam|Kerala|Karnataka|Himachal Pradesh
+Which Indian state is the largest producer of coffee?|Karnataka|Kerala|Tamil Nadu|Assam
+Which state is the largest producer of wheat in India?|Uttar Pradesh|Punjab|Haryana|Rajasthan
+Which state is known for the Rann of Kutch?|Gujarat|Rajasthan|Maharashtra|Madhya Pradesh
+Which country has the city of Timbuktu?|Mali|Niger|Sudan|Chad
+The Great Barrier Reef is off the coast of?|Australia|Brazil|Indonesia|Mexico
+Which ocean has the Mariana Trench?|Pacific|Atlantic|Indian|Arctic
+Which continent is the Amazon River in?|South America|Africa|Asia|Europe
+Which river passes through the Grand Canyon?|Colorado River|Mississippi|Missouri|Columbia
+Which country has the Dead Sea coast on its west?|Israel|Jordan|Syria|Iraq
+`,geop:`
+The United Nations was founded in?|1945|1919|1950|1939
+The League of Nations was replaced by?|United Nations|NATO|European Union|SAARC
+How many member states does the UN have?|193|195|180|200
+The UK formally left the EU in?|2020|2016|2018|2022
+The Cold War was mainly between the USA and?|Soviet Union|China|Germany|Japan
+The USSR dissolved in?|1991|1989|1985|2000
+The Berlin Wall divided?|East and West Berlin|India and Pakistan|North and South Korea|Vietnam
+Korea was divided along which parallel?|38th|17th|49th|30th
+Vietnam was divided at which parallel?|17th|38th|49th|20th
+The Panchsheel agreement was signed between India and?|China|Pakistan|Russia|USA
+The Tashkent Agreement of 1966 was between India and?|Pakistan|China|Bangladesh|Nepal
+The Simla Agreement of 1972 was between India and?|Pakistan|China|Bangladesh|Sri Lanka
+India's Look East policy was renamed?|Act East Policy|Neighbourhood First|Link West|Think West
+Which neighbour shares the longest border with India?|Bangladesh|China|Pakistan|Nepal
+Which of these does NOT share a land border with India?|Sri Lanka|Nepal|Myanmar|Bhutan
+The Radcliffe Line separates India and?|Pakistan|China|Nepal|Myanmar
+The Line of Actual Control (LAC) is with?|China|Pakistan|Bangladesh|Nepal
+SCO stands for?|Shanghai Cooperation Organisation|South Central Organisation|Strategic Cooperation Organisation|Shanghai Customs Organisation
+NAM stands for?|Non-Aligned Movement|National Army Mission|New Asian Market|North Atlantic Mission
+Which Indian leader was a founder of the Non-Aligned Movement?|Jawaharlal Nehru|Indira Gandhi|Rajiv Gandhi|Morarji Desai
+AUKUS includes the USA, the UK and?|Australia|Canada|Japan|India
+I2U2 includes India, Israel, the USA and?|UAE|Russia|Iran|Saudi Arabia
+OPEC is headquartered in?|Vienna|Geneva|Riyadh|Dubai
+The Asian Development Bank is headquartered in?|Manila|Tokyo|Beijing|Jakarta
+The BRICS New Development Bank is headquartered in?|Shanghai|New Delhi|Moscow|Brasília
+The AIIB is headquartered in?|Beijing|Shanghai|Singapore|Mumbai
+Interpol is headquartered in?|Lyon|Paris|Geneva|Brussels
+FIFA is headquartered in?|Zurich|Paris|London|Geneva
+The International Olympic Committee is headquartered in?|Lausanne|Geneva|Paris|Zurich
+The Red Cross is headquartered in?|Geneva|Paris|Brussels|New York
+UNICEF is headquartered in?|New York|Geneva|Paris|Rome
+FAO is headquartered in?|Rome|Geneva|Paris|Vienna
+The IAEA is headquartered in?|Vienna|Geneva|Paris|The Hague
+The ILO is headquartered in?|Geneva|Paris|Rome|Vienna
+Which country has the largest economy by nominal GDP?|USA|China|India|Germany
+Which is the most used reserve currency?|US dollar|Euro|Yen|Pound
+Which of these is NOT a permanent member of the UN Security Council?|India|France|Russia|China
+Which Asian country is in the G7?|Japan|India|China|South Korea
+Which of these is NOT in the European Union?|Norway|France|Spain|Poland
+The Schengen visa allows travel within?|Europe|Asia|Africa|South America
+Which is the world's largest democracy by population?|India|USA|Indonesia|Brazil
+The Suez Canal opened in?|1869|1914|1850|1900
+The Panama Canal opened in?|1914|1869|1900|1930
+Which treaty formally ended World War I with Germany?|Treaty of Versailles|Treaty of Paris|Treaty of Rome|Treaty of Vienna
+The Marshall Plan was an aid programme of?|USA|USSR|UK|France
+NPT stands for?|Nuclear Non-Proliferation Treaty|National Peace Treaty|New Power Treaty|Nuclear Navy Pact
+The Paris Agreement deals with?|Climate change|Trade|Nuclear weapons|Maritime law
+The Kyoto Protocol deals with?|Greenhouse gas emissions|Trade|Space|Fisheries
+COP in climate talks stands for?|Conference of the Parties|Council of Peace|Congress of Powers|Committee on Policy
+Which of these is an ASEAN member?|Indonesia|India|Japan|China
+Which of these is a Commonwealth member?|India|USA|Japan|Germany
+Where is the Commonwealth Secretariat based?|London|New Delhi|Sydney|Ottawa
+The Arab League is headquartered in?|Cairo|Riyadh|Dubai|Doha
+The African Union is headquartered in?|Addis Ababa|Nairobi|Cairo|Abuja
+Which organisation has its seat at Strasbourg for its Parliament sessions?|European Union|NATO|ASEAN|BRICS
+Which country hosts the headquarters of NATO's military command SHAPE?|Belgium|France|Germany|Italy
+Where is the Nobel Peace Prize awarded?|Oslo|Stockholm|Geneva|Copenhagen
+`,sci:`
+Chemical symbol of silver?|Ag|Au|Si|Sv
+Chemical symbol of iron?|Fe|Ir|In|I
+Chemical symbol of potassium?|K|P|Po|Pt
+Chemical symbol of lead?|Pb|Pl|Le|Ld
+Chemical symbol of mercury?|Hg|Me|Mc|Mr
+Atomic number of hydrogen?|1|2|0|3
+Lightest element?|Hydrogen|Helium|Lithium|Oxygen
+Most abundant element in the universe?|Hydrogen|Helium|Oxygen|Carbon
+Most abundant metal in Earth's crust?|Aluminium|Iron|Copper|Sodium
+Gas we breathe out?|Carbon dioxide|Oxygen|Nitrogen|Hydrogen
+Gas that supports burning?|Oxygen|Nitrogen|Helium|Neon
+Chemical name of common salt?|Sodium chloride|Sodium carbonate|Calcium chloride|Potassium chloride
+Baking soda is?|Sodium bicarbonate|Sodium chloride|Calcium carbonate|Sodium hydroxide
+Rusting of iron is an example of?|Oxidation|Reduction|Evaporation|Condensation
+Which acid is found in lemon?|Citric acid|Acetic acid|Lactic acid|Tartaric acid
+Which acid is found in vinegar?|Acetic acid|Citric acid|Formic acid|Lactic acid
+Which acid is found in curd?|Lactic acid|Citric acid|Acetic acid|Oxalic acid
+Which metal is liquid at room temperature?|Mercury|Sodium|Lead|Zinc
+Which metal is the best conductor of electricity?|Silver|Copper|Gold|Aluminium
+SI unit of force?|Newton|Joule|Watt|Pascal
+SI unit of energy?|Joule|Newton|Watt|Pascal
+SI unit of power?|Watt|Joule|Newton|Volt
+SI unit of frequency?|Hertz|Decibel|Tesla|Farad
+SI unit of resistance?|Ohm|Ampere|Volt|Henry
+Sound loudness is measured in?|Decibel|Hertz|Tesla|Lux
+Speed of sound in air is about?|343 m/s|3,000 m/s|34 m/s|1,500 m/s
+Who discovered penicillin?|Alexander Fleming|Louis Pasteur|Robert Koch|Edward Jenner
+Who developed the smallpox vaccine?|Edward Jenner|Louis Pasteur|Joseph Lister|Alexander Fleming
+Who discovered the electron?|J. J. Thomson|Ernest Rutherford|Niels Bohr|James Chadwick
+Who discovered the atomic nucleus?|Ernest Rutherford|J. J. Thomson|Niels Bohr|James Chadwick
+Who invented the telephone?|Alexander Graham Bell|Thomas Edison|Nikola Tesla|Guglielmo Marconi
+Who is credited with the practical light bulb?|Thomas Edison|Nikola Tesla|Alexander Graham Bell|Michael Faraday
+Who is called the Father of Computers?|Charles Babbage|Alan Turing|Bill Gates|Steve Jobs
+Father of the Indian Space Programme?|Vikram Sarabhai|A. P. J. Abdul Kalam|Homi Bhabha|Satish Dhawan
+Father of the Indian nuclear programme?|Homi J. Bhabha|Vikram Sarabhai|C. V. Raman|Meghnad Saha
+C. V. Raman won the Nobel Prize for work on?|Scattering of light|Relativity|Radioactivity|Gravity
+Largest planet in the solar system?|Jupiter|Saturn|Neptune|Uranus
+Hottest planet in the solar system?|Venus|Mercury|Mars|Jupiter
+Which planet has the Great Red Spot?|Jupiter|Mars|Saturn|Neptune
+Earth's natural satellite?|Moon|Phobos|Titan|Europa
+Chandrayaan-3 was launched in?|2023|2019|2021|2025
+First Indian astronaut in space?|Rakesh Sharma|Kalpana Chawla|Sunita Williams|Ravish Malhotra
+First human in space?|Yuri Gagarin|Neil Armstrong|Alan Shepard|Valentina Tereshkova
+Name of our galaxy?|Milky Way|Andromeda|Whirlpool|Sombrero
+Sunlight takes about how long to reach Earth?|8 minutes|8 seconds|1 hour|1 day
+Largest organ of the human body?|Skin|Liver|Heart|Lungs
+Largest gland in the human body?|Liver|Pancreas|Thyroid|Spleen
+Smallest bone of the human body is in the?|Ear|Nose|Finger|Toe
+Normal human body temperature?|37°C|35°C|40°C|30°C
+Which blood cells carry oxygen?|Red blood cells|White blood cells|Platelets|Plasma
+Deficiency of Vitamin C causes?|Scurvy|Night blindness|Rickets|Beriberi
+Deficiency of Vitamin A causes?|Night blindness|Scurvy|Rickets|Beriberi
+Deficiency of Vitamin D causes?|Rickets|Scurvy|Night blindness|Anaemia
+Iron deficiency causes?|Anaemia|Goitre|Scurvy|Rickets
+Iodine deficiency causes?|Goitre|Anaemia|Rickets|Scurvy
+Insulin is produced by the?|Pancreas|Liver|Kidney|Stomach
+Which organ filters blood to make urine?|Kidney|Liver|Heart|Lungs
+Pigment that makes plants green?|Chlorophyll|Haemoglobin|Melanin|Carotene
+Which plant part absorbs water from soil?|Roots|Leaves|Flowers|Fruits
+Study of plants is called?|Botany|Zoology|Ecology|Genetics
+Study of birds is called?|Ornithology|Entomology|Herpetology|Ichthyology
+Which mosquito spreads malaria?|Anopheles|Aedes|Culex|Tsetse
+Which mosquito spreads dengue?|Aedes|Anopheles|Culex|Tsetse
+Fastest land animal?|Cheetah|Lion|Horse|Leopard
+Largest living bird?|Ostrich|Eagle|Emu|Albatross
+`};
+QT.forEach(t=>{const L=B[t[0]];if(!L)return;const seen=new Set(t[6].map(q=>q[0].toLowerCase()));L.trim().split('\n').forEach(l=>{const a=l.split('|').map(s=>s.trim());if(a.length!==5||seen.has(a[0].toLowerCase())||new Set(a.slice(1)).size!==4)return;seen.add(a[0].toLowerCase());t[6].push(a)})})}
+/* ===== NK-CPROF: premium chat profile (Posts / Media / Saved / Links) ===== */
 {
-document.head.insertAdjacentHTML('beforeend',`<style id="nkcps">.nkcp{background:#f0f1f4;min-height:100%;padding:8px 12px 90px;color:#14210f;font-family:Inter,sans-serif}.nkcp .tb button{font-size:22px;padding:8px}.nkcp .hd2{text-align:center;padding:0 0 14px}.nkcp .hd2 h2{font:600 24px Inter,sans-serif;margin:10px 0 2px}.nkcp .hd2 small{color:#6f776b;font-size:14px}.nkcp .ac{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.nkcp .ac button{background:#fff;border-radius:18px;padding:14px 6px;font:500 13px Inter,sans-serif;display:flex;flex-direction:column;align-items:center;gap:6px;color:inherit}.nkcp .ac i{font-style:normal;font-size:22px}.nkcp .cd{background:#fff;border-radius:22px;padding:14px 18px;margin-top:12px}.nkcp .cd b{display:block;font:400 16px/1.4 Inter,sans-serif}.nkcp .cd small{color:#6f776b;font-size:13px}.nkcp .cd hr{border:0;border-top:1px solid #eef0ee;margin:12px 0}.nkcp .tg{display:flex;gap:4px;background:#fff;border-radius:24px;padding:5px;margin:16px 0 10px}.nkcp .tg button{flex:1;padding:9px 6px;border-radius:18px;font:500 14px Inter,sans-serif;color:#6f776b}.nkcp .tg button.on{background:#dcecf9;color:#2a86c9}.nkcp .gr{display:grid;grid-template-columns:repeat(3,1fr);gap:3px}.nkcp .gr i{aspect-ratio:1;background:#ddd center/cover;border-radius:8px}.nkcp .li{display:block;background:#fff;border-radius:14px;padding:12px 14px;margin-bottom:8px;font:400 14px/1.4 Inter,sans-serif;word-break:break-word;color:inherit}.nkcp .li small{display:block;color:#6f776b;font-size:12px;margin-top:2px}.nkcp .em{text-align:center;color:#6f776b;font-size:13px;padding:26px 10px}html.night .nkcp{background:#08150f;color:#e8f1ec}html.night .nkcp .ac button,html.night .nkcp .cd,html.night .nkcp .tg,html.night .nkcp .li{background:#10261c}html.night .nkcp .tg button.on{background:#1f4a37;color:#bfe9d0}</style>`);
+document.head.insertAdjacentHTML('beforeend',`<style id="nkcps">
+.nkz,.nkz *{box-sizing:border-box}.nkz{position:relative;min-height:100%;padding:0 16px 96px;background:#f4f1e8;color:#14210f;font-family:Inter,system-ui,sans-serif;-webkit-tap-highlight-color:transparent}
+.nkz button,.nkz a{all:unset;box-sizing:border-box;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.nkz-hero{position:relative;margin:0 -16px;padding:14px 16px 62px;background:linear-gradient(160deg,#0b3d2e 0%,#14684a 58%,#2f8f62 100%);border-radius:0 0 34px 34px;text-align:center;overflow:hidden;color:#fff}
+.nkz-hero:before,.nkz-hero:after{content:"";position:absolute;border-radius:50%;background:#ffffff12}.nkz-hero:before{width:220px;height:220px;right:-70px;top:-80px}.nkz-hero:after{width:160px;height:160px;left:-60px;bottom:-70px}
+.nkz-bk{position:relative;z-index:2;display:flex;align-items:center;justify-content:center;width:42px;height:42px;border-radius:50%;background:#ffffff26;color:#fff;backdrop-filter:blur(8px);transition:transform .15s}
+.nkz-bk:active{transform:scale(.92)}
+.nkz-av{position:relative;z-index:1;width:104px;height:104px;margin:2px auto 0;border-radius:50%;padding:4px;background:#fff;box-shadow:0 10px 28px #0005}
+.nkz-av>*{width:100%!important;height:100%!important;border-radius:50%!important;font-size:42px!important;display:flex!important;align-items:center;justify-content:center;overflow:hidden}
+.nkz-av img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.nkz-hero h2{position:relative;z-index:1;margin:14px 0 2px;font:700 25px/1.2 Inter,sans-serif;color:#fff;letter-spacing:-.01em}
+.nkz-hero p{position:relative;z-index:1;margin:0;font:500 13.5px Inter,sans-serif;color:#cfe9da}
+.nkz-ac{position:relative;z-index:2;display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:-34px}
+.nkz-ac button{display:flex;flex-direction:column;align-items:center;gap:8px;padding:14px 6px 12px;border-radius:22px;background:#fff;box-shadow:0 8px 22px #0b3d2e1f;font:600 12.5px Inter,sans-serif;color:#14210f;transition:transform .15s,box-shadow .15s}
+.nkz-ac button:active{transform:scale(.95);box-shadow:0 3px 10px #0b3d2e1f}
+.nkz-ic{display:flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:15px}
+.nkz-card{margin-top:16px;padding:6px 18px;border-radius:24px;background:#fff;box-shadow:0 6px 20px #0b3d2e14}
+.nkz-row{display:flex;align-items:center;gap:14px;padding:14px 0}.nkz-row+.nkz-row{border-top:1px solid #eef0e8}
+.nkz-row .nkz-ic{width:38px;height:38px;border-radius:12px;flex:none;background:#e9f3ec;color:#14684a}
+.nkz-row b{display:block;font:500 15.5px/1.4 Inter,sans-serif;color:#14210f;word-break:break-word}.nkz-row b.m{color:#8a9387}
+.nkz-row small{display:block;margin-top:1px;font:500 12px Inter,sans-serif;color:#7a8576;letter-spacing:.02em}
+.nkz-tabs{display:flex;gap:4px;margin:20px 0 14px;padding:5px;border-radius:26px;background:#fff;box-shadow:0 6px 20px #0b3d2e14}
+.nkz-tabs button{flex:1;display:flex;align-items:center;justify-content:center;gap:5px;padding:10px 4px;border-radius:21px;font:600 13.5px Inter,sans-serif;color:#6f7a6b;transition:background .2s,color .2s}
+.nkz-tabs button.on{background:linear-gradient(135deg,#14684a,#1f8a5f);color:#fff;box-shadow:0 5px 14px #14684a55}
+.nkz-tabs i{font:700 10.5px Inter,sans-serif;font-style:normal;min-width:18px;padding:2px 5px;border-radius:9px;background:#14684a1f;text-align:center}.nkz-tabs button.on i{background:#ffffff33}
+.nkz-c{animation:nkzin .35s ease both}@keyframes nkzin{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.nkz-go{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:14px;padding:14px;border-radius:18px;background:linear-gradient(135deg,#14684a,#1f8a5f);color:#fff;font:600 15px Inter,sans-serif;box-shadow:0 8px 20px #14684a44;transition:transform .15s}.nkz-go:active{transform:scale(.97)}
+.nkz-box{padding:18px;border-radius:24px;background:#fff;box-shadow:0 6px 20px #0b3d2e14}.nkz-box b{display:block;font:700 16px Inter,sans-serif;color:#14210f}.nkz-box span{display:block;margin-top:4px;font:400 13.5px/1.5 Inter,sans-serif;color:#6f7a6b}
+.nkz-gr{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}.nkz-gr i{display:block;aspect-ratio:1;border-radius:16px;background:#dfe6dc center/cover no-repeat;box-shadow:0 3px 10px #0b3d2e1a}
+.nkz-li{display:flex;align-items:center;gap:12px;margin-bottom:10px;padding:13px 14px;border-radius:18px;background:#fff;box-shadow:0 4px 14px #0b3d2e12;font:400 14px/1.4 Inter,sans-serif;color:#14210f;word-break:break-word;transition:transform .15s}.nkz-li:active{transform:scale(.98)}
+.nkz-li .nkz-ic{width:38px;height:38px;border-radius:12px;flex:none;background:#e9f3ec;color:#14684a}.nkz-li small{display:block;margin-top:2px;font:500 12px Inter,sans-serif;color:#7a8576}.nkz-li img{display:block;width:100%;border-radius:12px;margin-bottom:6px}
+.nkz-em{display:flex;flex-direction:column;align-items:center;gap:10px;padding:34px 20px;text-align:center;font:500 13.5px/1.5 Inter,sans-serif;color:#7a8576}.nkz-em .nkz-ic{width:56px;height:56px;border-radius:20px;background:#e9f3ec;color:#14684a}
+html.night .nkz{background:#08150f;color:#e8f1ec}html.night .nkz-card,html.night .nkz-tabs,html.night .nkz-box,html.night .nkz-li,html.night .nkz-ac button{background:#10261c;box-shadow:none;color:#e8f1ec}
+html.night .nkz-row b,html.night .nkz-box b,html.night .nkz-li{color:#e8f1ec}html.night .nkz-row+.nkz-row{border-color:#1f3a2d}html.night .nkz-tabs button{color:#8fa89a}html.night .nkz-tabs button.on{color:#fff}
+html.night .nkz-row .nkz-ic,html.night .nkz-li .nkz-ic,html.night .nkz-em .nkz-ic{background:#1b3b2c;color:#7fd3a4}
+</style>`);
 const zs=id=>{try{return typeof ZS==='function'?ZS(id):[]}catch(e){return[]}};
+const sv=(d,w=22)=>`<svg width="${w}" height="${w}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">${d}</svg>`;
+const NZ={back:'<path d="M15 5l-7 7 7 7"/>',chat:'<path d="M20 12a8 8 0 0 1-11.7 7.1L4 20l1-4.2A8 8 0 1 1 20 12z"/>',globe:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.6 2.6 3.9 5.6 3.9 9S14.6 18.4 12 21c-2.6-2.6-3.9-5.6-3.9-9S9.4 5.6 12 3z"/>',block:'<circle cx="12" cy="12" r="9"/><path d="M5.7 5.7l12.6 12.6"/>',info:'<circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/>',at:'<circle cx="12" cy="12" r="3.6"/><path d="M15.6 12v1.3a2.5 2.5 0 0 0 5 0V12a8.6 8.6 0 1 0-3.4 6.9"/>',img:'<rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="1.6"/><path d="M4 18l5-5 4 4 3-3 4 4"/>',star:'<path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1 5.9L12 17l-5.2 2.7 1-5.9L3.5 9.7l5.9-.8z"/>',link:'<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>',post:'<rect x="4" y="4" width="16" height="16" rx="4"/><path d="M8 9h8M8 13h8M8 17h5"/>'};
+const ic=(k,w,bg,fg)=>`<span class="nkz-ic"${bg?` style="background:${bg};color:${fg}"`:''}>${sv(NZ[k],w||22)}</span>`;
+const emp=(k,t)=>`<div class="nkz-em">${ic(k,26)}<span>${t}</span></div>`;
 V.cprof=()=>{const c=S.cm[S.vp.id];if(!c)return root('chats');const o=S.vp.u,u=(info(c)||{}).u||(S.U||{})[o]||{},ms=S.cpm||[],k=S.cpt||'Posts',st=zs(c.id),blk=S.blk&&S.blk.has(o),who=m=>m.from===S.me.uid?'You':E(u.name||'');
  const media=ms.filter(m=>m.p&&m.p.t==='img'),links=[];ms.forEach(m=>{if(m.p&&m.p.t==='text')(String(m.p.x||'').match(/https?:\/\/[^\s]+/g)||[]).forEach(l=>links.push([l,m]))});
- const saved=ms.filter(m=>st.includes(m.id));
- const body=k==='Posts'?`<div class="li"><b>${E(u.name||'Member')}'s VYBE posts</b><small>Posts, photos and videos shared on NIJØK VYBE.</small><button class="btn" data-a="upg" data-id="${o}" style="margin-top:10px">Open VYBE profile</button></div>`
- :k==='Media'?(media.length?`<div class="gr">${media.map(m=>`<i style="background-image:url('${E(m.p.d)}')" data-a="cpzoom" data-id="${m.id}"></i>`).join('')}</div>`:'<div class="em">No photos in this chat yet.</div>')
- :k==='Saved'?(saved.length?saved.map(m=>`<div class="li" data-a="cpgo" data-id="${m.id}">${m.p.t==='img'?`<img src="${E(m.p.d)}" style="width:100%;border-radius:10px">`:E(snip(m.p))}<small>${who(m)} · tap to open in chat</small></div>`).join(''):'<div class="em">Nothing saved yet. In the chat, tap a message and choose Star message.</div>')
- :(links.length?links.map(([l,m])=>`<a class="li" href="${E(l)}" target="_blank" rel="noopener">${E(l)}<small>${who(m)}</small></a>`).join(''):'<div class="em">No links shared yet.</div>');
- app.innerHTML=`<div class="nkcp"><div class="tb"><button data-a="back" aria-label="Back">←</button></div><div class="hd2">${av(u,92)}<h2>${E(u.name||'Member')}</h2><small>${E(pv(u))}</small></div>
- <div class="ac"><button data-a="back"><i>💬</i>Message</button><button data-a="upg" data-id="${o}"><i>🌐</i>VYBE</button><button data-a="${blk?'unblk':'blk'}" data-id="${o}"><i>🚫</i>${blk?'Unblock':'Block'}</button></div>
- <div class="cd"><b>${E(u.about||'No bio yet')}</b><small>Bio</small><hr><b>${u.uname?'@'+E(u.uname):'-'}</b><small>Username</small></div>
- <div class="tg">${['Posts','Media','Saved','Links'].map(x=>`<button class="${x===k?'on':''}" data-a="cptab" data-k="${x}">${x}</button>`).join('')}</div>${body}</div>`};
+ const saved=ms.filter(m=>st.includes(m.id)),cnt={Posts:'',Media:media.length,Saved:saved.length,Links:links.length};
+ const body=k==='Posts'?`<div class="nkz-box">${ic('post',22)}<b style="margin-top:12px">${E(u.name||'Member')}'s VYBE posts</b><span>Posts, photos and videos shared on NIJØK VYBE.</span><button class="nkz-go" data-a="upg" data-id="${o}">${sv(NZ.globe,19)}Open VYBE profile</button></div>`
+ :k==='Media'?(media.length?`<div class="nkz-gr">${media.map(m=>`<i style="background-image:url('${E(m.p.d)}')" data-a="cpzoom" data-id="${m.id}"></i>`).join('')}</div>`:emp('img','No photos in this chat yet.'))
+ :k==='Saved'?(saved.length?saved.map(m=>`<div class="nkz-li" data-a="cpgo" data-id="${m.id}">${ic('star',19)}<div style="flex:1;min-width:0">${m.p.t==='img'?`<img src="${E(m.p.d)}" alt="">`:E(snip(m.p))}<small>${who(m)} · tap to open in chat</small></div></div>`).join(''):emp('star','Nothing saved yet. In the chat, tap a message and choose Star message.'))
+ :(links.length?links.map(([l,m])=>`<a class="nkz-li" href="${E(l)}" target="_blank" rel="noopener">${ic('link',19)}<div style="flex:1;min-width:0">${E(l)}<small>${who(m)}</small></div></a>`).join(''):emp('link','No links shared yet.'));
+ const act=(a,x,k2,l,bg,fg)=>`<button data-a="${a}"${x}>${ic(k2,22,bg,fg)}${l}</button>`;
+ app.innerHTML=`<div class="nkz"><div class="nkz-hero"><button class="nkz-bk" data-a="back" aria-label="Back">${sv(NZ.back,22)}</button><div class="nkz-av">${av(u,96)}</div><h2>${E(u.name||'Member')}</h2><p>${E(pv(u))}</p></div>
+ <div class="nkz-ac">${act('back','','chat','Message','#e3f3ea','#14684a')}${act('upg',` data-id="${o}"`,'globe','VYBE','#e2effa','#1f6fb2')}${act(blk?'unblk':'blk',` data-id="${o}"`,'block',blk?'Unblock':'Block','#fdeaea','#c0392b')}</div>
+ <div class="nkz-card"><div class="nkz-row">${ic('info',20)}<div><b class="${u.about?'':'m'}">${E(u.about||'No bio yet')}</b><small>Bio</small></div></div><div class="nkz-row">${ic('at',20)}<div><b class="${u.uname?'':'m'}">${u.uname?'@'+E(u.uname):'Not set'}</b><small>Username</small></div></div></div>
+ <div class="nkz-tabs">${['Posts','Media','Saved','Links'].map(x=>`<button class="${x===k?'on':''}" data-a="cptab" data-k="${x}">${x}${cnt[x]?`<i>${cnt[x]}</i>`:''}</button>`).join('')}</div><div class="nkz-c">${body}</div></div>`};
 setTimeout(()=>{const _ci=ACT.cinfo;Object.assign(ACT,{
  cinfo(){const c=S.cm[S.vp.id],o=c&&(c.members||[]).find(m=>m!==S.me.uid);if(!c||c.type==='group'||c.type==='channel'||c.type==='saved'||!o)return _ci.apply(this,arguments);S.cpm=S.msgs||[];S.cpt='Posts';nav('cprof',{id:c.id,u:o})},
  cptab(d){S.cpt=d.k;rep('cprof',S.vp)},
