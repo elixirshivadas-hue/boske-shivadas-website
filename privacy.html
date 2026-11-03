@@ -1,24 +1,788 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Privacy Policy · NIJØK</title>
-<style>body{margin:0;font:16px/1.7 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:#f6faf0;color:#1c2a17}
-main{max-width:760px;margin:0 auto;padding:28px 20px 60px}h1{font-size:28px;margin:6px 0 4px;color:#14210f}h2{font-size:19px;margin:28px 0 6px;color:#14664a}
-p,li{color:#33422d}small{color:#6f776b}a{color:#14664a}ul{padding-left:20px}.top{display:flex;align-items:center;gap:10px;font-weight:700;letter-spacing:.04em}
-.box{background:#fff;border:1px solid #e1e8d8;border-radius:16px;padding:14px 18px;margin:16px 0}</style></head><body><main>
-<div class="top"><a href="./" style="text-decoration:none">← NIJØK</a></div>
-<h1>Privacy Policy</h1><small>Last updated: 1 November 2026</small>
-<p>NIJØK is an app for chat, community, notes, travel (Wandrø), fitness (Fit &amp; Move) and a small shop. It is run by Boske Shivadas, India (“we”, “us”). This page explains what information the app uses and why. NIJØK is meant for people aged <b>18 and over</b>.</p>
-<h2>What we collect</h2><ul>
-<li><b>Account:</b> your email address, name, optional username, profile photo and about text.</li>
-<li><b>Things you create:</b> posts, comments, stories (visible for 24 hours), travel posts (stories, ride routes, alerts, questions, travel-buddy plans), traveller profile (role, bio, city, optional Instagram or YouTube link), notes, photos you choose to add, and shop enquiries (your name, email and the items you ask about).</li>
-<li><b>Chats:</b> messages are end-to-end encrypted. We store the encrypted messages and the public keys needed to deliver them. We cannot read them.</li>
-<li><b>Location:</b> only when you tap “Pin my location” on a travel post (saved as an approximate point, about 1 km) or the compass button on the map (used on your device to move the map, not saved). If you do not pin a location, a post uses the place you chose.</li>
-<li><b>Fit &amp; Move:</b> workouts, steps, water, sleep, goals and body stats that you enter. They are kept on your device and synced to your account so you can restore them on a new phone.</li>
-<li><b>Technical data:</b> our service providers (Google Firebase, Google Maps) process technical data such as IP address and device details when the app connects to them.</li></ul>
-<h2>How we use it</h2><p>To run your account, show your content to the people you share it with, deliver chats, show the map, answer shop enquiries, keep the community safe (reports, blocks, moderation) and fix problems. We do not show ads and we do not sell your data.</p>
-<h2>Who else handles data</h2><ul><li><b>Google Firebase</b> (sign-in and database) and <b>Google Maps</b> (map display).</li><li>Public information services (for example Wikipedia or weather data) are used to fill Explore pages. They do not receive your account details.</li></ul>
-<h2>What other people can see</h2><p>Posts, stories, comments, travel posts and your traveller profile are visible to other signed-in members. Do not put private details such as phone numbers or home addresses in public posts.</p>
-<h2>Keeping and deleting data</h2><p>You can delete your account in the app: <b>Profile → Account &amp; Security → Delete account</b>. This removes your profile, posts, stories, travel posts and profile, notes, follows, blocks and Fit &amp; Move data. Replies you wrote on other people’s posts, and encrypted messages already delivered to other members of a chat, may remain for those members. You can also ask us to delete your data from the <a href="delete-account.html">account deletion page</a>.</p>
-<h2>Your choices</h2><p>You can edit or delete your content, block or report other members, stop sharing location (we only use it when you tap the button) and ask us for a copy of, or correction to, your data by email.</p>
-<h2>Children</h2><p>The app is not for people under 18. If you think a child has joined, write to us and we will remove the account.</p>
-<h2>Changes</h2><p>If we change this policy we will update the date above and, for big changes, tell you in the app.</p>
-<p><small>Questions? Write to <a href="mailto:elixir.shivadas@gmail.com">elixir.shivadas@gmail.com</a>.</small></p></main></body></html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Policy · NIJOK</title>
+<meta name="description" content="NIJOK Terms of Service, Privacy Policy, Cookie settings, Community Guidelines and account deletion.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#ffffff" id="tc">
+<link rel="icon" href="icon-192.png">
+<script>
+/* Set theme before first paint (no white flash in dark mode) */
+(function(){
+  var t=null,ok=true;
+  try{var c=JSON.parse(localStorage.getItem('nk_consent')||'null');if(c&&c.fn===false)ok=false;if(ok)t=localStorage.getItem('nk_pol_theme')}catch(e){}
+  if(t!=='dark'&&t!=='light')t=(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light';
+  document.documentElement.setAttribute('data-theme',t);
+})();
+</script>
+<style>
+:root{
+  --bg:#ffffff;--fg:#111111;--mut:#5f5f5f;--line:#cdcdcd;--soft:#fafafa;--card:#ffffff;
+  --acc:#0046a8;--acc-fg:#ffffff;--danger:#c9261a;--danger-fg:#ffffff;--ok:#0a7a43;
+  --shadow:0 -8px 30px rgba(0,0,0,.18);
+  --safe-t:env(safe-area-inset-top,0px);--safe-b:env(safe-area-inset-bottom,0px);
+  color-scheme:light;
+}
+:root[data-theme="dark"]{
+  --bg:#111111;--fg:#f5f5f5;--mut:#b4b4b4;--line:#3a3a3a;--soft:#1a1a1a;--card:#171717;
+  --acc:#3a72dd;--acc-fg:#ffffff;--danger:#e0493b;--danger-fg:#ffffff;--ok:#4cc38a;
+  --shadow:0 -8px 30px rgba(0,0,0,.6);
+  color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-padding-top:calc(var(--safe-t) + 70px)}
+body{margin:0;background:var(--bg);color:var(--fg);font:17px/1.7 "Helvetica Neue",Helvetica,Arial,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased;transition:background .2s,color .2s}
+a{color:inherit;text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:2px}
+a:hover{opacity:.75}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--acc);outline-offset:2px;border-radius:4px}
+[hidden]{display:none!important}
+
+/* ---------- header ---------- */
+.hdr{position:sticky;top:0;z-index:30;background:var(--bg);padding-top:var(--safe-t)}
+.hdr-in{display:flex;align-items:center;justify-content:space-between;height:68px;padding:0 22px;max-width:1100px;margin:0 auto}
+.brand{display:flex;align-items:center;gap:12px;text-decoration:none;font-weight:700;font-size:21px;letter-spacing:-.01em}
+.brand svg{width:46px;height:46px;flex:none}
+.hdr-r{display:flex;align-items:center;gap:6px}
+.ib{width:46px;height:46px;border:0;background:transparent;border-radius:50%;display:grid;place-items:center}
+.ib:hover{background:var(--soft)}
+.ib svg{width:26px;height:26px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.ic-sun{display:none}
+:root[data-theme="dark"] .ic-sun{display:block}
+:root[data-theme="dark"] .ic-moon{display:none}
+
+/* ---------- table of contents ---------- */
+.toc{background:var(--soft);border-top:1px solid var(--line);border-bottom:2px solid var(--line)}
+.toc-btn{display:flex;width:100%;align-items:center;justify-content:space-between;padding:16px 22px;background:transparent;border:0;font-size:21px;text-align:left;max-width:1100px;margin:0 auto}
+.toc-btn svg{width:30px;height:30px;stroke:currentColor;stroke-width:1.8;fill:none;transition:transform .2s}
+.toc-btn[aria-expanded="true"] svg{transform:rotate(45deg)}
+.toc-list{list-style:none;margin:0 auto;padding:0 22px 14px;max-width:1100px}
+.toc-list li{border-top:1px solid var(--line)}
+.toc-list a{display:block;padding:12px 0;text-decoration:none;font-size:17px}
+.toc-list a:hover{text-decoration:underline;opacity:1}
+
+/* ---------- page ---------- */
+main{max-width:820px;margin:0 auto;padding:30px 22px calc(120px + var(--safe-b))}
+.page h1{font-size:clamp(40px,11.5vw,64px);line-height:1.08;margin:18px 0 36px;font-weight:700;letter-spacing:-.025em}
+.notice{font-style:italic;margin:0 0 38px}
+.page h2{font-size:clamp(27px,7.2vw,38px);line-height:1.2;margin:46px 0 14px;font-weight:700;letter-spacing:-.015em}
+.page h3{font-size:21px;line-height:1.35;margin:28px 0 8px;font-weight:700}
+.page p{margin:0 0 16px}
+.page ul,.page ol{margin:0 0 18px;padding-left:24px}
+.page li{margin:0 0 8px}
+.page li::marker{color:var(--mut)}
+.callout{border:2px solid var(--line);border-radius:18px;padding:18px 20px;margin:22px 0;background:var(--soft)}
+.callout p:last-child{margin-bottom:0}
+table{width:100%;border-collapse:collapse;margin:8px 0 24px;font-size:16px}
+th,td{text-align:left;vertical-align:top;border-bottom:1px solid var(--line);padding:12px 10px 12px 0}
+th{font-size:14px;text-transform:uppercase;letter-spacing:.05em;color:var(--mut)}
+.tw{overflow-x:auto}
+
+/* ---------- buttons / forms ---------- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:50px;padding:0 26px;border:0;border-radius:14px;background:var(--acc);color:var(--acc-fg);font-weight:700;font-size:18px;text-decoration:none;width:100%}
+.btn:hover{opacity:.9}
+.btn[disabled]{opacity:.55;cursor:not-allowed}
+.btn.danger{background:var(--danger);color:var(--danger-fg)}
+.btn.ghost{background:transparent;color:var(--fg);border:2px solid var(--fg)}
+.fld{display:block;margin:0 0 18px}
+.fld>span{display:block;font-weight:700;margin-bottom:6px;font-size:16px}
+.fld input[type=email],.fld input[type=password],.fld input[type=text]{width:100%;height:52px;padding:0 16px;border:2px solid var(--line);border-radius:14px;background:var(--bg);color:var(--fg);font:inherit}
+.fld input:focus{border-color:var(--acc);outline:none}
+.chk{display:flex;gap:12px;align-items:flex-start;margin:0 0 20px;font-size:16px;line-height:1.5}
+.chk input{width:22px;height:22px;margin:2px 0 0;flex:none;accent-color:var(--danger)}
+.msg{border-radius:14px;padding:14px 16px;margin:0 0 18px;font-size:16px;line-height:1.5}
+.msg.err{background:rgba(201,38,26,.12);border:1px solid var(--danger)}
+.msg.good{background:rgba(10,122,67,.12);border:1px solid var(--ok)}
+.steps{counter-reset:s;list-style:none;padding:0!important}
+.steps li{counter-increment:s;position:relative;padding-left:46px;margin-bottom:14px}
+.steps li::before{content:counter(s);position:absolute;left:0;top:0;width:32px;height:32px;border-radius:50%;background:var(--fg);color:var(--bg);display:grid;place-items:center;font-weight:700;font-size:16px}
+
+/* ---------- footer ---------- */
+.ft{border-top:2px solid var(--line);margin-top:60px;padding-top:24px;font-size:15px;color:var(--mut)}
+.ft nav{display:flex;flex-wrap:wrap;gap:8px 22px;margin-bottom:14px}
+.ft a,.ft button.lk{color:var(--fg);background:none;border:0;padding:0;text-decoration:underline;text-underline-offset:3px;font-size:15px}
+
+/* ---------- menu overlay ---------- */
+.menu{position:fixed;inset:0;z-index:60;background:var(--bg);overflow-y:auto;overscroll-behavior:contain;padding-bottom:calc(40px + var(--safe-b))}
+.menu .hdr{position:sticky}
+.menu-body{max-width:820px;margin:0 auto;padding:10px 22px 40px}
+.menu h4{margin:30px 0 6px;font-size:25px;font-weight:300;letter-spacing:-.005em}
+.menu a,.menu button.mi{display:block;width:100%;text-align:left;background:none;border:0;padding:11px 0;font-size:19px;text-decoration:none;color:var(--fg)}
+.menu a[aria-current="page"]{font-weight:700}
+.menu a:hover,.menu button.mi:hover{opacity:1;text-decoration:underline}
+
+/* ---------- cookie FAB ---------- */
+.fab{position:fixed;right:18px;bottom:calc(22px + var(--safe-b));z-index:40;width:62px;height:62px;border-radius:50%;border:0;background:var(--acc);color:var(--acc-fg);display:grid;place-items:center;box-shadow:0 6px 18px rgba(0,0,0,.35)}
+.fab svg{width:30px;height:30px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+
+/* ---------- consent modal ---------- */
+.scrim{position:fixed;inset:0;z-index:80;background:rgba(0,0,0,.5);display:flex;align-items:flex-end;justify-content:center}
+.sheet{background:var(--bg);width:100%;max-width:640px;max-height:92vh;max-height:92dvh;border-radius:22px 22px 0 0;box-shadow:var(--shadow);display:flex;flex-direction:column;overflow:hidden;padding-bottom:var(--safe-b)}
+.sh-top{display:flex;align-items:center;justify-content:space-between;padding:22px 22px 6px}
+.sh-top h2{margin:0;font-size:23px;font-weight:700}
+.sh-intro{padding:6px 22px 16px;margin:0;font-size:17px;line-height:1.5}
+.tabs{display:flex;border-bottom:1px solid var(--line)}
+.tab{flex:1;background:none;border:0;border-bottom:3px solid transparent;padding:14px 8px;font-size:18px;color:var(--mut)}
+.tab[aria-selected="true"]{color:var(--acc);font-weight:700;border-bottom-color:var(--acc)}
+.sh-body{overflow-y:auto;padding:18px 22px;flex:1;min-height:150px}
+.cat{border:1px solid var(--line);border-radius:12px;margin:0 0 16px;background:var(--card)}
+.cat-h{padding:16px 18px 10px}
+.cat-h b{display:block;font-size:19px;margin-bottom:2px}
+.cat-h span{font-size:16px;line-height:1.45;color:var(--fg)}
+.cat-f{display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--line)}
+.cat-f .sw{padding:10px 18px}
+.cat-x{border:0;border-left:1px solid var(--line);background:none;width:58px;align-self:stretch;display:grid;place-items:center}
+.cat-x svg{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:2;transition:transform .2s}
+.cat-x[aria-expanded="true"] svg{transform:rotate(180deg)}
+.cat-d{border-top:1px solid var(--line);padding:12px 18px;font-size:15px;color:var(--mut);line-height:1.55}
+.sw{position:relative;display:inline-block;width:68px;height:34px;flex:none}
+.sw input{position:absolute;inset:0;width:100%;height:100%;opacity:0;margin:0;cursor:pointer;z-index:2}
+.sw i{position:absolute;inset:0;border-radius:99px;background:#8a8a8a;transition:background .15s}
+.sw i::after{content:"";position:absolute;top:3px;left:3px;width:28px;height:28px;border-radius:50%;background:#fff;transition:transform .15s}
+.sw input:checked+i{background:var(--acc)}
+.sw input:checked+i::after{transform:translateX(34px)}
+.sw input:disabled{cursor:not-allowed}
+.sw input:disabled+i{opacity:.6}
+.sw input:focus-visible+i{outline:3px solid var(--acc);outline-offset:3px}
+.svc{border-bottom:1px solid var(--line);padding:14px 0}
+.svc:last-child{border-bottom:0}
+.svc b{display:flex;justify-content:space-between;gap:10px;font-size:18px}
+.svc em{font-style:normal;font-size:13px;border:1px solid var(--line);border-radius:99px;padding:1px 10px;color:var(--mut);white-space:nowrap;align-self:center}
+.svc p{margin:4px 0 0;font-size:15px;line-height:1.5;color:var(--mut)}
+.sh-foot{border-top:1px solid var(--line);padding:14px 22px 12px;display:grid;gap:10px;background:var(--bg)}
+.sh-foot .btn{min-height:48px;font-size:17px;border-radius:10px}
+.sh-note{text-align:center;font-size:13px;color:var(--mut);margin:0}
+.toast{position:fixed;left:50%;bottom:calc(100px + var(--safe-b));transform:translateX(-50%);background:var(--fg);color:var(--bg);padding:12px 20px;border-radius:99px;font-size:15px;z-index:90;box-shadow:0 6px 20px rgba(0,0,0,.3)}
+
+@media (min-width:700px){
+  .scrim{align-items:center}
+  .sheet{border-radius:22px;max-height:86vh}
+  .btn{width:auto;min-width:220px}
+  .sh-foot .btn{width:100%}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+@media print{.hdr,.toc,.fab,.menu,.ft nav{display:none!important}main{padding:0}}
+</style>
+</head>
+<body>
+
+<header class="hdr" id="top">
+  <div class="hdr-in">
+    <a class="brand" href="#privacy" aria-label="NIJOK Policy home">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="16" fill="currentColor"/><path d="M10.5 23V9.5L21.5 22.5V9" fill="none" stroke="var(--bg)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span>Policy</span>
+    </a>
+    <div class="hdr-r">
+      <button class="ib" id="themeBtn" type="button" aria-label="Switch between light and dark mode">
+        <svg class="ic-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A8.5 8.5 0 1 1 11.2 3a6.8 6.8 0 0 0 9.8 9.8z"/></svg>
+        <svg class="ic-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      </button>
+      <button class="ib" id="menuBtn" type="button" aria-label="Open menu" aria-haspopup="dialog">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h16M4 15h16"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<div class="toc">
+  <button class="toc-btn" id="tocBtn" type="button" aria-expanded="false" aria-controls="tocList">
+    <span>Table of Contents</span>
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v18M3 12h18"/></svg>
+  </button>
+  <ul class="toc-list" id="tocList" hidden></ul>
+</div>
+
+<main id="main" tabindex="-1">
+
+<!-- =============== PRIVACY POLICY =============== -->
+<article class="page" id="page-privacy" data-title="Privacy Policy" hidden>
+  <h1>Privacy Policy</h1>
+  <p class="notice">Last updated: 3 November 2026. This policy explains what NIJOK collects, why, and the choices you have.</p>
+
+  <h2>About NIJOK and this policy</h2>
+  <p>NIJOK is an app for chat, community (Openworld), notes, travel (Wandrø), fitness (Fit &amp; Move), food and book information, and a small shop. It is run by Boske Shivadas, Hyderabad, India (“we”, “us”). NIJOK is meant for people aged <b>18 and over</b>.</p>
+  <p>This policy applies to the NIJOK app, the website at nijok.in and these policy pages. By creating an account you confirm that you have read it.</p>
+
+  <h2>What we collect</h2>
+  <ul>
+    <li><b>Account:</b> your email address, name, optional username, profile photo, cover photo and about text.</li>
+    <li><b>Things you create:</b> posts, comments, stories (visible for 24 hours), travel posts (stories, ride routes, alerts, questions, travel-buddy plans), your traveller profile (role, bio, city, optional Instagram or YouTube link), notes, photos you choose to add, and shop enquiries (your name, email and the items you ask about).</li>
+    <li><b>Chats:</b> messages are end-to-end encrypted. We store the encrypted messages and the public keys needed to deliver them. We cannot read them.</li>
+    <li><b>Location:</b> only when you tap “Pin my location” on a travel post (saved as an approximate point, about 1 km) or the compass button on the map (used on your device to move the map, not saved). If you do not pin a location, a post uses the place you chose.</li>
+    <li><b>Fit &amp; Move:</b> workouts, steps, water, sleep, goals and body stats that you enter. They are kept on your device and synced to your account so you can restore them on a new phone.</li>
+    <li><b>Technical data:</b> our service providers (Google Firebase, Google Maps) process technical data such as IP address and device details when the app connects to them.</li>
+    <li><b>On this website:</b> your light/dark choice and cookie choices are saved in your browser only (see Cookie &amp; Storage Policy).</li>
+  </ul>
+
+  <h2>How we use it</h2>
+  <p>To run your account, show your content to the people you share it with, deliver chats, show the map, answer shop enquiries, keep the community safe (reports, blocks, moderation) and fix problems. We do not show ads and we do not sell your data.</p>
+
+  <h2>Who else handles data</h2>
+  <div class="tw"><table>
+    <thead><tr><th>Service</th><th>Why we use it</th></tr></thead>
+    <tbody>
+      <tr><td><b>Google Firebase</b></td><td>Sign-in, database and file storage.</td></tr>
+      <tr><td><b>Google Maps</b></td><td>Map display in Wandrø and Explore.</td></tr>
+      <tr><td><b>Public information services</b> (for example Wikipedia, weather, Open Library, Open Food Facts)</td><td>Fill Explore, Books and Food pages. They do not receive your account details.</td></tr>
+    </tbody>
+  </table></div>
+  <p>We do not give your personal data to advertisers or data brokers. We may share information if the law requires it, or to protect people from serious harm.</p>
+
+  <h2>What other people can see</h2>
+  <p>Posts, stories, comments, travel posts and your traveller profile are visible to other signed-in members. Do not put private details such as phone numbers or home addresses in public posts.</p>
+
+  <h2>Keeping and deleting data</h2>
+  <p>You can delete your account in the app: <b>Profile → Account &amp; Security → Delete account</b>, or right here on the <a href="#delete-account">Delete Account</a> page. Deleting removes your profile, posts, stories, travel posts and traveller profile, notes, follows, blocks and Fit &amp; Move data.</p>
+  <p>Replies you wrote on other people’s posts, and encrypted messages already delivered to other members of a chat, may remain for those members. Our service providers may keep limited technical logs for a short time under their own terms.</p>
+
+  <h2>Security</h2>
+  <p>Data is sent over HTTPS. Chats are end-to-end encrypted. Access to our database is limited by security rules, and your password is handled by Firebase Authentication — we never see or store it. No system is perfectly secure, so please use a strong, unique password.</p>
+
+  <h2>Your choices and rights</h2>
+  <p>You can edit or delete your content, block or report other members, stop sharing location (we only use it when you tap the button), and delete your account at any time. You can also write to us to ask for a copy of your data, a correction, or deletion, and to withdraw consent.</p>
+  <p>If you are in India, the Digital Personal Data Protection Act, 2023 gives you rights over your personal data, including access, correction, erasure and grievance redressal. Use the contact details below and we will reply as soon as we reasonably can.</p>
+
+  <h2>Children</h2>
+  <p>The app is not for people under 18. If you think a child has joined, write to us and we will remove the account.</p>
+
+  <h2>Changes to this policy</h2>
+  <p>If we change this policy we will update the date above and, for big changes, tell you in the app.</p>
+
+  <h2>Contact us</h2>
+  <p>Boske Shivadas, Hyderabad, India<br>Email: <a href="mailto:elixir.shivadas@gmail.com">elixir.shivadas@gmail.com</a></p>
+</article>
+
+<!-- =============== TERMS OF SERVICE =============== -->
+<article class="page" id="page-terms" data-title="Terms of Service" hidden>
+  <h1>Terms of Service</h1>
+  <p class="notice">Last updated: 3 November 2026. Please read these Terms before you use NIJOK.</p>
+
+  <h2>Thank you for using NIJOK</h2>
+  <p>These Terms of Service (“Terms”) govern your use of the NIJOK app, the website at nijok.in and related services (together, “NIJOK”). NIJOK is run by Boske Shivadas, Hyderabad, India. By creating an account or using NIJOK you agree to these Terms and to our <a href="#privacy">Privacy Policy</a> and <a href="#guidelines">Community Guidelines</a>. If you do not agree, please do not use NIJOK.</p>
+
+  <h2>Who can use NIJOK</h2>
+  <p>You must be at least 18 years old and able to enter a binding agreement under the laws of India. If we learn that someone under 18 has an account, we may remove it.</p>
+
+  <h2>Your account</h2>
+  <ul>
+    <li>Give accurate information and keep your password safe. You are responsible for activity on your account.</li>
+    <li>One person, one account. Do not pretend to be someone else.</li>
+    <li>Tell us quickly at the email below if you think your account has been misused.</li>
+  </ul>
+
+  <h2>Your content</h2>
+  <p>You own what you post. By posting, you give us a non-exclusive, worldwide, royalty-free permission to store, display and deliver your content inside NIJOK to the people you share it with — only so that NIJOK can work. This permission ends when you delete the content or your account, except for copies already delivered to other members (for example, chat messages and replies).</p>
+  <p>You are responsible for your content. Only post things you have the right to share.</p>
+
+  <h2>Rules of the community</h2>
+  <p>Everyone using NIJOK must follow the <a href="#guidelines">Community Guidelines</a>. In short: be respectful, be honest, and do not harm other people or break the law. We may remove content or limit accounts that break these rules.</p>
+
+  <h2>Chats</h2>
+  <p>Chats are end-to-end encrypted, so we cannot read them. If someone reports a message, we can only act on what the reporting member shows us. Do not use chats for spam, scams, threats or illegal activity.</p>
+
+  <h2>Information in the app</h2>
+  <ul>
+    <li><b>Wandrø travel posts and tips</b> are written by members and can be out of date or wrong. Check hotel prices, routes, tolls, rules and weather yourself before you travel.</li>
+    <li><b>Fit &amp; Move</b> and <b>Food &amp; Health</b> information is general and is not medical advice. Talk to a qualified professional about your health, diet and exercise.</li>
+    <li><b>Books, Explore and Food data</b> come from public sources and may contain errors.</li>
+    <li><b>Shop enquiries</b> are requests, not orders. Nothing is sold until we confirm price and availability with you.</li>
+  </ul>
+
+  <h2>Third-party services</h2>
+  <p>NIJOK uses services such as Google Firebase and Google Maps, and may link to other websites. Their own terms and privacy policies apply to them, and we are not responsible for them.</p>
+
+  <h2>Suspension and ending your account</h2>
+  <p>You can stop using NIJOK and delete your account at any time from <a href="#delete-account">this page</a> or in the app. We may suspend or remove an account that breaks these Terms or the Community Guidelines, puts others at risk, or is required by law. Where we reasonably can, we will tell you why.</p>
+
+  <h2>Our responsibility</h2>
+  <p>NIJOK is provided “as is” and “as available”. We work to keep it safe and running, but we cannot promise it will always be error-free or available. To the extent the law allows, we are not liable for indirect or consequential loss, or for loss caused by other members’ content or by events outside our control. Nothing in these Terms limits any right you have under law that cannot be limited.</p>
+
+  <h2>Changes to these Terms</h2>
+  <p>We may update these Terms. We will change the date above and, for important changes, tell you in the app. If you keep using NIJOK after the change, you accept the new Terms.</p>
+
+  <h2>Governing law</h2>
+  <p>These Terms are governed by the laws of India. Courts at Hyderabad, Telangana will have jurisdiction, subject to any consumer rights you have to bring a case elsewhere.</p>
+
+  <h2>Contact us</h2>
+  <p>Questions about these Terms? Write to <a href="mailto:elixir.shivadas@gmail.com">elixir.shivadas@gmail.com</a>.</p>
+</article>
+
+<!-- =============== COOKIE & STORAGE POLICY =============== -->
+<article class="page" id="page-cookies" data-title="Cookie &amp; Storage Policy" hidden>
+  <h1>Cookie &amp; Storage Policy</h1>
+  <p class="notice">Last updated: 3 November 2026. NIJOK does not use advertising or tracking cookies.</p>
+
+  <h2>What this means</h2>
+  <p>Websites and apps can save small pieces of data on your device (cookies, local storage, caches). NIJOK uses them only to make things work and to remember your settings.</p>
+
+  <h2>What we save on your device</h2>
+  <div class="tw"><table>
+    <thead><tr><th>Type</th><th>Purpose</th></tr></thead>
+    <tbody>
+      <tr><td><b>Essential</b></td><td>Keeps you signed in, makes the app open quickly and work with a weak connection (app cache), and keeps the service secure. Cannot be turned off.</td></tr>
+      <tr><td><b>Preferences</b></td><td>Remembers things like light/dark mode, language and app settings.</td></tr>
+      <tr><td><b>Maps &amp; public information</b></td><td>Lets maps and public information (such as Wikipedia or weather) load inside the app.</td></tr>
+    </tbody>
+  </table></div>
+  <p>We do not use analytics cookies, advertising cookies or cross-site tracking on this website.</p>
+
+  <h2>Your choices</h2>
+  <p>You can change your choices at any time with the <button type="button" class="lk-inline" data-open-consent>Cookie settings</button> button (the round blue button at the bottom right of every page). You can also clear site data in your browser settings; this will sign you out and reset your choices.</p>
+  <p>Your choice is saved on this device only. If you turn off “Preferences”, this page will stop remembering your light/dark choice.</p>
+
+  <h2>Contact us</h2>
+  <p>Questions? Write to <a href="mailto:elixir.shivadas@gmail.com">elixir.shivadas@gmail.com</a>.</p>
+</article>
+
+<!-- =============== COMMUNITY GUIDELINES =============== -->
+<article class="page" id="page-guidelines" data-title="Community Guidelines" hidden>
+  <h1>Community Guidelines</h1>
+  <p class="notice">Last updated: 3 November 2026. NIJOK is a place to learn, connect, explore and grow. These rules keep it that way.</p>
+
+  <h2>Be kind and respectful</h2>
+  <ul>
+    <li>No harassment, bullying, hate or threats against any person or group.</li>
+    <li>Disagree politely. Discuss ideas, not people.</li>
+  </ul>
+
+  <h2>Be honest</h2>
+  <ul>
+    <li>Do not impersonate others, run scams or post fake reviews, fake alerts or false news.</li>
+    <li>In Wandrø, share what you really saw or did. Say when something may be out of date, and mark tips that are still correct.</li>
+  </ul>
+
+  <h2>Keep people safe</h2>
+  <ul>
+    <li>Do not post anyone’s private details (phone number, home address, ID numbers, photos taken without consent).</li>
+    <li>No violence, self-harm encouragement, dangerous challenges or illegal activity.</li>
+    <li>For ride routes and travel-buddy plans: meet in public places first, tell someone you trust, and never share live location with strangers.</li>
+    <li>NIJOK is for adults (18+). Do not post sexual content or anything involving children.</li>
+  </ul>
+
+  <h2>Respect creators</h2>
+  <p>Only post photos, text and videos you own or have permission to use. Do not copy other people’s work.</p>
+
+  <h2>No spam</h2>
+  <p>No repeated posts, unwanted promotions, mass messages or fake accounts.</p>
+
+  <h2>Reporting and blocking</h2>
+  <p>Use <b>Report</b> on a post, comment or profile, or <b>Block</b> a member, from the app. You can also write to us at <a href="mailto:elixir.shivadas@gmail.com">elixir.shivadas@gmail.com</a>.</p>
+
+  <h2>What happens if rules are broken</h2>
+  <p>Depending on how serious it is, we may remove content, warn you, limit features, or suspend or remove the account. If you think we made a mistake, write to us and we will look again.</p>
+</article>
+
+<!-- =============== DELETE ACCOUNT =============== -->
+<article class="page" id="page-delete-account" data-title="Delete Account" hidden>
+  <h1>Delete Account</h1>
+  <p class="notice">You can delete your NIJOK account and data at any time. This cannot be undone.</p>
+
+  <h2>What gets deleted</h2>
+  <ul>
+    <li>Your profile, username and photos</li>
+    <li>Your posts, stories, travel posts and traveller profile</li>
+    <li>Your notes, follows, blocks and Fit &amp; Move data</li>
+    <li>Your sign-in account, so you can no longer log in</li>
+  </ul>
+  <p>Replies you wrote on other people’s posts, and encrypted chat messages already delivered to other members, may remain for those members. See the <a href="#privacy">Privacy Policy</a>.</p>
+
+  <h2>Option 1: delete inside the app</h2>
+  <ol class="steps">
+    <li>Open NIJOK and sign in.</li>
+    <li>Go to <b>Profile → Account &amp; Security → Delete account</b>.</li>
+    <li>Enter your password, type <b>DELETE</b>, and confirm.</li>
+  </ol>
+
+  <h2>Option 2: delete here on the website</h2>
+  <p>Sign in with the email and password of your NIJOK account to delete it right now.</p>
+
+  <div id="delStatus" role="status" aria-live="polite"></div>
+
+  <form id="delForm" novalidate autocomplete="on">
+    <label class="fld"><span>Email</span><input type="email" id="delEmail" name="email" autocomplete="email" inputmode="email" required></label>
+    <label class="fld"><span>Password</span><input type="password" id="delPw" name="password" autocomplete="current-password" required></label>
+    <label class="fld"><span>Type DELETE to confirm</span><input type="text" id="delConfirm" name="confirm" autocomplete="off" autocapitalize="characters" spellcheck="false" required></label>
+    <label class="chk"><input type="checkbox" id="delAck"><span>I understand that my NIJOK account and data will be permanently deleted and cannot be restored.</span></label>
+    <button class="btn danger" id="delBtn" type="submit">Delete my account</button>
+  </form>
+
+  <div class="callout">
+    <p><b>Cannot sign in?</b> Forgot your password, or lost access to your email? Write to us from the email linked to your account and we will help.</p>
+    <p><a class="btn ghost" id="delMail" href="mailto:elixir.shivadas@gmail.com?subject=NIJOK%20account%20deletion%20request&amp;body=Please%20delete%20my%20NIJOK%20account.%0A%0ARegistered%20email%3A%20%0AUsername%3A%20%0A">Email a deletion request</a></p>
+  </div>
+</article>
+
+<!-- =============== CONTACT =============== -->
+<article class="page" id="page-contact" data-title="Contact &amp; Grievance" hidden>
+  <h1>Contact &amp; Grievance</h1>
+  <p class="notice">Questions, complaints, data requests or reports — write to us.</p>
+
+  <h2>Contact details</h2>
+  <p><b>Boske Shivadas</b><br>Hyderabad, India<br><a href="mailto:elixir.shivadas@gmail.com">elixir.shivadas@gmail.com</a></p>
+
+  <h2>What you can ask us</h2>
+  <ul>
+    <li>A copy of the data we hold about you, or a correction</li>
+    <li>Deletion of your account if you cannot use the <a href="#delete-account">Delete Account</a> page</li>
+    <li>Report content, a member, or a child under 18 using the app</li>
+    <li>Any complaint about how your data is handled</li>
+  </ul>
+  <p>Please write from the email linked to your account so we can confirm it is you. We will reply as soon as we reasonably can.</p>
+</article>
+
+<footer class="ft">
+  <nav aria-label="Policy links">
+    <a href="#terms">Terms of Service</a>
+    <a href="#privacy">Privacy Policy</a>
+    <a href="#cookies">Cookies</a>
+    <a href="#guidelines">Guidelines</a>
+    <a href="#delete-account">Delete account</a>
+    <button type="button" class="lk" data-open-consent>Cookie settings</button>
+  </nav>
+  <div>© 2026 NIJOK · <a href="./">Back to the app</a></div>
+</footer>
+
+</main>
+
+<!-- menu -->
+<div class="menu" id="menu" role="dialog" aria-modal="true" aria-label="Policy menu" hidden>
+  <div class="hdr">
+    <div class="hdr-in">
+      <a class="brand" href="#privacy" data-close-menu aria-label="NIJOK Policy home">
+        <svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="16" fill="currentColor"/><path d="M10.5 23V9.5L21.5 22.5V9" fill="none" stroke="var(--bg)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span>Policy</span>
+      </a>
+      <button class="ib" id="menuClose" type="button" aria-label="Close menu">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19"/></svg>
+      </button>
+    </div>
+  </div>
+  <div class="menu-body">
+    <h4>Terms</h4>
+    <a href="#terms" data-nav="terms">Terms of Service</a>
+    <h4>Privacy</h4>
+    <a href="#privacy" data-nav="privacy">Privacy Policy</a>
+    <a href="#cookies" data-nav="cookies">Cookie &amp; Storage Policy</a>
+    <button type="button" class="mi" data-open-consent>Cookie settings</button>
+    <h4>Guidelines</h4>
+    <a href="#guidelines" data-nav="guidelines">Community Guidelines</a>
+    <h4>Your account</h4>
+    <a href="#delete-account" data-nav="delete-account">Delete Account</a>
+    <a href="#contact" data-nav="contact">Contact &amp; Grievance</a>
+    <h4>NIJOK</h4>
+    <a href="./">Back to the app</a>
+  </div>
+</div>
+
+<!-- cookie settings button -->
+<button class="fab" id="fab" type="button" aria-label="Open cookie settings" data-open-consent>
+  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9 4 4 0 0 1-4-4 4 4 0 0 1-4-4 1 1 0 0 0-1-1z"/><circle cx="8.5" cy="11" r="1"/><circle cx="12" cy="16" r="1"/><circle cx="15.5" cy="13" r="1"/></svg>
+</button>
+
+<!-- consent modal -->
+<div class="scrim" id="consent" hidden>
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="cTitle">
+    <div class="sh-top">
+      <h2 id="cTitle">Manage your privacy</h2>
+      <button class="ib" id="cClose" type="button" aria-label="Close"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19"/></svg></button>
+    </div>
+    <p class="sh-intro">You can change your cookie preferences at any time. Click on the different category headings to find out more and change your default settings. <a href="#cookies" data-close-consent>Cookie policy</a></p>
+    <div class="tabs" role="tablist">
+      <button class="tab" id="tabCat" role="tab" aria-selected="true" aria-controls="paneCat" type="button">Categories</button>
+      <button class="tab" id="tabSvc" role="tab" aria-selected="false" aria-controls="paneSvc" type="button">Services</button>
+    </div>
+    <div class="sh-body">
+      <div id="paneCat" role="tabpanel" aria-labelledby="tabCat">
+        <div class="cat">
+          <div class="cat-h"><b>Essential cookies</b><span>Helps provide the basics. These are necessary for NIJOK to work (sign-in, security, app cache) and cannot be switched off.</span></div>
+          <div class="cat-f"><label class="sw"><input type="checkbox" checked disabled aria-label="Essential cookies, always on"><i></i></label><button class="cat-x" type="button" aria-expanded="false" aria-label="Details: essential cookies"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button></div>
+          <div class="cat-d" hidden>Keeps you signed in, protects your account, and lets the app load fast and work with a weak connection.</div>
+        </div>
+        <div class="cat">
+          <div class="cat-h"><b>Preference cookies</b><span>Remembers your settings, such as light or dark mode, so you do not have to set them again.</span></div>
+          <div class="cat-f"><label class="sw"><input type="checkbox" id="swFn" aria-label="Preference cookies"><i></i></label><button class="cat-x" type="button" aria-expanded="false" aria-label="Details: preference cookies"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button></div>
+          <div class="cat-d" hidden>If you turn this off, this page stops saving your light/dark choice on your device.</div>
+        </div>
+        <div class="cat">
+          <div class="cat-h"><b>Maps &amp; public information</b><span>Lets maps and public information (for example Wikipedia or weather) show up inside NIJOK.</span></div>
+          <div class="cat-f"><label class="sw"><input type="checkbox" id="swMap" aria-label="Maps and public information"><i></i></label><button class="cat-x" type="button" aria-expanded="false" aria-label="Details: maps and public information"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button></div>
+          <div class="cat-d" hidden>Google Maps and public information services may receive technical data such as your IP address when they load.</div>
+        </div>
+        <p class="sh-note">We do not use advertising or analytics cookies.</p>
+      </div>
+      <div id="paneSvc" role="tabpanel" aria-labelledby="tabSvc" hidden>
+        <div class="svc"><b>Google Firebase <em>Essential</em></b><p>Sign-in, database and file storage.</p></div>
+        <div class="svc"><b>NIJOK app cache <em>Essential</em></b><p>Stores app files on your device so NIJOK opens quickly and works with a weak connection.</p></div>
+        <div class="svc"><b>Theme &amp; settings <em>Preferences</em></b><p>Remembers light or dark mode and similar choices on this device.</p></div>
+        <div class="svc"><b>Google Maps <em>Optional</em></b><p>Shows maps in Wandrø and Explore.</p></div>
+        <div class="svc"><b>Public information services <em>Optional</em></b><p>Wikipedia, weather, Open Library and Open Food Facts fill Explore, Books and Food pages.</p></div>
+      </div>
+    </div>
+    <div class="sh-foot">
+      <button class="btn" id="cAll" type="button">Accept all</button>
+      <button class="btn" id="cNone" type="button">Reject all</button>
+      <button class="btn" id="cDone" type="button">Done</button>
+      <p class="sh-note">Your choice is saved on this device only.</p>
+    </div>
+  </div>
+</div>
+
+<noscript><style>.page{display:block!important}.fab,.toc,#themeBtn{display:none}</style></noscript>
+
+<script>
+(function(){
+  'use strict';
+  var $=function(s,r){return (r||document).querySelector(s)};
+  var $$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
+  var store={
+    get:function(k){try{return localStorage.getItem(k)}catch(e){return null}},
+    set:function(k,v){try{localStorage.setItem(k,v)}catch(e){}},
+    del:function(k){try{localStorage.removeItem(k)}catch(e){}}
+  };
+  var root=document.documentElement;
+
+  /* ---------- consent state ---------- */
+  var consent=null;
+  try{consent=JSON.parse(store.get('nk_consent')||'null')}catch(e){}
+  function fnAllowed(){return !consent||consent.fn!==false}
+
+  /* ---------- theme ---------- */
+  function applyTheme(t){
+    root.setAttribute('data-theme',t);
+    var m=$('#tc');if(m)m.setAttribute('content',t==='dark'?'#111111':'#ffffff');
+  }
+  applyTheme(root.getAttribute('data-theme')||'light');
+  $('#themeBtn').addEventListener('click',function(){
+    var t=root.getAttribute('data-theme')==='dark'?'light':'dark';
+    applyTheme(t);
+    if(fnAllowed())store.set('nk_pol_theme',t);
+  });
+
+  /* ---------- routing ---------- */
+  var PAGES=['privacy','terms','cookies','guidelines','delete-account','contact'];
+  var current='privacy';
+  function route(){
+    var h=(location.hash||'').replace('#','').toLowerCase();
+    if(PAGES.indexOf(h)<0)h='privacy';
+    PAGES.forEach(function(p){var el=$('#page-'+p);if(el)el.hidden=(p!==h)});
+    var changed=(h!==current);
+    current=h;
+    var pg=$('#page-'+h);
+    document.title=(pg.getAttribute('data-title')||'Policy').replace(/&amp;/g,'&')+' · NIJOK';
+    $$('.menu a[data-nav]').forEach(function(a){
+      if(a.getAttribute('data-nav')===h)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');
+    });
+    buildToc();
+    setToc(false);
+    closeMenu(true);
+    if(changed||!route.done){window.scrollTo(0,0)}
+    route.done=true;
+  }
+  window.addEventListener('hashchange',route);
+
+  /* ---------- table of contents ---------- */
+  function slug(s,i){return 's'+i+'-'+s.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')}
+  function buildToc(){
+    var list=$('#tocList');list.innerHTML='';
+    var hs=$$('#page-'+current+' h2');
+    hs.forEach(function(h,i){
+      if(!h.id)h.id=slug(h.textContent,i);
+      var li=document.createElement('li'),a=document.createElement('a');
+      a.href='#'+current;a.textContent=h.textContent;
+      a.addEventListener('click',function(e){
+        e.preventDefault();setToc(false);
+        h.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'});
+      });
+      li.appendChild(a);list.appendChild(li);
+    });
+    $('.toc').hidden=!hs.length;
+  }
+  function setToc(open){
+    $('#tocBtn').setAttribute('aria-expanded',open?'true':'false');
+    $('#tocList').hidden=!open;
+  }
+  $('#tocBtn').addEventListener('click',function(){setToc($('#tocBtn').getAttribute('aria-expanded')!=='true')});
+
+  /* ---------- menu ---------- */
+  var lastFocus=null;
+  function openMenu(){
+    lastFocus=document.activeElement;
+    $('#menu').hidden=false;document.body.style.overflow='hidden';
+    $('#menuBtn').setAttribute('aria-expanded','true');
+    $('#menuClose').focus();
+  }
+  function closeMenu(silent){
+    if($('#menu').hidden)return;
+    $('#menu').hidden=true;document.body.style.overflow='';
+    $('#menuBtn').setAttribute('aria-expanded','false');
+    if(!silent&&lastFocus&&lastFocus.focus)lastFocus.focus();
+  }
+  $('#menuBtn').addEventListener('click',openMenu);
+  $('#menuClose').addEventListener('click',function(){closeMenu()});
+  $$('[data-close-menu]').forEach(function(a){a.addEventListener('click',function(){closeMenu(true)})});
+  /* same-page link inside the menu: hashchange will not fire, so close it manually */
+  $$('.menu a[data-nav]').forEach(function(a){a.addEventListener('click',function(){
+    if(a.getAttribute('data-nav')===current){closeMenu(true);window.scrollTo(0,0)}
+  })});
+
+  /* ---------- consent modal ---------- */
+  var cEl=$('#consent'),tmp={fn:true,map:true},consentOpener=null;
+  function syncSwitches(){$('#swFn').checked=!!tmp.fn;$('#swMap').checked=!!tmp.map}
+  function showTab(which){
+    var cat=(which==='cat');
+    $('#tabCat').setAttribute('aria-selected',cat);$('#tabSvc').setAttribute('aria-selected',!cat);
+    $('#paneCat').hidden=!cat;$('#paneSvc').hidden=cat;
+  }
+  function openConsent(){
+    consentOpener=document.activeElement;
+    tmp={fn:consent?consent.fn!==false:true,map:consent?consent.map!==false:true};
+    syncSwitches();showTab('cat');
+    $$('.cat-x').forEach(function(b){b.setAttribute('aria-expanded','false');b.parentNode.nextElementSibling.hidden=true});
+    cEl.hidden=false;document.body.style.overflow='hidden';
+    $('#fab').hidden=true;
+    $('#cClose').focus();
+  }
+  function closeConsent(){
+    cEl.hidden=true;$('#fab').hidden=false;
+    if($('#menu').hidden)document.body.style.overflow='';
+    if(consentOpener&&consentOpener.focus&&document.body.contains(consentOpener)&&!consentOpener.hidden)consentOpener.focus();
+  }
+  function saveConsent(fn,map){
+    consent={fn:!!fn,map:!!map,t:Date.now()};
+    store.set('nk_consent',JSON.stringify(consent));
+    if(!consent.fn)store.del('nk_pol_theme');
+    else store.set('nk_pol_theme',root.getAttribute('data-theme'));
+    closeConsent();toast('Your privacy choices are saved');
+  }
+  $$('[data-open-consent]').forEach(function(b){b.addEventListener('click',openConsent)});
+  $$('.lk-inline').forEach(function(b){b.style.cssText='background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:2px'});
+  $('#cClose').addEventListener('click',closeConsent);
+  $$('[data-close-consent]').forEach(function(a){a.addEventListener('click',closeConsent)});
+  cEl.addEventListener('click',function(e){if(e.target===cEl)closeConsent()});
+  $('#tabCat').addEventListener('click',function(){showTab('cat')});
+  $('#tabSvc').addEventListener('click',function(){showTab('svc')});
+  $('#swFn').addEventListener('change',function(){tmp.fn=this.checked});
+  $('#swMap').addEventListener('change',function(){tmp.map=this.checked});
+  $$('.cat-x').forEach(function(b){b.addEventListener('click',function(){
+    var d=b.parentNode.nextElementSibling,o=b.getAttribute('aria-expanded')==='true';
+    b.setAttribute('aria-expanded',o?'false':'true');d.hidden=o;
+  })});
+  $('#cAll').addEventListener('click',function(){saveConsent(true,true)});
+  $('#cNone').addEventListener('click',function(){saveConsent(false,false)});
+  $('#cDone').addEventListener('click',function(){saveConsent(tmp.fn,tmp.map)});
+
+  /* ---------- keyboard: Esc + simple focus trap ---------- */
+  document.addEventListener('keydown',function(e){
+    if(e.key==='Escape'){if(!cEl.hidden)closeConsent();else if(!$('#menu').hidden)closeMenu()}
+    if(e.key==='Tab'){
+      var box=!cEl.hidden?$('.sheet'):(!$('#menu').hidden?$('#menu'):null);
+      if(!box)return;
+      var f=$$('a[href],button:not([disabled]),input:not([disabled]),[tabindex]:not([tabindex="-1"])',box).filter(function(x){return x.offsetParent!==null||x===document.activeElement});
+      if(!f.length)return;
+      var first=f[0],last=f[f.length-1];
+      if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus()}
+      else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus()}
+    }
+  });
+
+  /* ---------- toast ---------- */
+  var tt=null;
+  function toast(msg){
+    var old=$('.toast');if(old)old.remove();
+    var t=document.createElement('div');t.className='toast';t.setAttribute('role','status');t.textContent=msg;
+    document.body.appendChild(t);clearTimeout(tt);tt=setTimeout(function(){t.remove()},2600);
+  }
+
+  /* ---------- account deletion (Firebase, same project as the app) ---------- */
+  var CFG={apiKey:"AIzaSyC2c1A6SkBa-jjCFGsf1OO3evAoccFMxDI",authDomain:"nijok-719fa.firebaseapp.com",projectId:"nijok-719fa",storageBucket:"nijok-719fa.firebasestorage.app",messagingSenderId:"58925794154",appId:"1:58925794154:web:5bcf500f50a567047c9b13"};
+  var fbP=null;
+  function fb(){
+    if(fbP)return fbP;
+    var B='https://www.gstatic.com/firebasejs/10.12.2/';
+    fbP=Promise.all([import(B+'firebase-app.js'),import(B+'firebase-auth.js'),import(B+'firebase-firestore.js')]).then(function(m){
+      var app=m[0].initializeApp(CFG,'nk-policy-delete');
+      return {au:m[1],fs:m[2],auth:m[1].getAuth(app),db:m[2].getFirestore(app)};
+    }).catch(function(e){fbP=null;throw e});
+    return fbP;
+  }
+  function status(kind,html){
+    var s=$('#delStatus');
+    s.innerHTML=html?'<div class="msg '+kind+'">'+html+'</div>':'';
+    if(html)s.scrollIntoView({block:'center',behavior:'smooth'});
+  }
+  function esc(t){return String(t).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+  function errText(e){
+    var c=(e&&e.code)||'';
+    if(/invalid-credential|wrong-password|user-not-found|invalid-login/.test(c))return 'Email or password is not correct. If you forgot your password, use the email option below.';
+    if(c==='auth/invalid-email')return 'That email address does not look right.';
+    if(c==='auth/too-many-requests')return 'Too many attempts. Please wait a few minutes and try again, or use the email option below.';
+    if(c==='auth/user-disabled')return 'This account is disabled. Please use the email option below.';
+    if(c==='auth/network-request-failed')return 'No internet connection. Please check your network and try again.';
+    if(c==='auth/requires-recent-login')return 'Please try again — for safety you need to sign in again.';
+    if(c==='permission-denied'||/permission/i.test(c))return 'Some data could not be deleted automatically. Please use the email option below and we will finish it for you.';
+    return 'Something went wrong ('+esc(c||(e&&e.message)||'unknown')+'). Please try again, or use the email option below.';
+  }
+  async function deleteAccount(email,pw){
+    var X=await fb(),au=X.au,fs=X.fs,db=X.db;
+    var cred=await au.signInWithEmailAndPassword(X.auth,email,pw);
+    var u=cred.user,uid=u.uid;
+    var phone='';
+    try{var us=await fs.getDoc(fs.doc(db,'users',uid));phone=((us.data()||{}).phone)||''}catch(e){}
+    var del=async function(q){var x=await fs.getDocs(q);await Promise.all(x.docs.map(function(y){return fs.deleteDoc(y.ref).catch(function(){})}))};
+    /* leave chats (messages already delivered stay with other members) */
+    try{
+      var cs=await fs.getDocs(fs.query(fs.collection(db,'chats'),fs.where('members','array-contains',uid)));
+      await Promise.all(cs.docs.map(function(d){
+        var up={members:fs.arrayRemove(uid),admins:fs.arrayRemove(uid)};up['keys.'+uid]=fs.deleteField();
+        return fs.updateDoc(d.ref,up).catch(function(){});
+      }));
+    }catch(e){}
+    await del(fs.query(fs.collection(db,'posts'),fs.where('by','==',uid)));
+    await del(fs.collection(db,'users',uid,'notes'));
+    await del(fs.query(fs.collection(db,'follows'),fs.where('a','==',uid)));
+    await del(fs.query(fs.collection(db,'follows'),fs.where('b','==',uid)));
+    await del(fs.query(fs.collection(db,'blocks'),fs.where('a','==',uid)));
+    await del(fs.query(fs.collection(db,'wd_feed'),fs.where('uid','==',uid)));
+    await del(fs.query(fs.collection(db,'wd_stories'),fs.where('uid','==',uid)));
+    await fs.deleteDoc(fs.doc(db,'wd_prof',uid)).catch(function(){});
+    await fs.deleteDoc(fs.doc(db,'users',uid,'fit','data')).catch(function(){});
+    if(phone)await fs.deleteDoc(fs.doc(db,'phones',phone)).catch(function(){});
+    await fs.deleteDoc(fs.doc(db,'users',uid));
+    await au.deleteUser(u);
+    try{await au.signOut(X.auth)}catch(e){}
+  }
+  var form=$('#delForm'),btn=$('#delBtn'),busy=false;
+  function validate(){
+    var em=$('#delEmail').value.trim(),pw=$('#delPw').value,cf=$('#delConfirm').value.trim();
+    if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em))return 'Enter the email address of your NIJOK account.';
+    if(!pw)return 'Enter your password.';
+    if(cf!=='DELETE')return 'Type DELETE in capital letters to confirm.';
+    if(!$('#delAck').checked)return 'Please tick the box to confirm you understand.';
+    return '';
+  }
+  form.addEventListener('submit',async function(e){
+    e.preventDefault();if(busy)return;
+    var v=validate();if(v){status('err',esc(v));return}
+    busy=true;btn.disabled=true;btn.textContent='Deleting…';
+    status('good','Signing in and deleting your data. Please keep this page open…');
+    try{
+      await deleteAccount($('#delEmail').value.trim(),$('#delPw').value);
+      /* clear anything NIJOK saved in this browser */
+      try{Object.keys(localStorage).forEach(function(k){if(/^(nk_|nk4_)/.test(k)&&k!=='nk_consent'&&k!=='nk_pol_theme')localStorage.removeItem(k)})}catch(x){}
+      form.hidden=true;$('#delPw').value='';
+      status('good','<b>Your account has been deleted.</b><br>Your profile, posts, stories, travel posts, notes, follows, blocks and Fit &amp; Move data were removed, and you can no longer sign in. Thank you for using NIJOK.');
+    }catch(err){
+      status('err',errText(err));
+      btn.disabled=false;btn.textContent='Delete my account';
+    }
+    busy=false;
+  });
+
+  /* ---------- start ---------- */
+  route();
+})();
+</script>
+</body>
+</html>
