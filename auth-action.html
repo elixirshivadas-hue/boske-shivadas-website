@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#f7f3ea">
+<title>NIJOK</title>
+<link rel="icon" type="image/png" href="icon-192.png">
+<style>
+:root{--bg:#f7f3ea;--card:#ffffff;--ink:#14231c;--mut:#5c6b62;--g:#0f4a36;--btnt:#ffffff;--ok:#1f7a45;--bad:#b3261e;--line:#e4ded0;--field:#faf8f2}
+@media (prefers-color-scheme:dark){
+:root{--bg:#0a1a13;--card:#12261c;--ink:#eef3ee;--mut:#9db3a6;--g:#4fb88a;--btnt:#06150e;--ok:#6fd49a;--bad:#ff8a80;--line:#223a2e;--field:#0d1f16}
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+body{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:max(20px,env(safe-area-inset-top)) 20px max(20px,env(safe-area-inset-bottom))}
+.card{width:100%;max-width:400px;background:var(--card);border:1px solid var(--line);border-radius:22px;padding:28px 22px 24px;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,.10)}
+.logo{width:72px;height:72px;border-radius:18px;display:block;margin:0 auto 10px}
+.brand{font-weight:800;letter-spacing:.16em;font-size:15px;color:var(--g);margin:0 0 18px}
+.ico{font-size:40px;line-height:1;margin:6px 0 4px}
+h1{font-size:21px;line-height:1.25;margin:8px 0 6px}
+p{margin:6px 0 18px;color:var(--mut);word-wrap:break-word}
+.em{color:var(--ink);font-weight:600}
+.btn{display:block;width:100%;border:0;border-radius:14px;padding:14px 16px;font:700 16px system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--g);color:var(--btnt);text-decoration:none;cursor:pointer}
+.btn[disabled]{opacity:.6;cursor:default}
+.field{position:relative;margin:0 0 12px;text-align:left}
+.field input{width:100%;border:1px solid var(--line);background:var(--field);color:var(--ink);border-radius:12px;padding:13px 62px 13px 14px;font:16px system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.field input:focus{outline:2px solid var(--g);outline-offset:1px}
+.field button{position:absolute;right:6px;top:50%;transform:translateY(-50%);border:0;background:none;color:var(--g);font:700 13px system-ui,sans-serif;padding:8px;cursor:pointer}
+.msg{min-height:20px;margin:0 0 12px;font-size:14px;color:var(--bad);text-align:left}
+.spin{width:34px;height:34px;margin:14px auto;border:4px solid var(--line);border-top-color:var(--g);border-radius:50%;animation:s .8s linear infinite}
+@keyframes s{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<main class="card" id="box" aria-live="polite">
+  <img class="logo" src="icon-192.png" alt="NIJOK">
+  <div class="brand">NIJOK</div>
+  <div id="view"><div class="spin" role="status" aria-label="Loading"></div><p>One moment…</p></div>
+</main>
+
+<script type="module">
+const HOME = 'https://nijok.in/';
+const OK_HOSTS = ['nijok.in', 'www.nijok.in', 'elixirshivadas-hue.github.io', 'nijok-719fa.firebaseapp.com', 'nijok-719fa.web.app'];
+const CFG = {
+  apiKey: "AIzaSyC2c1A6SkBa-jjCFGsf1OO3evAoccFMxDI",
+  authDomain: "nijok-719fa.firebaseapp.com",
+  projectId: "nijok-719fa",
+  storageBucket: "nijok-719fa.firebasestorage.app",
+  messagingSenderId: "58925794154",
+  appId: "1:58925794154:web:5bcf500f50a567047c9b13"
+};
+const B = 'https://www.gstatic.com/firebasejs/10.12.2/';
+
+const q = new URLSearchParams(location.search);
+const mode = q.get('mode');
+const code = q.get('oobCode');
+
+/* only allow going back to our own sites */
+const safeNext = () => {
+  try {
+    const u = new URL(q.get('continueUrl') || '');
+    if (u.protocol === 'https:' && OK_HOSTS.includes(u.hostname)) return u.href;
+  } catch (e) {}
+  return HOME;
+};
+
+const view = document.getElementById('view');
+const el = (tag, props, kids) => {
+  const n = document.createElement(tag);
+  Object.assign(n, props || {});
+  (kids || []).forEach(k => n.append(k));
+  return n;
+};
+
+/* show a result screen (all text goes in as plain text, never as HTML) */
+const show = (icon, title, text, btn, email) => {
+  const kids = [
+    el('div', { className: 'ico', textContent: icon }),
+    el('h1', { textContent: title })
+  ];
+  const p = el('p', { textContent: text });
+  if (email) { p.append(' ', el('span', { className: 'em', textContent: email }), '.'); }
+  kids.push(p);
+  if (btn) kids.push(el('a', { className: 'btn', href: btn[1], textContent: btn[0] }));
+  view.replaceChildren(...kids);
+};
+
+const errText = e => {
+  const c = (e && e.code) || '';
+  if (c === 'auth/expired-action-code') return 'This link has expired. Please request a new one from the NIJOK app.';
+  if (c === 'auth/invalid-action-code') return 'This link is not valid or was already used. If you already did this step, just open NIJOK and sign in.';
+  if (c === 'auth/user-disabled') return 'This account has been disabled.';
+  if (c === 'auth/user-not-found') return 'We could not find this account.';
+  if (c === 'auth/weak-password') return 'That password is too weak. Please use at least 6 characters.';
+  if (c === 'auth/network-request-failed') return 'No internet connection. Please check your network and try again.';
+  return 'Something went wrong. Please try again, or request a new link from the NIJOK app.';
+};
+
+const fail = e => show('⚠️', 'This link could not be used', errText(e), ['Open NIJOK', HOME]);
+
+async function main() {
+  if (!mode || !code) {
+    show('⚠️', 'Link incomplete', 'This page opens from the email we send you. Please use the link in that email.', ['Open NIJOK', HOME]);
+    return;
+  }
+
+  let App, Au;
+  try {
+    [App, Au] = await Promise.all([import(B + 'firebase-app.js'), import(B + 'firebase-auth.js')]);
+  } catch (e) {
+    show('📡', 'Could not connect', 'Please check your internet and reload this page.', ['Reload', location.href]);
+    return;
+  }
+  const auth = Au.getAuth(App.initializeApp(CFG));
+
+  /* 1) verify email */
+  if (mode === 'verifyEmail') {
+    try {
+      await Au.applyActionCode(auth, code);
+      show('✅', 'Email verified', 'Your email address is verified. You can now continue in NIJOK.', ['Open NIJOK', safeNext()]);
+    } catch (e) { fail(e); }
+    return;
+  }
+
+  /* 2) reset password */
+  if (mode === 'resetPassword') {
+    let email;
+    try { email = await Au.verifyPasswordResetCode(auth, code); } catch (e) { fail(e); return; }
+
+    const p1 = el('input', { type: 'password', placeholder: 'New password', autocomplete: 'new-password', minLength: 6 });
+    const p2 = el('input', { type: 'password', placeholder: 'Confirm new password', autocomplete: 'new-password', minLength: 6 });
+    const tog = el('button', { type: 'button', textContent: 'Show' });
+    tog.onclick = () => {
+      const on = p1.type === 'password';
+      p1.type = p2.type = on ? 'text' : 'password';
+      tog.textContent = on ? 'Hide' : 'Show';
+    };
+    const note = el('div', { className: 'msg', role: 'alert' });
+    const go = el('button', { type: 'submit', className: 'btn', textContent: 'Save new password' });
+    const form = el('form', {}, [
+      el('div', { className: 'field' }, [p1, tog]),
+      el('div', { className: 'field' }, [p2]),
+      note, go
+    ]);
+    form.noValidate = true;
+    form.onsubmit = async ev => {
+      ev.preventDefault();
+      note.textContent = '';
+      if (p1.value.length < 6) { note.textContent = 'Please use at least 6 characters.'; return; }
+      if (p1.value !== p2.value) { note.textContent = 'The two passwords do not match.'; return; }
+      go.disabled = true; go.textContent = 'Saving…';
+      try {
+        await Au.confirmPasswordReset(auth, code, p1.value);
+        show('✅', 'Password changed', 'Your password was updated. Sign in to NIJOK with your new password.', ['Open NIJOK', safeNext()]);
+      } catch (e) {
+        go.disabled = false; go.textContent = 'Save new password';
+        if (e && (e.code === 'auth/expired-action-code' || e.code === 'auth/invalid-action-code')) fail(e);
+        else note.textContent = errText(e);
+      }
+    };
+    const t = el('p', { textContent: 'Choose a new password for ' });
+    t.append(el('span', { className: 'em', textContent: email }), '.');
+    view.replaceChildren(el('div', { className: 'ico', textContent: '🔑' }), el('h1', { textContent: 'Reset your password' }), t, form);
+    return;
+  }
+
+  /* 3) undo an email-address change */
+  if (mode === 'recoverEmail') {
+    try {
+      const info = await Au.checkActionCode(auth, code);
+      const old = info && info.data && info.data.email;
+      await Au.applyActionCode(auth, code);
+      show('✅', 'Email address restored', 'Your NIJOK email address was changed back to', ['Open NIJOK', HOME], old || 'your previous address');
+    } catch (e) { fail(e); }
+    return;
+  }
+
+  show('⚠️', 'Unknown request', 'This link is not supported. Please open NIJOK and try again.', ['Open NIJOK', HOME]);
+}
+
+main();
+</script>
+</body>
+</html>
