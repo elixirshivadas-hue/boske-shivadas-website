@@ -4982,6 +4982,10 @@ V.owner=()=>{const hd='<div class="hd"><button class="ib" data-a="back">←</but
  const un=F.onSnapshot(F.collection(db,'users'),s=>{OWD.us=s.docs.map(d=>({...norm(d.data()),uid:d.id}));owdList()},e=>{const l=$('#owl');if(l)l.innerHTML='<div class="emp">Not allowed. Add your user id to the admins collection.</div>'});
  const t=setInterval(owdList,20000);
  S.unM=()=>{un();clearInterval(t)}};
+
+/* ===== Admin Control Center: "Live users" tile (opens the Owner dashboard) ===== */
+{const _h=admHome2;admHome2=function(){_h();if(admRole()!=='owner')return;const g=$('[data-a=admtab]');if(!g||!g.parentNode||$('#admlive'))return;
+ g.parentNode.insertAdjacentHTML('afterbegin',`<div class="psc" id="admlive" data-a="owner" style="margin:0;cursor:pointer;grid-column:1/-1"><i>${pi('shield',22)}</i><b style="display:block;margin-top:6px">Live users</b><small>Online now · emails · app installs</small></div>`)}}
 </script><style id="nb-fix">.body.nbp{order:0!important}.nbp.body+.nav,.nbp.body~.nav{order:1}
 .qc{margin:14px 0 6px;border-radius:26px;padding:16px 12px 14px;background-size:cover;background-position:center;box-shadow:0 6px 18px #0002;overflow:hidden}
 .qc>b{display:block;font:600 26px 'Dancing Script','Segoe Print',cursive;color:#14503a}
