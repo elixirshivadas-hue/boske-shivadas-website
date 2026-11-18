@@ -4951,6 +4951,37 @@ try{matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>{if
 document.head.insertAdjacentHTML('beforeend',`<style id="nkv10n">html.night .bk3w,html.night .bk3s{--t:#1c1c1e!important}html.night .bk3w,html.night .bk3s{background-color:#1c1c1e!important}</style>`);
 {const run=()=>{if(!document.documentElement.classList.contains('night'))return;try{darkify();nightFix()}catch(e){}};new MutationObserver(run).observe(app,{childList:true})}
 
+
+/* ===== NIJØK Owner dashboard v2: live active users, app installs, emails (owner/admin only) ===== */
+const OWD={f:'all',q:'',us:[],em:{}};
+const owdOn=u=>Date.now()-(+u.seenAt||0)<75000;
+const owdDay=u=>Date.now()-(+u.seenAt||0)<864e5;
+const owdPlat=()=>/iPhone|iPad|iPod/i.test(navigator.userAgent)?'iOS':/Android/i.test(navigator.userAgent)?'Android':'Web';
+/* mark this user as "app installed" (works for Android appinstalled event + any user who opens the installed app) */
+async function owdMark(){try{if(!S.me||!S.me.uid||S.me.installed)return;if(!(standalone||localStorage.getItem('nk_inst')))return;await F.updateDoc(F.doc(db,'users',S.me.uid),{installed:true,instAt:Date.now(),plat:owdPlat()});S.me.installed=true}catch(e){}}
+addEventListener('appinstalled',()=>{try{localStorage.setItem('nk_inst','1')}catch(e){}owdMark()});
+{const _a=afterLogin;afterLogin=async function(u){await _a(u);owdMark()}}
+/* emails live in users/{uid}/priv/me (private), so the owner reads them one by one and caches them */
+async function owdEmails(L){const need=L.filter(u=>!(u.uid in OWD.em));await Promise.all(need.map(async u=>{OWD.em[u.uid]=null;try{const s=await F.getDoc(F.doc(db,'users',u.uid,'priv','me'));OWD.em[u.uid]=s.exists()?(s.data().email||''):''}catch(e){OWD.em[u.uid]=''}}));return need.length}
+function owdList(){const el=$('#owl');if(!el||S.view!=='owner')return;
+ const all=OWD.us,q=OWD.q.trim().toLowerCase(),on=all.filter(owdOn),ins=all.filter(u=>u.installed);
+ $('#owc').innerHTML=[['Registered',all.length],['Active now',on.length],['Active 24h',all.filter(owdDay).length],['App installed',ins.length]].map(([t,n])=>`<div class="card" style="flex:1 1 40%;margin:0"><h4>${t}</h4><p style="font-size:26px;font-weight:600">${n}</p></div>`).join('');
+ $('#owf').innerHTML=[['all','All ('+all.length+')'],['on','Online ('+on.length+')'],['ins','Installed ('+ins.length+')']].map(([k,t])=>`<button data-k="${k}" style="padding:7px 12px;border-radius:99px;border:1px solid #14684a;background:${OWD.f===k?'#14684a':'transparent'};color:${OWD.f===k?'#fff':'#14684a'};font-size:13px">${t}</button>`).join('');
+ $$('#owf button').forEach(b=>b.onclick=()=>{OWD.f=b.dataset.k;owdList()});
+ const src=OWD.f==='on'?on:OWD.f==='ins'?ins:all;
+ const L=src.filter(u=>!q||[u.name,u.uname,u.phone,u.email,OWD.em[u.uid]].join(' ').toLowerCase().includes(q)).sort((a,b)=>owdOn(b)-owdOn(a)||(+b.seenAt||+b.lastLogin||0)-(+a.seenAt||+a.lastLogin||0)).slice(0,80);
+ el.innerHTML=L.map(u=>{const o=owdOn(u),seen=+u.seenAt||+u.lastLogin||0,em=OWD.em[u.uid],a=seen?ago(seen):'';
+  const mail=em||u.email||(u.phone?fph(u.phone):'')||(em==null?'loading…':'—');
+  return `<div class="row" data-a="upg" data-id="${u.uid}">${av(u,42)}<div class="m"><b>${E(u.name||'—')}${u.uname?' <small>@'+E(u.uname)+'</small>':''}</b><small>${E(mail)}</small><small>${o?'<span style="color:#1fa463">● Online now</span>':'Last seen '+(seen?(a==='now'?'just now':a+' ago'):'—')}${u.installed?' · 📲 App'+(u.plat?' ('+E(u.plat)+')':''):''}</small></div></div>`}).join('')||'<div class="emp">No users here.</div>';
+ owdEmails(L).then(n=>{if(n)owdList()})}
+V.owner=()=>{const hd='<div class="hd"><button class="ib" data-a="back">←</button><h2>Owner dashboard</h2></div>';
+ if(!S.admin){app.innerHTML=hd+'<div class="body"><div class="emp">Not allowed.</div></div>';return}
+ OWD.f='all';OWD.q='';OWD.us=[];
+ app.innerHTML=hd+'<div class="body" id="ob"><div id="owc" style="display:flex;flex-wrap:wrap;gap:8px;margin:10px 12px"></div><input id="owq" class="psin" placeholder="Search name, @username or email" style="margin:0 12px 8px;width:calc(100% - 24px)"><div id="owf" style="display:flex;gap:6px;margin:0 12px 8px;flex-wrap:wrap"></div><div id="owl"><div class="emp">Loading…</div></div></div>';
+ $('#owq').oninput=e=>{OWD.q=e.target.value;owdList()};
+ const un=F.onSnapshot(F.collection(db,'users'),s=>{OWD.us=s.docs.map(d=>({...norm(d.data()),uid:d.id}));owdList()},e=>{const l=$('#owl');if(l)l.innerHTML='<div class="emp">Not allowed. Add your user id to the admins collection.</div>'});
+ const t=setInterval(owdList,20000);
+ S.unM=()=>{un();clearInterval(t)}};
 </script><style id="nb-fix">.body.nbp{order:0!important}.nbp.body+.nav,.nbp.body~.nav{order:1}
 .qc{margin:14px 0 6px;border-radius:26px;padding:16px 12px 14px;background-size:cover;background-position:center;box-shadow:0 6px 18px #0002;overflow:hidden}
 .qc>b{display:block;font:600 26px 'Dancing Script','Segoe Print',cursive;color:#14503a}
