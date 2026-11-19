@@ -1148,7 +1148,7 @@ const PCAT={
  app:{t:'App Settings',s:'Language, theme & install',emo:'⚙',img:'paper',d:'Change how the app looks and works.',items:()=>[['🌐',tr('lang')+' / भाषा','lang','English · हिन्दी · తెలుగు · मराठी'],['🌙','Dark mode','night',document.documentElement.classList.contains('night')?'On':'Off'],['🔔','Notifications','soon','Choose what you hear about'],...(standalone?[]:[['📲','Install NIJOK app','install','Add to your home screen']])]},
  acc:{t:'Account & Security',s:'Privacy, blocked users, account',emo:'🛡',img:'paper',d:'Control your privacy and account.',items:()=>[['🔒','Privacy Policy','privacypg','How your data is used'],['🚫','Blocked users','blklist',S.blk.size?S.blk.size+' blocked':'Manage blocked users'],['🔐','Two-step verification','soon','Extra account protection'],['🗑','Delete account','delaccui','Permanently remove your data',1]]},
  lib:{t:'My Library',s:'Books, foods & saved items',emo:'📖',img:'lib',d:'Everything you saved, in one place.',items:()=>[['📚','My Library (books)','blib','Reading list & notes'],['♥','Saved Foods','ffsaved','Foods you saved'],['📔','Food Journal','ffjrn','What you ate and when'],['🔖','Saved Messages','opensaved','Your private space'],['📥','Archived chats','openarch','Chats you archived'],['🎯','Reading Goals','soon','Set yearly book goals']]},
- exp:{t:'Explore More',s:'Food Facts, shop & more',emo:'🧭',img:'food',d:'Discover more inside NIJØK.',items:()=>[['🥑','Food Facts','factsgo','Search foods and daily facts'],['🧭','Explore','tab','Discover places & more',0,'data-v="explore"'],['🛍','Shop','shop','NIJOK Premium store'],...(S.admin?[['🛡','Owner dashboard','owner','See who logged in']]:[])]},
+ exp:{t:'Explore More',s:'Food Facts, shop & more',emo:'🧭',img:'food',d:'Discover more inside NIJØK.',items:()=>[['🥑','Food Facts','factsgo','Search foods and daily facts'],['🧭','Explore','tab','Discover places & more',0,'data-v="explore"'],['✨','NIJØK AI','aihome','Ask, learn & speak'],['🛍','Shop','shop','NIJOK Premium store'],...(S.admin?[['🛡','Owner dashboard','owner','See who logged in']]:[])]},
  jrn:{t:'My Journey',s:'Progress & achievements',emo:'📊',img:'rev',d:'Track how you learn and grow.',items:()=>[['📝','My Notes','tab','Your saved notes',0,'data-v="notes"'],['🕘','Scan History','histgo','Products you scanned'],['🏅','Badges & Achievements','soon','Rewards for learning and reading'],['☁','Backup & Export','soon','Download your notes and library']]},
  help:{t:'Help & Support',s:'FAQs & contact us',emo:'🎧',img:'cafe',d:'We are here to help.',items:()=>[['💬','Help & Feedback','soon','Tell us what to improve'],['❓','FAQs','soon','Common questions'],['✉','Contact us','soon','Write to the NIJØK team']]}
 };
@@ -5066,6 +5066,66 @@ Object.assign(ACT,{
  async admperm(d){if(admRole()!=='owner')return;let r=null;try{r=(await F.getDoc(F.doc(db,'adminUsers',d.id))).data()}catch(e){}if(!r)return;const cur=Array.isArray(r.perms)?r.perms:(ADPERM[r.role]||[]);
   sheet('<h3>Permissions</h3><small>'+E(r.email||d.id)+'</small><div style="max-height:52vh;overflow:auto;margin:8px 0">'+PERMS.map(([k,l])=>'<label style="display:flex;gap:10px;align-items:center;padding:7px 0"><input type="checkbox" value="'+k+'" '+(cur.includes(k)?'checked':'')+'><span>'+l+'</span></label>').join('')+'</div><button class="btn" data-a="admpsave" data-id="'+d.id+'">Save</button>')},
  async admpsave(d){const p=$$('#sheet input[type=checkbox]:checked').map(i=>i.value);try{await F.updateDoc(F.doc(db,'adminUsers',d.id),{perms:p});await admLog('set permissions',d.id);sheet();toast('Permissions saved ✓')}catch(e){toast('Failed',psErr(e))}}});
+
+/* ===== NIJØK AI (Gemini via Cloudflare Worker) ===== */
+const NAI_URL='https://nijok-ai.elixir-shivadas.workers.dev';
+const NAI={mode:'general',cid:null,msgs:[],busy:false,lang:'hi-IN',rec:null};
+const NAIM=[['general','✨ General'],['food','🍲 Food'],['study','📚 Study'],['books','📖 Books'],['nature','🌿 Nature'],['knowledge','🧠 Knowledge']];
+const NAIS={general:['Explain GST in simple words','Plan a 3-day Jaipur trip'],food:['Healthy Indian breakfast ideas','High-protein vegetarian dinner'],study:['Explain photosynthesis step by step','Make a 5-question quiz on fractions'],books:['Books like Atomic Habits','Summary of the Bhagavad Gita'],nature:['Why do leaves change colour?','Tell me about snow leopards'],knowledge:['Who built the Taj Mahal?','How do vaccines work?']};
+const NAIB='padding:7px 12px;border-radius:99px;border:1px solid #14684a;background:transparent;color:#14684a;font-size:13px';
+if(!$('#naicss'))document.head.insertAdjacentHTML('beforeend',`<style id="naicss">.nai{display:flex;flex-direction:column;height:100%;min-height:0}.nai .nm{flex:1;overflow:auto;padding:12px 14px;display:flex;flex-direction:column;gap:10px}.nai .b{max-width:88%;padding:10px 13px;border-radius:16px;font-size:15px;line-height:1.45;word-wrap:break-word}.nai .u{align-self:flex-end;background:#14684a;color:#fff;border-bottom-right-radius:4px}.nai .a{align-self:flex-start;background:#eef2ef;color:#16231c;border-bottom-left-radius:4px}html.night .nai .a{background:#22302a;color:#e8f0ec}.nai .act{display:flex;gap:14px;margin-top:6px;font-size:13px;opacity:.8}.nai .chips{display:flex;gap:6px;overflow-x:auto;padding:8px 12px;flex:none}.nai .chips button,.nai .sg button{white-space:nowrap;padding:7px 12px;border-radius:99px;border:1px solid #14684a;background:transparent;color:#14684a;font-size:13px}.nai .chips button.on{background:#14684a;color:#fff}.nai .bar{display:flex;gap:8px;padding:10px 12px;align-items:flex-end;border-top:1px solid rgba(128,128,128,.25);flex:none}.nai textarea{flex:1;resize:none;max-height:110px;padding:10px 12px;border-radius:18px;border:1px solid rgba(128,128,128,.4);font:inherit;background:transparent;color:inherit}.nai .bar button{width:42px;height:42px;border-radius:50%;border:0;background:#14684a;color:#fff;font-size:18px;flex:none}.nai .bar button.mic{background:transparent;color:#14684a;border:1px solid #14684a}.nai .bar button.rec{background:#c0392b;color:#fff;border-color:#c0392b}.nai small.n{text-align:center;opacity:.6;padding:0 12px 4px;font-size:11px;flex:none}</style>`);
+const naiMsgs=()=>F.collection(db,'users',S.me.uid,'aiChats',NAI.cid,'messages');
+const naiFmt=t=>E(t).replace(/\*\*(.+?)\*\*/g,'<b>$1</b>').replace(/^\s*[\*\-] /gm,'• ').replace(/\n/g,'<br>');
+function naiChips(){const c=$('#naic');if(!c)return;c.innerHTML=NAIM.map(([k,t])=>`<button data-m="${k}" class="${NAI.mode===k?'on':''}">${t}</button>`).join('')+`<button data-l="1">${NAI.lang==='hi-IN'?'🎙 हिंदी':'🎙 English'}</button>`;
+ c.onclick=e=>{const b=e.target.closest('button');if(!b)return;if(b.dataset.m){NAI.mode=b.dataset.m;if(!NAI.msgs.length)naiDraw()}else if(b.dataset.l)NAI.lang=NAI.lang==='hi-IN'?'en-IN':'hi-IN';naiChips()}}
+function naiDraw(){const el=$('#nam');if(!el)return;
+ if(!NAI.msgs.length){el.innerHTML=`<div class="b a">Namaste! I'm NIJØK AI. Ask me about food, books, study, nature or anything else, in Hindi, English or Hinglish.</div><div class="sg" style="display:flex;flex-wrap:wrap;gap:6px">${NAIS[NAI.mode].map(t=>`<button data-q="${E(t)}">${E(t)}</button>`).join('')}</div>`;
+  $$('.sg button',el).forEach(b=>b.onclick=()=>{$('#nait').value=b.dataset.q;naiSend()});return}
+ el.innerHTML=NAI.msgs.map((m,i)=>m.role==='user'?`<div class="b u">${naiFmt(m.text)}</div>`:`<div class="b a">${naiFmt(m.text)}${m.err?'':`<div class="act"><span data-s="${i}">🔊 Listen</span><span data-v="${i}">⭐ Save</span><span data-c="${i}">⧉ Copy</span></div>`}</div>`).join('')+(NAI.busy?'<div class="b a">…</div>':'');
+ el.onclick=e=>{const d=e.target.dataset;if(d.s!=null)naiSpeak(+d.s);if(d.v!=null)naiSave(+d.v);if(d.c!=null){try{navigator.clipboard.writeText(NAI.msgs[+d.c].text);toast('Copied')}catch(x){}}};
+ el.scrollTop=el.scrollHeight}
+async function naiSend(){const ta=$('#nait');if(!ta)return;const text=(ta.value||'').trim();if(!text||NAI.busy||!S.me||!S.me.uid)return;
+ if(S.me.ban)return toast('Account suspended','AI is unavailable');
+ ta.value='';NAI.msgs.push({role:'user',text});NAI.busy=true;naiDraw();
+ try{if(!NAI.cid){const r=await F.addDoc(F.collection(db,'users',S.me.uid,'aiChats'),{title:text.slice(0,60),mode:NAI.mode,last:text.slice(0,120),createdAt:Date.now(),updatedAt:Date.now()});NAI.cid=r.id}
+  const tok=await auth.currentUser.getIdToken();
+  const hist=NAI.msgs.filter(m=>!m.err).slice(-12).map(m=>({role:m.role==='ai'?'model':'user',text:m.text}));
+  const r=await fetch(NAI_URL,{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+tok},body:JSON.stringify({mode:NAI.mode,messages:hist})});
+  const j=await r.json().catch(()=>({}));if(!r.ok||!j.text)throw new Error(j.error||'AI error');
+  const ai=j.text.slice(0,7900);NAI.msgs.push({role:'ai',text:ai});
+  const t=Date.now();F.addDoc(naiMsgs(),{role:'user',text:text.slice(0,7900),mode:NAI.mode,at:t});F.addDoc(naiMsgs(),{role:'ai',text:ai,mode:NAI.mode,at:t+1});
+  F.updateDoc(F.doc(db,'users',S.me.uid,'aiChats',NAI.cid),{last:ai.slice(0,120),updatedAt:Date.now(),mode:NAI.mode}).catch(()=>{})}
+ catch(e){NAI.msgs.push({role:'ai',text:'Sorry, '+(e.message||'something went wrong')+'. Please try again.',err:1})}
+ NAI.busy=false;naiDraw()}
+function naiNew(){NAI.cid=null;NAI.msgs=[];naiDraw()}
+function naiSpeak(i){try{speechSynthesis.cancel();const t=NAI.msgs[i].text.replace(/[*#_`]/g,'').slice(0,1500),u=new SpeechSynthesisUtterance(t);u.lang=/[\u0900-\u097F]/.test(t)?'hi-IN':'en-IN';speechSynthesis.speak(u)}catch(e){toast('Voice not supported')}}
+async function naiSave(i){try{await F.addDoc(F.collection(db,'users',S.me.uid,'aiSaved'),{text:NAI.msgs[i].text.slice(0,7900),mode:NAI.mode,chatId:NAI.cid||'',msgId:'',at:Date.now()});toast('Saved')}catch(e){toast('Could not save')}}
+function naiMic(){const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR)return toast('Voice not supported','Try Chrome on Android');
+ if(NAI.rec){NAI.rec.stop();return}
+ const r=new SR(),b=$('#naimic');NAI.rec=r;r.lang=NAI.lang;r.interimResults=true;r.continuous=false;
+ r.onstart=()=>b&&b.classList.add('rec');
+ r.onresult=e=>{const t=$('#nait');if(t)t.value=[...e.results].map(x=>x[0].transcript).join('')};
+ r.onend=()=>{NAI.rec=null;b&&b.classList.remove('rec');const t=$('#nait');if(t&&t.value.trim())naiSend()};
+ r.onerror=()=>{NAI.rec=null;b&&b.classList.remove('rec')};
+ try{r.start()}catch(e){NAI.rec=null}}
+async function naiHist(){const n=document.documentElement.classList.contains('night'),o=document.createElement('div'),u=S.me.uid;
+ o.style.cssText='position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,.55);display:flex;align-items:flex-end;justify-content:center';
+ o.innerHTML=`<div style="background:${n?'#1c1c1e':'#fff'};color:${n?'#f2f2f2':'#111'};width:100%;max-width:480px;max-height:80vh;overflow:auto;border-radius:18px 18px 0 0;padding:16px"><div style="display:flex;gap:8px;margin-bottom:10px"><button data-t="c" style="${NAIB}">Chats</button><button data-t="s" style="${NAIB}">⭐ Saved</button></div><div id="naiL">Loading…</div></div>`;
+ document.body.appendChild(o);let tab='c';
+ const load=async()=>{const L=$('#naiL');try{
+  if(tab==='s'){const s=await F.getDocs(F.query(F.collection(db,'users',u,'aiSaved'),F.orderBy('at','desc'),F.limit(30)));L.innerHTML=s.docs.map(d=>`<div style="margin:0 0 12px"><small>${E(new Date(d.data().at).toLocaleDateString())}</small><p style="margin:4px 0">${naiFmt(String(d.data().text).slice(0,300))}</p><button data-x="${d.id}" data-k="s" style="${NAIB}">Delete</button></div>`).join('')||'Nothing saved yet.'}
+  else{const s=await F.getDocs(F.query(F.collection(db,'users',u,'aiChats'),F.orderBy('updatedAt','desc'),F.limit(30)));L.innerHTML=s.docs.map(d=>`<div style="display:flex;gap:8px;align-items:center;margin:0 0 10px"><div data-o="${d.id}" style="flex:1;cursor:pointer"><b>${E(d.data().title)}</b><br><small>${E(d.data().last||'')}</small></div><button data-x="${d.id}" data-k="c" style="${NAIB}">🗑</button></div>`).join('')||'No chats yet.'}
+ }catch(e){L.textContent='Could not load.'}};
+ o.onclick=async e=>{if(e.target===o)return o.remove();const d=e.target.closest('[data-t],[data-x],[data-o]');if(!d)return;
+  if(d.dataset.t){tab=d.dataset.t;return load()}
+  if(d.dataset.x){const id=d.dataset.x;try{if(d.dataset.k==='s')await F.deleteDoc(F.doc(db,'users',u,'aiSaved',id));else{const ms=await F.getDocs(F.collection(db,'users',u,'aiChats',id,'messages'));await Promise.all(ms.docs.map(m=>F.deleteDoc(m.ref)));await F.deleteDoc(F.doc(db,'users',u,'aiChats',id));if(NAI.cid===id)naiNew()}}catch(x){toast('Could not delete')}return load()}
+  if(d.dataset.o){const id=d.dataset.o;try{const c=await F.getDoc(F.doc(db,'users',u,'aiChats',id)),ms=await F.getDocs(F.query(F.collection(db,'users',u,'aiChats',id,'messages'),F.orderBy('at','asc'),F.limit(100)));NAI.cid=id;NAI.mode=(c.data()||{}).mode||'general';NAI.msgs=ms.docs.map(m=>({role:m.data().role,text:m.data().text}));o.remove();naiChips();naiDraw()}catch(x){toast('Could not open chat')}}};
+ load()}
+V.ai=()=>{app.innerHTML=`<div class="hd"><button class="ib" data-a="back">←</button><h2>NIJØK AI</h2><span class="sp"></span><button class="ib" id="naih" aria-label="History">🕘</button><button class="ib" id="nain" aria-label="New chat">＋</button></div><div class="body" style="padding:0;display:flex;flex-direction:column;overflow:hidden"><div class="nai"><div class="chips" id="naic"></div><div class="nm" id="nam"></div><small class="n">AI can make mistakes. Don't share personal details.</small><div class="bar"><button class="mic" id="naimic" aria-label="Speak">🎙</button><textarea id="nait" rows="1" placeholder="Ask anything…"></textarea><button id="naisend" aria-label="Send">➤</button></div></div></div>`;
+ $('#nain').onclick=naiNew;$('#naih').onclick=naiHist;$('#naisend').onclick=naiSend;$('#naimic').onclick=naiMic;
+ $('#nait').onkeydown=e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();naiSend()}};
+ S.unM=()=>{try{speechSynthesis.cancel();NAI.rec&&NAI.rec.stop()}catch(e){}};naiChips();naiDraw()};
+ACT.aihome=()=>nav('ai');
 </script><style id="nb-fix">.body.nbp{order:0!important}.nbp.body+.nav,.nbp.body~.nav{order:1}
 .qc{margin:14px 0 6px;border-radius:26px;padding:16px 12px 14px;background-size:cover;background-position:center;box-shadow:0 6px 18px #0002;overflow:hidden}
 .qc>b{display:block;font:600 26px 'Dancing Script','Segoe Print',cursive;color:#14503a}
