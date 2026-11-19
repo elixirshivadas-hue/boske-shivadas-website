@@ -2212,7 +2212,7 @@ const ADPL=['home','books','food','explore'],ADHC=['General','Account','Scanning
 const ADNEXT={draft:['published','archived'],published:['paused','archived'],paused:['published','archived'],archived:['draft']};
 const admEm=()=>((S.me&&S.me.email)||(auth.currentUser&&auth.currentUser.email)||'').toLowerCase();
 const admRole=()=>ADMINS.includes(admEm())?'owner':ADM_ROLE;
-const admCan=k=>(ADPERM[admRole()]||[]).includes(k);
+let ADM_PERMS=null;const admCan=k=>{const r=admRole();if(r==='owner')return true;if(!r)return false;if(Array.isArray(ADM_PERMS))return ADM_PERMS.includes(k);return(ADPERM[r]||[]).includes(k)};
 const admDt=t=>t?new Date(t-new Date().getTimezoneOffset()*6e4).toISOString().slice(0,16):'';
 const admState=x=>x.status==='published'?((x.start||0)>Date.now()?'scheduled':(x.end&&x.end<Date.now()?'expired':'live')):x.status;
 const admFix=()=>{const b=$('.hd.psh .ib');if(b)b.dataset.a='admback'};
@@ -2654,8 +2654,8 @@ nkHome=function(){nkPar($('#hhs'),'.hc');if($('.nkfit'))return;const h=$('.hsec'
 
 /* ---- Admin Control Center: Verification · Users & rights · Moderation ---- */
 ADPERM.owner.push('ver','usr','mod');
-{const _h=admHome2;admHome2=function(){_h();if(!admCan('ver'))return;const g=$('[data-a=admtab]');if(!g||!g.parentNode||$('#admvt'))return;
-  g.parentNode.insertAdjacentHTML('beforeend',[['Verification','Approve blue ticks','ver'],['Users & rights','Verify · suspend · remove','usr'],['Moderation','Reports from users','mod']].map(t=>`<div class="psc" ${t[2]==='ver'?'id="admvt" ':''}data-a="admtab" data-k="${t[2]}" style="margin:0;cursor:pointer"><i>${pi('shield',22)}</i><b style="display:block;margin-top:6px">${t[0]}</b><small ${t[2]==='ver'?'id="admvc"':''}>${t[1]}</small></div>`).join(''));
+{const _h=admHome2;admHome2=function(){_h();if(!(admCan('ver')||admCan('usr')||admCan('mod')))return;const g=$('[data-a=admtab]');if(!g||!g.parentNode||$('#admvt'))return;
+  g.parentNode.insertAdjacentHTML('beforeend',[['Verification','Approve blue ticks','ver'],['Users & rights','Verify · suspend · remove','usr'],['Moderation','Reports from users','mod']].filter(t=>admCan(t[2])).map(t=>`<div class="psc" ${t[2]==='ver'?'id="admvt" ':''}data-a="admtab" data-k="${t[2]}" style="margin:0;cursor:pointer"><i>${pi('shield',22)}</i><b style="display:block;margin-top:6px">${t[0]}</b><small ${t[2]==='ver'?'id="admvc"':''}>${t[1]}</small></div>`).join(''));
   F.getCountFromServer(F.query(F.collection(db,'reports'),F.where('kind','==','verify'))).then(r=>{const n=r.data().count,x=$('#admvc');x&&n&&(x.textContent=n+' pending request'+(n>1?'s':''),x.style.color='#dc2626',x.style.fontWeight='600')}).catch(()=>{})}}
 {const _d=admDraw;admDraw=function(){const t=ADM.tab;if(['ver','usr','mod'].includes(t)){if(!admRole())return _d();if(!admCan(t))return psPage('Admin','<div class="emp"><b>Limited access</b><p>Only the owner can open this section.</p></div>');return({ver:admVer,usr:admUsr,mod:admMod})[t]()}return _d()}}
 const admWho=(u,sub)=>`<div class="psrw">${av(u,44)}<div class="m" style="flex:1"><b>${E(u.name||'Member')}${owTick(u)}</b><small>${sub}</small></div></div>`;
@@ -4975,7 +4975,7 @@ function owdList(){const el=$('#owl');if(!el||S.view!=='owner')return;
   return `<div class="row" data-a="upg" data-id="${u.uid}">${av(u,42)}<div class="m"><b>${E(u.name||'—')}${u.uname?' <small>@'+E(u.uname)+'</small>':''}</b><small>${E(mail)}</small><small>${o?'<span style="color:#1fa463">● Online now</span>':'Last seen '+(seen?(a==='now'?'just now':a+' ago'):'—')}${u.installed?' · 📲 App'+(u.plat?' ('+E(u.plat)+')':''):''}</small></div></div>`}).join('')||'<div class="emp">No users here.</div>';
  owdEmails(L).then(n=>{if(n)owdList()})}
 V.owner=()=>{const hd='<div class="hd"><button class="ib" data-a="back">←</button><h2>Owner dashboard</h2></div>';
- if(!S.admin){app.innerHTML=hd+'<div class="body"><div class="emp">Not allowed.</div></div>';return}
+ if(!S.admin&&!admCan('live')){app.innerHTML=hd+'<div class="body"><div class="emp">Not allowed.</div></div>';return}
  OWD.f='all';OWD.q='';OWD.us=[];
  app.innerHTML=hd+'<div class="body" id="ob"><div id="owc" style="display:flex;flex-wrap:wrap;gap:8px;margin:10px 12px"></div><input id="owq" class="psin" placeholder="Search name, @username or email" style="margin:0 12px 8px;width:calc(100% - 24px)"><div id="owf" style="display:flex;gap:6px;margin:0 12px 8px;flex-wrap:wrap"></div><div id="owl"><div class="emp">Loading…</div></div></div>';
  $('#owq').oninput=e=>{OWD.q=e.target.value;owdList()};
@@ -4984,8 +4984,88 @@ V.owner=()=>{const hd='<div class="hd"><button class="ib" data-a="back">←</but
  S.unM=()=>{un();clearInterval(t)}};
 
 /* ===== Admin Control Center: "Live users" tile (opens the Owner dashboard) ===== */
-{const _h=admHome2;admHome2=function(){_h();if(admRole()!=='owner')return;const g=$('[data-a=admtab]');if(!g||!g.parentNode||$('#admlive'))return;
+{const _h=admHome2;admHome2=function(){_h();if(!admCan('live'))return;const g=$('[data-a=admtab]');if(!g||!g.parentNode||$('#admlive'))return;
  g.parentNode.insertAdjacentHTML('afterbegin',`<div class="psc" id="admlive" data-a="owner" style="margin:0;cursor:pointer;grid-column:1/-1"><i>${pi('shield',22)}</i><b style="display:block;margin-top:6px">Live users</b><small>Online now · emails · app installs</small></div>`)}}
+
+/* ===== NIJØK Moderation v1: strikes · read-only · limit reach · labels · appeals · granular admin permissions ===== */
+const ENF={us:[],q:'',ap:[],eid:{},mine:[]};
+const PERMS=[['usr','Ban / unban users'],['strike','Warn · strike · read-only · limit'],['mod','Delete content · reports'],['label','Label posts · limit reach'],['appeal','Review appeals'],['ver','Verification'],['live','Live users & emails'],['bc','Broadcast'],['cards','Cards & banners'],['ads','Sponsored ads'],['help','Support'],['ana','Analytics'],['exp','Excel export'],['team','Admin team'],['log','Activity log']];
+document.head.insertAdjacentHTML('beforeend','<style>.nklab{font-size:12px;font-weight:600;color:#b45309;background:#fef3c7;border-radius:8px;padding:4px 8px;margin:0 0 6px;display:inline-block}#nkenf{position:fixed;inset:0;z-index:99999;background:#000b;display:flex;align-items:center;justify-content:center;padding:18px}#nkenf .enb{background:#fff;color:#1b2b24;border-radius:18px;padding:20px;max-width:380px;width:100%;max-height:90vh;overflow:auto;text-align:center}#nkenf textarea{width:100%;min-height:80px;margin:10px 0;border:1px solid #d9d2c0;border-radius:10px;padding:8px;font:inherit}html.night #nkenf .enb{background:#1c1c1e;color:#eee}#nkro{position:fixed;top:calc(env(safe-area-inset-top,0px) + 6px);left:50%;transform:translateX(-50%);z-index:9998;background:#b91c1c;color:#fff;font-size:12px;font-weight:600;padding:5px 12px;border-radius:99px;white-space:nowrap}</style>');
+const enfDt=t=>new Date(t).toLocaleString('en-IN',{day:'numeric',month:'short',hour:'numeric',minute:'2-digit'});
+const enfShow=h=>{let o=$('#nkenf');if(!o){o=document.createElement('div');o.id='nkenf';document.body.appendChild(o)}o.innerHTML='<div class="enb">'+h+'</div>'};
+const enfHide=()=>{const o=$('#nkenf');o&&o.remove()};
+/* ---------- user side: notices, read-only bar, ban screen, appeals ---------- */
+function enfBar(){let b=$('#nkro');const on=S.me&&S.me.roUntil>Date.now()&&!S.me.ban;if(!on){b&&b.remove();return}
+ if(!b){b=document.createElement('div');b.id='nkro';b.onclick=()=>enfNotice(ENF.mine.find(x=>x.until>Date.now())||{kind:'ro',until:S.me.roUntil});document.body.appendChild(b)}
+ b.textContent='⏳ Read-only until '+new Date(S.me.roUntil).toLocaleDateString('en-IN',{day:'numeric',month:'short'})+' · tap'}
+function enfNotice(r){const ban=r.kind==='ban',me=S.me.uid,T={warn:['⚠️','Warning'],strike:['🚩','Strike '+(r.n||'')],ro:['⏳','Read-only mode'],ban:['⛔','Account suspended']}[r.kind]||['ℹ️','Notice'];
+ const un=r.until&&r.until>Date.now()?'<p><b>Until '+enfDt(r.until)+'</b>: you can read, but not post.</p>':'';
+ ENF.banUI=ban;
+ enfShow('<div style="font-size:40px">'+T[0]+'</div><h3 style="margin:6px 0">'+T[1]+'</h3><p style="line-height:1.5">'+E(r.why||(ban?'Your account broke the NIJØK community rules.':'Your content broke the NIJØK community rules.'))+'</p>'+un+'<div id="enfap"></div><div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:8px"><button class="btn sm" id="enfok">'+(ban?'Log out':'OK')+'</button><button class="btn o sm" id="enfaq">Appeal</button></div>');
+ $('#enfok').onclick=()=>{if(ban){Au.signOut(auth);enfHide();return}try{localStorage.setItem('nk_enf_'+me,String(Date.now()))}catch(e){}enfHide()};
+ $('#enfaq').onclick=()=>{$('#enfap').innerHTML='<textarea id="enfat" maxlength="1000" placeholder="Why is this a mistake? (min 10 characters)"></textarea><button class="btn sm" id="enfas">Send appeal</button>';$('#enfas').onclick=()=>enfAppeal(r)};
+ F.getDocs(F.query(F.collection(db,'appeals'),F.where('u','==',me))).then(s=>{const a=s.docs.map(d=>norm(d.data())).sort((x,y)=>(y.at||0)-(x.at||0))[0],el=$('#enfap');if(a&&el&&!el.innerHTML)el.innerHTML='<small>Last appeal: <b>'+E(a.st)+'</b>'+(a.note?' · '+E(a.note):'')+'</small>'}).catch(()=>{})}
+async function enfAppeal(r){const t=($('#enfat')||{}).value?$('#enfat').value.trim():'';if(t.length<10)return toast('Write at least 10 characters');
+ try{const q=await F.getDocs(F.query(F.collection(db,'appeals'),F.where('u','==',S.me.uid)));if(q.docs.some(d=>d.data().st==='open'))return toast('Appeal already under review');
+  await F.addDoc(F.collection(db,'appeals'),{u:S.me.uid,eid:r.id||'',text:t.slice(0,1000),st:'open',at:F.serverTimestamp()});$('#enfap').innerHTML='<small>✓ Appeal sent. We will review it.</small>';toast('Appeal sent ✓')}catch(e){toast('Could not send',e.code||'')}}
+async function enfSync(){const me=S.me&&S.me.uid;if(!me)return;
+ try{const d=norm((await F.getDoc(F.doc(db,'users',me))).data()||{});Object.assign(S.me,{ban:!!d.ban,banWhy:d.banWhy||'',roUntil:+d.roUntil||0,strikes:+d.strikes||0,lim:!!d.lim})}catch(e){return}
+ if(!S.me.ban&&ENF.banUI){enfHide();ENF.banUI=0}enfBar();
+ try{const q=await F.getDocs(F.query(F.collection(db,'enforce'),F.where('u','==',me)));ENF.mine=q.docs.map(x=>({...norm(x.data()),id:x.id})).sort((a,b)=>(b.at||0)-(a.at||0))}catch(e){ENF.mine=[]}
+ if(S.me.ban)return enfNotice(ENF.mine.find(r=>r.kind==='ban')||{kind:'ban',why:S.me.banWhy});
+ let seen=0;try{seen=+localStorage.getItem('nk_enf_'+me)||0}catch(e){}
+ const fr=ENF.mine.find(r=>(+r.at||0)>seen&&['warn','strike','ro'].includes(r.kind));if(fr)enfNotice(fr)}
+/* ---------- permissions: owner can give each admin exact rights ---------- */
+{const _a=afterLogin;afterLogin=async function(u){await _a(u);try{const s=await F.getDoc(F.doc(db,'adminUsers',u.uid));ADM_PERMS=s.exists()&&Array.isArray(s.data().perms)?s.data().perms:null}catch(e){ADM_PERMS=null}enfSync()}}
+addEventListener('visibilitychange',()=>{if(!document.hidden&&S.me&&S.me.uid)enfSync()});
+Au.onAuthStateChanged(auth,u=>{if(!u){enfHide();const b=$('#nkro');b&&b.remove()}});
+{const _t=admTeam;admTeam=async function(){await _t();$$('[data-a=admrm]').forEach(b=>{const p=b.previousElementSibling;if(p&&p.dataset&&p.dataset.a==='admperm')return;b.insertAdjacentHTML('beforebegin','<button class="btn o sm" data-a="admperm" data-id="'+b.dataset.id+'" style="margin:6px 6px 0 0">Permissions</button>')})}}
+/* ---------- admin: Enforcement center + Appeals ---------- */
+{const _h=admHome2;admHome2=function(){_h();const g=$('[data-a=admtab]');if(!g||!g.parentNode)return;const T=[];
+ if(admCan('strike')||admCan('usr')||admCan('label'))T.push(['enf','Enforcement','Warn · strike · restrict · ban']);if(admCan('appeal')||admCan('usr'))T.push(['apl','Appeals','Review user appeals']);if(!T.length)return;
+ g.parentNode.insertAdjacentHTML('beforeend',T.map(t=>'<div class="psc" data-a="admtab" data-k="'+t[0]+'" style="margin:0;cursor:pointer"><i>'+pi('shield',22)+'</i><b style="display:block;margin-top:6px">'+t[1]+'</b><small '+(t[0]==='apl'?'id="admapc"':'')+'>'+t[2]+'</small></div>').join(''));
+ if(T.some(t=>t[0]==='apl'))F.getCountFromServer(F.query(F.collection(db,'appeals'),F.where('st','==','open'))).then(r=>{const n=r.data().count,x=$('#admapc');x&&n&&(x.textContent=n+' open appeal'+(n>1?'s':''),x.style.color='#dc2626',x.style.fontWeight='600')}).catch(()=>{})}}
+{const _d=admDraw;admDraw=function(){const t=ADM.tab;if(t==='enf'||t==='apl'){const ok=t==='enf'?(admCan('strike')||admCan('usr')||admCan('label')):(admCan('appeal')||admCan('usr'));if(!ok)return psPage('Admin','<div class="emp"><b>Limited access</b><p>You do not have this permission.</p></div>');return t==='enf'?enfUsers():enfAppeals()}return _d()}}
+async function enfUsers(){psPage('Enforcement center','<input id="euq" class="psin" placeholder="Search name or @username"><div id="eub"><div class="emp">Loading…</div></div>');admFix();
+ try{const s=await F.getDocs(F.query(F.collection(db,'users'),F.limit(300)));ENF.us=s.docs.map(d=>({...norm(d.data()),uid:d.id}));enfDraw()}catch(e){$('#eub').innerHTML='<div class="emp">'+E(e.code||'Could not load')+'</div>'}
+ const q=$('#euq');if(q)q.oninput=e=>{ENF.q=e.target.value;enfDraw()}}
+function enfDraw(){const el=$('#eub');if(!el)return;const q=(ENF.q||'').trim().toLowerCase(),now=Date.now(),sc=u=>(u.ban?3:0)+(u.roUntil>now?2:0)+(u.lim?1:0)+(u.strikes||0)/100;
+ const L=ENF.us.filter(u=>!q||[u.name,u.uname,u.phone].join(' ').toLowerCase().includes(q)).sort((a,b)=>sc(b)-sc(a)).slice(0,50),cs=admCan('strike'),cu=admCan('usr'),cl=admCan('label');
+ el.innerHTML=L.map(u=>{const ch=[u.ban?'<b style="color:#dc2626">Banned</b>':'',u.roUntil>now?'⏳ Read-only to '+new Date(u.roUntil).toLocaleDateString('en-IN',{day:'numeric',month:'short'}):'',u.lim?'🔽 Limited':'',u.strikes?'🚩 '+u.strikes+' strike'+(u.strikes>1?'s':''):''].filter(Boolean).join(' · '),
+  b=(k,t,c)=>'<button class="btn o sm'+(c?' dgr':'')+'" data-a="enf" data-k="'+k+'" data-u="'+u.uid+'">'+t+'</button>';
+  return '<div class="psc" style="padding:12px;margin-bottom:8px">'+admWho(u,(u.uname?'@'+E(u.uname)+' · ':'')+(ch||'Clean'))+'<div class="psbt" style="margin-top:8px;flex-wrap:wrap;gap:6px">'+(cs?b('warn','Warn')+b('strike','Strike')+b('ro','Read-only'):'')+(cs||cl?b(u.lim?'unlim':'lim',u.lim?'Unlimit':'Limit reach'):'')+(cu?b(u.ban?'unban':'ban',u.ban?'Unban':'Ban',!u.ban):'')+b('hist','History')+(cs&&(u.strikes||u.roUntil>now)?b('clear','Clear'):'')+'</div></div>'}).join('')||'<div class="emp">No users found.</div>'}
+async function enfDo(uid,kind){const u=ENF.us.find(x=>x.uid===uid)||{},up={},rec={u:uid,by:S.me.uid,kind,why:'',until:0,n:+u.strikes||0,at:F.serverTimestamp()};
+ if(['warn','strike','ro','ban'].includes(kind)){rec.why=(prompt('Reason (the user will see this):','')||'').trim().slice(0,300);if(!rec.why)return}
+ if(kind==='strike'){rec.n=(+u.strikes||0)+1;up.strikes=rec.n;const dd=rec.n>=6?30:rec.n>=5?7:rec.n>=4?3:rec.n>=3?1:0;if(dd){rec.until=Date.now()+dd*864e5;up.roUntil=rec.until}}
+ else if(kind==='ro'){const dd=+prompt('Read-only for how many days? (1 to 30)','1');if(!(dd>=1&&dd<=30))return;rec.until=Date.now()+dd*864e5;up.roUntil=rec.until}
+ else if(kind==='lim')up.lim=true;else if(kind==='unlim')up.lim=false;
+ else if(kind==='ban'){up.ban=true;up.banAt=F.serverTimestamp();up.banWhy=rec.why}
+ else if(kind==='unban'){up.ban=false;up.banWhy=''}
+ else if(kind==='clear'){if(!confirm('Clear strikes, read-only and limits?'))return;up.strikes=0;up.roUntil=0;up.lim=false}
+ try{if(Object.keys(up).length)await F.updateDoc(F.doc(db,'users',uid),up);await F.addDoc(F.collection(db,'enforce'),rec);await admLog('enforce '+kind,uid);Object.assign(u,up);toast('Done ✓',kind==='strike'&&rec.until?'Read-only until '+enfDt(rec.until):'');enfDraw()}catch(e){toast('Failed',e.code||e.message||'')}}
+async function enfHist(uid){try{const s=await F.getDocs(F.query(F.collection(db,'enforce'),F.where('u','==',uid))),R=s.docs.map(x=>norm(x.data())).sort((a,b)=>(b.at||0)-(a.at||0)).slice(0,30);
+ sheet('<h3>History</h3><div style="max-height:55vh;overflow:auto">'+(R.map(r=>'<div class="psc" style="padding:10px;margin:6px 0"><b>'+E(r.kind)+'</b> <small>'+(r.at?enfDt(r.at):'')+'</small><div style="font-size:13px">'+E(r.why||'')+'</div></div>').join('')||'<div class="emp">No actions yet.</div>')+'</div>')}catch(e){toast('Could not load',e.code||'')}}
+async function enfAppeals(){psPage('Appeals','<div id="eab"><div class="emp">Loading…</div></div>');admFix();
+ try{const[a,e]=await Promise.all([F.getDocs(F.query(F.collection(db,'appeals'),F.limit(100))),F.getDocs(F.query(F.collection(db,'enforce'),F.limit(300)))]);
+  ENF.eid={};e.docs.forEach(d=>ENF.eid[d.id]=norm(d.data()));ENF.ap=a.docs.map(d=>({...norm(d.data()),id:d.id})).sort((x,y)=>(x.st==='open'?0:1)-(y.st==='open'?0:1)||(y.at||0)-(x.at||0));await loadU([...new Set(ENF.ap.map(x=>x.u))]);
+  $('#eab').innerHTML=ENF.ap.map(x=>{const u=S.U[x.u]||{name:'Member'},r=ENF.eid[x.eid];return '<div class="psc" style="padding:12px;margin-bottom:10px">'+admWho(u,x.st==='open'?'<b style="color:#d97706">Open</b>':E(x.st))+'<small style="display:block;margin:6px 0">'+(r?'Action: <b>'+E(r.kind)+'</b> · '+E(r.why||''):'Account action')+'</small><div style="font-size:14px;margin:4px 0">'+E(x.text)+'</div>'+(x.st==='open'?'<div class="psbt" style="gap:6px;flex-wrap:wrap;margin-top:8px"><button class="btn sm" data-a="enfap" data-id="'+x.id+'" data-k="ok">Approve (lift)</button><button class="btn o sm dgr" data-a="enfap" data-id="'+x.id+'" data-k="no">Reject</button></div>':x.note?'<small>Note: '+E(x.note)+'</small>':'')+'</div>'}).join('')||'<div class="emp"><b>No appeals</b></div>'}catch(e){$('#eab').innerHTML='<div class="emp">'+E(e.code||'Could not load')+'</div>'}}
+/* ---------- posts: label / limit reach (admin), feed filter, label badges ---------- */
+{const _m=ACT.eumore;ACT.eumore=function(d){_m.call(this,d);if(!(S.admin||admCan('label')))return;const bx=$('#sheet .sh>div');bx&&bx.insertAdjacentHTML('beforeend','<div class="si" data-a="nkpm" data-id="'+d.id+'"><span>🏷</span><b style="font-weight:400">Moderate: label / limit reach</b></div>')}}
+{const _o=owHome;owHome=function(el){const all=S.posts;S.posts=all.filter(p=>{const x=S.U[p.by]||{};return !(p.lim||x.lim||x.ban)||p.by===S.me.uid||S.admin||admCan('label')});try{return _o.call(this,el)}finally{S.posts=all}}}
+const nkDeco=()=>{$$('article.oxp:not([data-nl])').forEach(a=>{a.dataset.nl=1;const m=a.querySelector('.oxmo'),p=m&&S.posts.find(x=>x.id===m.dataset.id);if(!p)return;
+ const t=p.lab==='misleading'?'❗ Disputed / misleading information':p.lab==='sensitive'?'⚠ Sensitive content':'',l=p.lim&&(p.by===S.me.uid||S.admin||admCan('label'))?'🔽 Reach limited':'';if(!t&&!l)return;
+ (a.querySelector('.oxb')||a).insertAdjacentHTML('afterbegin','<div class="nklab">'+[t,l].filter(Boolean).join(' · ')+'</div>')})};
+new MutationObserver(()=>{clearTimeout(nkDeco.t);nkDeco.t=setTimeout(nkDeco,60)}).observe(app,{childList:true,subtree:true});
+Object.assign(ACT,{
+ nkpm(d){sh2([['⚠️','Sensitive content','nkl','data-id="'+d.id+'" data-v="sensitive"'],['❗','Disputed / misleading','nkl','data-id="'+d.id+'" data-v="misleading"'],['🔽','Limit reach (hide from feeds)','nkl','data-id="'+d.id+'" data-v="lim"'],['✖️','Remove label & limit','nkl','data-id="'+d.id+'" data-v="clear"']])},
+ async nkl(d){const up=d.v==='clear'?{lab:F.deleteField(),lim:F.deleteField()}:d.v==='lim'?{lim:true}:{lab:d.v};try{await F.updateDoc(F.doc(db,'posts',d.id),up);await admLog('post '+d.v,d.id);sheet();toast('Done ✓')}catch(e){toast('Not allowed',e.code||'')}},
+ enf(d){d.k==='hist'?enfHist(d.u):enfDo(d.u,d.k)},
+ async enfap(d){const x=ENF.ap.find(a=>a.id===d.id);if(!x)return;const ok=d.k==='ok',note=(prompt(ok?'Note to user (optional)':'Reason for rejecting (the user will see this)','')||'').trim().slice(0,300);if(!ok&&!note)return;
+  try{if(ok){const u=(await F.getDoc(F.doc(db,'users',x.u))).data()||{};await F.updateDoc(F.doc(db,'users',x.u),{ban:false,banWhy:'',roUntil:0,strikes:Math.max(0,(+u.strikes||0)-1)})}
+   await F.updateDoc(F.doc(db,'appeals',d.id),{st:ok?'approved':'rejected',note,by2:S.me.uid,at2:F.serverTimestamp()});await admLog('appeal '+(ok?'approved':'rejected'),x.u);toast(ok?'Appeal approved':'Appeal rejected');enfAppeals()}catch(e){toast('Failed',e.code||'')}},
+ async admperm(d){if(admRole()!=='owner')return;let r=null;try{r=(await F.getDoc(F.doc(db,'adminUsers',d.id))).data()}catch(e){}if(!r)return;const cur=Array.isArray(r.perms)?r.perms:(ADPERM[r.role]||[]);
+  sheet('<h3>Permissions</h3><small>'+E(r.email||d.id)+'</small><div style="max-height:52vh;overflow:auto;margin:8px 0">'+PERMS.map(([k,l])=>'<label style="display:flex;gap:10px;align-items:center;padding:7px 0"><input type="checkbox" value="'+k+'" '+(cur.includes(k)?'checked':'')+'><span>'+l+'</span></label>').join('')+'</div><button class="btn" data-a="admpsave" data-id="'+d.id+'">Save</button>')},
+ async admpsave(d){const p=$$('#sheet input[type=checkbox]:checked').map(i=>i.value);try{await F.updateDoc(F.doc(db,'adminUsers',d.id),{perms:p});await admLog('set permissions',d.id);sheet();toast('Permissions saved ✓')}catch(e){toast('Failed',psErr(e))}}});
 </script><style id="nb-fix">.body.nbp{order:0!important}.nbp.body+.nav,.nbp.body~.nav{order:1}
 .qc{margin:14px 0 6px;border-radius:26px;padding:16px 12px 14px;background-size:cover;background-position:center;box-shadow:0 6px 18px #0002;overflow:hidden}
 .qc>b{display:block;font:600 26px 'Dancing Script','Segoe Print',cursive;color:#14503a}
