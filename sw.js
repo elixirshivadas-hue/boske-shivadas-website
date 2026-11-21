@@ -1,14 +1,14 @@
-/* NIJOK service worker v2
+/* NIJOK service worker v3
    - App files (html/js/css/json): network first, but falls back to cache after 4s,
      so a slow network never leaves a blank screen. New versions still show up.
    - Images and fonts: cache first, refreshed quietly in the background (fast).
    - Firebase, fonts CDN and other sites are never touched.
    Change V on every release to force every phone to refresh. */
-const V = 'nijok-shell-v19';
-const RT = 'nijok-media-v2';
+const V = 'nijok-shell-v20';
+const RT = 'nijok-media-v3';
 const RT_MAX = 260;            // max cached images/fonts
 const NET_WAIT = 4000;        // ms to wait for network before using cache
-const SHELL = ['./', 'index.html', 'shop.html', 'manifest.json', 'icon-192.png', 'icon-512.png', 'icon-maskable-512.png', 'apple-touch-icon.png'];
+const SHELL = ['./', 'index.html', 'shop.html', 'manifest.json', 'nijok-192.png', 'nijok-512.png', 'nijok-maskable-512.png', 'icon-192.png', 'icon-512.png', 'apple-touch-icon.png'];
 
 self.addEventListener('install', e => {
   e.waitUntil(
